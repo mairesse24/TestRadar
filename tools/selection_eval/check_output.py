@@ -34,10 +34,15 @@ def expected_selections(data: Path, maps: Path, policy: str) -> tuple[dict[str, 
     tests = json.loads((data / "tests.json").read_text(encoding="utf-8"))["tests"]
     all_numbers = {test["number"] for test in tests}
     graph, coverage = selector.load_analysis_maps(maps)
+    blocks = selector.load_block_map(maps) if policy == "blocks" else None
     expected = {}
     for patch in sorted((data / "commits").glob("*.patch")):
-        if policy in ("safe", "balanced"):
-            selection, _ = selector.analyze_selective(patch, tests, graph, coverage, policy)
+        if policy in ("safe", "balanced", "blocks"):
+            selection, uncertainty = selector.analyze_selective(
+                patch, tests, graph, coverage, "balanced" if policy == "blocks" else policy,
+            )
+            if policy == "blocks" and not uncertainty:
+                selection = selector.narrow_blocks(selection, selector._read_changes(patch), tests, blocks)
         else:
             selection, _ = selector.analyze(patch, tests, graph, coverage, "safe")
         expected[patch.stem] = selection.numbers & all_numbers

@@ -51,11 +51,13 @@ class BlockMap:
         observed: frozenset[int],
         opaque_files: frozenset[str],
         ranges: dict[str, tuple[tuple[str, int, int, int], ...]],
+        uncertain_tests: frozenset[int] = frozenset(),
     ):
         self.functions = functions
         self.observed = observed
         self.opaque_files = opaque_files
         self.ranges = ranges
+        self.uncertain_tests = uncertain_tests
 
     @classmethod
     def load(cls, path: str) -> "BlockMap":
@@ -64,10 +66,12 @@ class BlockMap:
         raw_ranges = document.get("ranges")
         observed = document.get("observed")
         opaque = document.get("opaque_files")
+        uncertain = document.get("uncertain_tests", [])
         if (
             not isinstance(raw_functions, dict)
             or not isinstance(raw_ranges, dict)
             or not _ints(observed)
+            or not _ints(uncertain)
             or not isinstance(opaque, list)
             or not all(isinstance(item, str) for item in opaque)
         ):
@@ -92,7 +96,7 @@ class BlockMap:
                     raise ValueError("invalid block map")
                 parsed.append((row[0], row[1], row[2], row[3]))
             ranges[path] = tuple(parsed)
-        return cls(functions, frozenset(observed), frozenset(opaque), ranges)
+        return cls(functions, frozenset(observed), frozenset(opaque), ranges, frozenset(uncertain))
 
     def save(self, path: Path) -> None:
         temporary = path.with_suffix(path.suffix + ".tmp")
@@ -101,6 +105,7 @@ class BlockMap:
             "source": PINNED_SQLGLOT,
             "observed": sorted(self.observed),
             "opaque_files": sorted(self.opaque_files),
+            "uncertain_tests": sorted(self.uncertain_tests),
             "functions": {key: sorted(tests) for key, tests in sorted(self.functions.items())},
             "ranges": {
                 path: [list(row) for row in rows]
@@ -111,14 +116,25 @@ class BlockMap:
 
     def narrow(self, balanced: set[int], changes: list[dict], tests: list[dict]) -> set[int] | None:
         """Return a replacement selection, or None to keep ``balanced``."""
-        keys = self._affected(changes)
-        if not keys:
+        if not isinstance(changes, list):
             return None
+        source_change = any(
+            safe_path(change.get("path")) and change["path"].startswith("sqlglot/")
+            and change["path"].endswith(".py") for change in changes if isinstance(change, dict)
+        )
+        keys = self._affected(changes)
+        guarded = self.uncertain_tests & {
+            test["number"] for test in tests
+            if isinstance(test, dict) and type(test.get("number")) is int
+        } if source_change else set()
+        conservative = (balanced | guarded) if guarded - balanced else None
+        if not keys:
+            return conservative
         entrants: set[int] = set()
         for key in keys:
             seen = self.functions.get(key)
             if not seen:
-                return None
+                return conservative
             entrants |= seen
         numbers = {
             test["number"]
@@ -136,7 +152,7 @@ class BlockMap:
             number for number, filename in files.items()
             if isinstance(filename, str) and filename in self.opaque_files
         }
-        selected = (entrants | unobserved | (balanced & opaque)) & numbers
+        selected = (entrants | unobserved | (balanced & opaque) | guarded) & numbers
         if not selected or selected == balanced:
             return None
         return selected

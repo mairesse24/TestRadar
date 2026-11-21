@@ -207,7 +207,7 @@ def narrow_blocks(
     total = sum(seconds.values())
     chosen = sum(seconds.get(number, 0) for number in narrowed)
     if total and chosen >= PROMOTE_TO_ALL_SHARE * total:
-        return selection
+        return Selection(selection.numbers | narrowed, selection.fell_back, selection.reasons)
     reasons = list(selection.reasons) + [f"block entries: {len(narrowed)} tests"]
     return Selection(narrowed, False, reasons)
 
