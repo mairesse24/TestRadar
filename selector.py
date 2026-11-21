@@ -171,8 +171,17 @@ def analyze_selective(
     experiments = enabled_experiments()
     scopes: dict = {}
     if experiments and changes:
+        counts: dict = {}
         for change in changes:
-            scope = edit_scope.classify(change) if isinstance(change, dict) else None
+            if isinstance(change, dict):
+                counts[change.get("path")] = counts.get(change.get("path"), 0) + 1
+        for change in changes:
+            if not isinstance(change, dict) or counts.get(change.get("path")) != 1:
+                continue  # a path listed twice cannot be rebuilt from one change
+            scope = (
+                edit_scope.classify(change, analyze_bodies="construction" in experiments)
+                if isinstance(change, dict) else None
+            )
             if scope is None:
                 continue
             if scope.kind == "equivalent" and "equivalent" in experiments:

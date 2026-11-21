@@ -10,7 +10,7 @@
      "path": "sqlglot/parser.py",
      "line": 2109,
      "old": "    def _match(\n",
-     "new": "    # Matching helpers below advance the cursor on success.\n    def _match(\n"
+     "new": "    # Matching helpers below advance the token position on success.\n    def _match(\n"
     }
    ]
   },

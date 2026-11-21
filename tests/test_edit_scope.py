@@ -112,6 +112,38 @@ class EditScopeTest(unittest.TestCase):
             with mock.patch.object(edit_scope, "pinned_root", return_value=None):
                 self.assertIsNone(edit_scope.classify(change))
 
+    def test_encoding_cookie_or_bom_is_unclassified(self):
+        for header in ("# -*- coding: latin-1 -*-\n", "# coding: ascii\n", "# coding: no-such-codec\n",
+                       "\ufeff"):
+            with self.subTest(header=header):
+                changes = parse_patch(_diff(self.path, DIALECT, header + DIALECT))
+                self.assertIsNone(edit_scope.classify(changes[0], self.root))
+
+    def test_utf8_cookie_is_still_equivalent(self):
+        self.assertEqual(self.classify("# -*- coding: utf-8 -*-\n" + DIALECT).kind, "equivalent")
+
+    def test_body_analysis_can_be_skipped(self):
+        changes = parse_patch(_diff(self.path, DIALECT, DIALECT.replace('return "COUNT"', 'return "C"')))
+        scope = edit_scope.classify(changes[0], self.root, analyze_bodies=False)
+        self.assertEqual(scope.kind, "bodies")
+        self.assertFalse(scope.construction_safe)
+
+    def test_selector_runs_nothing_only_for_single_equivalent_changes(self):
+        tests_json = [{"number": 0, "id": "tests/test_a.py::T::test_a", "file": "tests/test_a.py", "seconds": 1.0}]
+        comment = _diff(self.path, DIALECT, DIALECT.replace("        # count\n", "        # rows\n"))
+        patch = self.root / "c.patch"
+        env = {selector.EXPERIMENTS_ENV: "equivalent", "TESTRADAR_PINNED": str(self.root)}
+        with mock.patch.dict(os.environ, env):
+            patch.write_text(comment, encoding="utf-8")
+            selection, _ = selector.analyze_selective(patch, tests_json, None, None, "balanced")
+            self.assertEqual(selection.numbers, set())
+            self.assertFalse(selection.fell_back)
+            # The same path twice (second copy not a comment edit) must not be shortcut.
+            other = _diff(self.path, DIALECT, DIALECT.replace('return "COUNT"', 'return "C"'))
+            patch.write_text(comment + other, encoding="utf-8")
+            selection, _ = selector.analyze_selective(patch, tests_json, None, None, "balanced")
+            self.assertNotEqual(selection.numbers, set())
+
 
 class ExperimentsFlagTest(unittest.TestCase):
     def test_flags_default_off_and_ignore_unknown(self):

@@ -22,7 +22,9 @@ their existing conservative behaviour.
 from __future__ import annotations
 
 import ast
+import io
 import os
+import tokenize
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -194,7 +196,23 @@ def construction_names(root: Path) -> frozenset[str]:
     return _CONSTRUCTION_CACHE[key]
 
 
-def classify(change: dict, root: Path | None = None) -> EditScope | None:
+def _source_encoding(text: str) -> str | None:
+    """The encoding CPython would use for ``text`` saved as UTF-8 bytes.
+
+    A PEP 263 cookie (or a BOM) changes how the interpreter decodes the
+    file, which the text-level syntax tree cannot see, so both versions must
+    decode as plain UTF-8.
+    """
+    try:
+        encoding, _ = tokenize.detect_encoding(io.BytesIO(text.encode("utf-8")).readline)
+    except (SyntaxError, LookupError, UnicodeError):
+        return None
+    return encoding
+
+
+def classify(change: dict, root: Path | None = None, *, analyze_bodies: bool = True) -> EditScope | None:
+    """Classify one change; ``analyze_bodies=False`` skips the construction
+    analysis (callers that only use ``equivalent`` results)."""
     root = root or pinned_root()
     path = change.get("path") if isinstance(change, dict) else None
     if root is None or not path or not path.startswith("sqlglot/") or not path.endswith(".py"):
@@ -206,6 +224,10 @@ def classify(change: dict, root: Path | None = None) -> EditScope | None:
         old_text = source.read_text(encoding="utf-8")
         new_text = reconstruct(old_text, change)
         if new_text is None:
+            return None
+        if _source_encoding(old_text) != "utf-8" or _source_encoding(new_text) != "utf-8":
+            return None
+        if "\ufeff" in old_text or "\ufeff" in new_text:
             return None
         old_skeleton, old_bodies = _units(old_text)
         new_skeleton, new_bodies = _units(new_text)
@@ -233,6 +255,9 @@ def classify(change: dict, root: Path | None = None) -> EditScope | None:
                 decorated.add(key[0])
     if not changed:
         return EditScope("equivalent", detail="syntax tree unchanged")
+    if not analyze_bodies:
+        return EditScope("bodies", changed, construction_safe=False,
+                         detail="bodies of " + ", ".join(sorted(changed)))
     entry = construction_names(root)
     import_time = _import_time_names(ast.parse(old_text)) | _import_time_names(ast.parse(new_text))
     risky = []

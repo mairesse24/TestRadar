@@ -35,9 +35,12 @@ COPY --from=maps /sqlglot/sqlglot/ ./pinned/sqlglot/
 # --build-arg TESTRADAR_POLICY=fallback to restore it. See
 # docs/SELECTION_POLICY.md.
 ARG TESTRADAR_POLICY=balanced
-# Comma-separated opt-in narrowing rules: equivalent, construction.
-# Empty keeps the release behaviour. See docs/SELECTION_PERFORMANCE.md.
-ARG TESTRADAR_EXPERIMENTS=
+# Narrowing rules enabled by default: "equivalent" (a modified sqlglot .py
+# file whose syntax tree is unchanged adds no tests). "construction" is
+# implemented but not enabled for release. Build with
+# --build-arg TESTRADAR_EXPERIMENTS= to restore the previous release selection.
+# See docs/RELEASE_FORMATTING_EQUIVALENCE.md.
+ARG TESTRADAR_EXPERIMENTS=equivalent
 ENV PYTHONDONTWRITEBYTECODE=1 TESTRADAR_POLICY=${TESTRADAR_POLICY} \
     TESTRADAR_EXPERIMENTS=${TESTRADAR_EXPERIMENTS}
 ENTRYPOINT ["python", "/app/selector.py"]
