@@ -1,0 +1,13 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+index 7806999a1..155a056d7 100644
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -322,7 +322,7 @@ class Tokenizer(_TokenizerBase):
+         "GROUP BY": TokenType.GROUP_BY,
+         "GROUPING SETS": TokenType.GROUPING_SETS,
+         "HAVING": TokenType.HAVING,
+-        "ILIKE": TokenType.ILIKE,
++        "ILIKE": TokenType.LIKE,
+         "IN": TokenType.IN,
+         "INDEX": TokenType.INDEX,
+         "INET": TokenType.INET,

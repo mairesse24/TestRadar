@@ -1,0 +1,13 @@
+diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
+index 926591784..e7be7af0d 100644
+--- a/sqlglot/dialects/postgres.py
++++ b/sqlglot/dialects/postgres.py
+@@ -105,7 +105,7 @@ class Postgres(Dialect):
+ 
+         KEYWORDS = {
+             **tokens.Tokenizer.KEYWORDS,
+-            "~": TokenType.RLIKE,
++
+             "@@": TokenType.DAT,
+             "@?": TokenType.AT_QMARK,
+             "@>": TokenType.AT_GT,

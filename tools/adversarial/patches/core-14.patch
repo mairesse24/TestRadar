@@ -1,0 +1,13 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+index fed01b2c7..1cc2e50eb 100644
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -1899,7 +1899,7 @@ def build_formatted_time(
+ 
+         fmt = seq_get(args, 1)
+         if not fmt:
+-            fmt = target_dialect.TIME_FORMAT if default is True else default or None
++            fmt = target_dialect.TIME_FORMAT if default is True else default and None
+ 
+         return exp_class(this=seq_get(args, 0), format=target_dialect.format_time(fmt))
+ 

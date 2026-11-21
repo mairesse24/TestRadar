@@ -1,0 +1,13 @@
+diff --git a/sqlglot/dialects/hive.py b/sqlglot/dialects/hive.py
+index ad0e128cb..c62d0335e 100644
+--- a/sqlglot/dialects/hive.py
++++ b/sqlglot/dialects/hive.py
+@@ -20,7 +20,7 @@ class Hive(Dialect):
+     ALIAS_POST_TABLESAMPLE = True
+     IDENTIFIERS_CAN_START_WITH_DIGIT = True
+     SUPPORTS_USER_DEFINED_TYPES = False
+-    SAFE_DIVISION = True
++    SAFE_DIVISION = False
+     COLUMN_ALIAS_PRECEDENCE = {
+         exp.Having: AliasPrecedence.SOURCE,
+         exp.Qualify: AliasPrecedence.SOURCE,

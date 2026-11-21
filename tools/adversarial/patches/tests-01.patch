@@ -1,0 +1,11 @@
+diff --git a/tests/fixtures/identity.sql b/tests/fixtures/identity.sql
+index 94f79f2a5..da16be842 100644
+--- a/tests/fixtures/identity.sql
++++ b/tests/fixtures/identity.sql
+@@ -1,5 +1,5 @@
+ SUM(1)
+-SUM(CASE WHEN x > 1 THEN 1 ELSE 0 END) / y
++SUM(CASE WHEN x > 1 THEN 1 ELSE 0 END) // y
+ 1
+ (1)
+ 1.

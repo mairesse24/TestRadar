@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+index 5a0872a62..c33082396 100644
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -304,7 +304,7 @@ class PrestoGenerator(generator.Generator):
+     TYPE_MAPPING = {
+         **generator.Generator.TYPE_MAPPING,
+         exp.DType.BINARY: "VARBINARY",
+-        exp.DType.BIT: "BOOLEAN",
++        exp.DType.BIT: "BIT",
+         exp.DType.DATETIME: "TIMESTAMP",
+         exp.DType.DATETIME64: "TIMESTAMP",
+         exp.DType.FLOAT: "REAL",

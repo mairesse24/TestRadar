@@ -1,0 +1,13 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+index 2039e77a8..de9981d48 100644
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -70,7 +70,7 @@ except ImportError:
+     )
+ 
+ 
+-pretty = False
++pretty = True
+ """Whether to format generated SQL by default."""
+ 
+ 

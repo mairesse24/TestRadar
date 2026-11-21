@@ -1,0 +1,13 @@
+diff --git a/sqlglot/anonymize.py b/sqlglot/anonymize.py
+index 9c232423c..de30580df 100644
+--- a/sqlglot/anonymize.py
++++ b/sqlglot/anonymize.py
+@@ -112,7 +112,7 @@ def anonymize(
+                     TokenType.UNKNOWN,
+                     sql[start : start + 2] + "." * (length - start - 2),
+                     start=start,
+-                    end=length - 1,
++                    end=length + 1,
+                     line=sql.count("\n", 0, start) + 1,
+                     col=start - sql.rfind("\n", 0, start),
+                 )

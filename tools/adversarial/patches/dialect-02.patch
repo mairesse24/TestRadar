@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/spark2.py b/sqlglot/generators/spark2.py
+index 1871ca772..801ec46de 100644
+--- a/sqlglot/generators/spark2.py
++++ b/sqlglot/generators/spark2.py
+@@ -153,6 +153,7 @@ class Spark2Generator(HiveGenerator):
+         exp.WeekOfYear,
+     )
+ 
++    HiveGenerator.TYPE_MAPPING[exp.DType.TEXT] = "VARCHAR"
+     TRANSFORMS = {
+         k: v
+         for k, v in {

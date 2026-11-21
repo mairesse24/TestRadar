@@ -1,0 +1,13 @@
+diff --git a/sqlglot/time.py b/sqlglot/time.py
+index 039baf193..dd54862a2 100644
+--- a/sqlglot/time.py
++++ b/sqlglot/time.py
+@@ -45,7 +45,7 @@ def format_time(
+                 chars = sym
+                 sym = None
+             else:
+-                chars = chars[0]
++                chars = chars[-1]
+                 end = start + 1
+ 
+             start += len(chars)

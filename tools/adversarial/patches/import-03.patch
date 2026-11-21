@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+index 5bdce0a97..d2794b9e5 100644
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -10,7 +10,7 @@ if t.TYPE_CHECKING:
+     from sqlglot._typing import E
+ 
+ 
+-def eliminate_joins(expression: E) -> E:
++def eliminate_joins(expression: E, _unused=exp.NotAnExpression) -> E:
+     """
+     Remove unused joins from an expression.
+ 

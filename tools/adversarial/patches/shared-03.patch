@@ -1,0 +1,13 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+index 3976bde29..51f5003a4 100644
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -335,7 +335,7 @@ def is_iterable(value: t.Any) -> bool:
+     """
+     from sqlglot.expressions import Expr
+ 
+-    return hasattr(value, "__iter__") and not isinstance(value, (str, bytes, Expr))
++    return hasattr(value, "__iter__") and isinstance(value, (str, bytes, Expr))
+ 
+ 
+ def flatten(values: Iterable[Iterable[t.Any] | t.Any]) -> Iterator[t.Any]:

@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/sqlite.py b/sqlglot/generators/sqlite.py
+index b46c7ae65..01f4154f9 100644
+--- a/sqlglot/generators/sqlite.py
++++ b/sqlglot/generators/sqlite.py
+@@ -37,7 +37,7 @@ def _transform_create(expression: exp.Expr) -> exp.Expr:
+         if primary_key and len(primary_key.expressions) == 1:
+             column = defs[primary_key.expressions[0].name]
+             column.append(
+-                "constraints", exp.ColumnConstraint(kind=exp.PrimaryKeyColumnConstraint())
++                'constraints', exp.ColumnConstraint(kind=exp.PrimaryKeyColumnConstraint())
+             )
+             schema.expressions.remove(primary_key)
+ 

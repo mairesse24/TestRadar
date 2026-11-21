@@ -1,0 +1,13 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+index 3976bde29..5096f4278 100644
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -313,7 +313,7 @@ def split_num_words(
+     """
+     words = value.split(sep)
+     if fill_from_start:
+-        return [None] * (min_num_words - len(words)) + words
++        return [None] * (min_num_words + len(words)) + words
+     return words + [None] * (min_num_words - len(words))
+ 
+ 

@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/exasol.py b/sqlglot/generators/exasol.py
+index 25d27098f..7a408f323 100644
+--- a/sqlglot/generators/exasol.py
++++ b/sqlglot/generators/exasol.py
+@@ -291,7 +291,7 @@ class ExasolGenerator(generator.Generator):
+     TYPE_MAPPING = {
+         **generator.Generator.TYPE_MAPPING,
+         **STRING_TYPE_MAPPING,
+-        exp.DType.TINYINT: "SMALLINT",
++        exp.DType.TINYINT: "TINYINT",
+         exp.DType.MEDIUMINT: "INT",
+         exp.DType.DECIMAL32: "DECIMAL",
+         exp.DType.DECIMAL64: "DECIMAL",

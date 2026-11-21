@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/normalize_identifiers.py b/sqlglot/optimizer/normalize_identifiers.py
+index e771f6431..7e989babc 100644
+--- a/sqlglot/optimizer/normalize_identifiers.py
++++ b/sqlglot/optimizer/normalize_identifiers.py
+@@ -81,7 +81,7 @@ def normalize_identifiers(expression, dialect=None, store_original_column_identi
+         ):
+             if isinstance(node, exp.Column):
+                 node.meta["dot_parts"] = [p.name for p in node.parts]
+-            elif not node.is_star:
++            elif node.is_star:
+                 root, dot_parts = node, []
+                 while isinstance(root, exp.Dot):
+                     dot_parts.append(root.expression.name)

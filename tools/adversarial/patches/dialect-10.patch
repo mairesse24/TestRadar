@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+index 1db4172cd..2d24da507 100644
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -336,7 +336,7 @@ class PostgresGenerator(generator.Generator):
+     TYPE_MAPPING = {
+         **generator.Generator.TYPE_MAPPING,
+         exp.DType.TINYINT: "SMALLINT",
+-        exp.DType.FLOAT: "REAL",
++        exp.DType.FLOAT: "FLOAT4",
+         exp.DType.DOUBLE: "DOUBLE PRECISION",
+         exp.DType.BINARY: "BYTEA",
+         exp.DType.VARBINARY: "BYTEA",

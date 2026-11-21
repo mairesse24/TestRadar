@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+index 573d3c15d..289cdcfd0 100644
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2693,7 +2693,7 @@ class Generator:
+             size = f"{size} ROWS"
+ 
+         percent = self.sql(expression, "percent")
+-        if percent and not self.dialect.TABLESAMPLE_SIZE_IS_PERCENT:
++        if percent or not self.dialect.TABLESAMPLE_SIZE_IS_PERCENT:
+             percent = f"{percent} PERCENT"
+ 
+         expr = f"{bucket}{percent}{size}"

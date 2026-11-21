@@ -1,0 +1,13 @@
+diff --git a/sqlglot/jsonpath.py b/sqlglot/jsonpath.py
+index fd5a1818c..7663430fb 100644
+--- a/sqlglot/jsonpath.py
++++ b/sqlglot/jsonpath.py
+@@ -91,7 +91,7 @@ def parse(path: str, dialect: DialectType = None) -> exp.JSONPath:
+             return token.text
+         if _match(TokenType.STAR):
+             return exp.JSONPathWildcard()
+-        if _match(TokenType.PLACEHOLDER) or _match(TokenType.L_PAREN):
++        if _match(TokenType.PLACEHOLDER) and _match(TokenType.L_PAREN):
+             script = _prev().text == "("
+             start = i
+ 

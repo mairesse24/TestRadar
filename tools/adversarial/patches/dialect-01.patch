@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/redshift.py b/sqlglot/parsers/redshift.py
+index 5faade46d..a83ff35b9 100644
+--- a/sqlglot/parsers/redshift.py
++++ b/sqlglot/parsers/redshift.py
+@@ -35,6 +35,7 @@ class RedshiftParser(PostgresParser):
+ 
+     ID_VAR_TOKENS = {*PostgresParser.ID_VAR_TOKENS, TokenType.QUALIFY}
+ 
++    PostgresParser.FUNCTIONS.pop("GET_BIT", None)
+     FUNCTIONS = {
+         **{k: v for k, v in PostgresParser.FUNCTIONS.items() if k != "GET_BIT"},
+         "ADD_MONTHS": lambda args: exp.TsOrDsAdd(

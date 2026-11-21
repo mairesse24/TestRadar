@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/pushdown_projections.py b/sqlglot/optimizer/pushdown_projections.py
+index 0611a74ba..e687bd298 100644
+--- a/sqlglot/optimizer/pushdown_projections.py
++++ b/sqlglot/optimizer/pushdown_projections.py
+@@ -35,7 +35,7 @@ def pushdown_projections(expression: E, journal: Journal | None = None) -> E:
+     Returns:
+         The optimized expression.
+     """
+-    reachability = projection_reachability(expression, whole_query=True)
++    reachability = projection_reachability(expression, whole_query=False)
+     prune_projections(reachability, root=0, journal=journal)
+     return expression
+ 

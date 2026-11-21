@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/annotate_types.py b/sqlglot/optimizer/annotate_types.py
+index 0b06af8e2..0e0eda4dd 100644
+--- a/sqlglot/optimizer/annotate_types.py
++++ b/sqlglot/optimizer/annotate_types.py
+@@ -1014,7 +1014,7 @@ class TypeAnnotator:
+             self._set_type(expression, exp.DType.BIGINT)
+         else:
+             self._set_type(expression, self._maybe_coerce(left_type, right_type))
+-            if expression.type and expression.type.this not in exp.DataType.REAL_TYPES:
++            if expression.type or expression.type.this not in exp.DataType.REAL_TYPES:
+                 self._set_type(expression, self._maybe_coerce(expression.type, exp.DType.DOUBLE))
+ 
+         return expression

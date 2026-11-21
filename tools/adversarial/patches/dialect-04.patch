@@ -1,0 +1,13 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+index 825f54d57..941ae7df5 100644
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -102,7 +102,7 @@ class MySQL(Dialect):
+             **tokens.Tokenizer.KEYWORDS,
+             "BLOB": TokenType.BLOB,
+             "CHARSET": TokenType.CHARACTER_SET,
+-            "DISTINCTROW": TokenType.DISTINCT,
++
+             "EXPLAIN": TokenType.DESCRIBE,
+             "FORCE": TokenType.FORCE,
+             "IGNORE": TokenType.IGNORE,

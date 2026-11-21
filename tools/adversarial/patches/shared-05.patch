@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+index 5bdce0a97..9f80ebbec 100644
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -209,7 +209,7 @@ def join_condition(join: exp.Join) -> tuple[list[exp.Expr], list[exp.Expr], exp.
+             else:
+                 temp: list[exp.EQ] = []
+                 for p in parts:
+-                    cs = [c for c in conditions if p == c]
++                    cs = [c for c in conditions if p != c]
+ 
+                     if cs:
+                         temp.append(p)

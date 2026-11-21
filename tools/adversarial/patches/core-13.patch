@@ -1,0 +1,13 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+index fed01b2c7..85fd61b95 100644
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -1620,7 +1620,7 @@ def strposition_sql(
+     zero = exp.Literal.number(0)
+     one = exp.Literal.number(1)
+ 
+-    if supports_occurrence and occurrence and supports_position and not position:
++    if supports_occurrence and occurrence and supports_position or not position:
+         position = one
+ 
+     transpile_position = position and not supports_position

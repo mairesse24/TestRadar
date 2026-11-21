@@ -1,0 +1,13 @@
+diff --git a/sqlglot/executor/env.py b/sqlglot/executor/env.py
+index 7ff9c9357..ee191273c 100644
+--- a/sqlglot/executor/env.py
++++ b/sqlglot/executor/env.py
+@@ -251,7 +251,7 @@ ENV = {
+     "AND": sql_and,
+     # aggs
+     "ARRAYAGG": list,
+-    "ARRAYUNIQUEAGG": filter_nulls(lambda acc: list(set(acc))),
++    "ARRAYUNIQUEAGG": filter_nulls(lambda acc: list(acc)),
+     "AVG": filter_nulls(statistics.fmean if PYTHON_VERSION >= (3, 8) else statistics.mean),  # type: ignore
+     "COUNT": filter_nulls(lambda acc: sum(1 for _ in acc), False),
+     "FIRST": lambda acc: next(iter(acc), None),

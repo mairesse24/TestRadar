@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/simplify.py b/sqlglot/optimizer/simplify.py
+index 48b762d25..f99c12aa2 100644
+--- a/sqlglot/optimizer/simplify.py
++++ b/sqlglot/optimizer/simplify.py
+@@ -895,7 +895,7 @@ class Simplifier:
+                 if isinstance(condition, exp.Or):
+                     return exp.paren(
+                         exp.and_(
+-                            exp.not_(condition.left, copy=False),
++                            exp.not_(condition.left, copy=True),
+                             exp.not_(condition.right, copy=False),
+                             copy=False,
+                         ),

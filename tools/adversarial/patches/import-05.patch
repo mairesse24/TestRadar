@@ -1,0 +1,13 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+index b887c7133..3313d3433 100644
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -197,7 +197,7 @@ def lineage(
+     return result
+ 
+ 
+-def to_node(
++def to_node((
+     column: str | int,
+     scope: Scope,
+     dialect: DialectType,

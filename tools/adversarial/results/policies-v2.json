@@ -1,0 +1,3199 @@
+{
+"scores": {
+"fallback": {
+"ok": true,
+"simulated_milliseconds": 2135386,
+"missed_commits": []
+},
+"safe": {
+"ok": true,
+"simulated_milliseconds": 2058783,
+"missed_commits": []
+},
+"balanced": {
+"ok": true,
+"simulated_milliseconds": 3015418,
+"missed_commits": [
+"dialect-02",
+"import-01",
+"import-02",
+"import-06",
+"import-08"
+]
+},
+"aggressive": {
+"ok": true,
+"simulated_milliseconds": 3289287,
+"missed_commits": [
+"dialect-02",
+"import-01",
+"import-02",
+"import-06",
+"import-08",
+"import-09"
+]
+},
+"precision": {
+"ok": true,
+"simulated_milliseconds": 3015418,
+"missed_commits": [
+"dialect-02",
+"import-01",
+"import-02",
+"import-06",
+"import-08"
+]
+}
+},
+"scenarios": [
+{
+"id": "core-01",
+"stratum": "core",
+"file": "sqlglot/time.py",
+"failing": 36,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/time.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/time.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/time.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/time.py"
+]
+}
+},
+{
+"id": "core-02",
+"stratum": "core",
+"file": "sqlglot/trie.py",
+"failing": 297,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/trie.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/trie.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/trie.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/trie.py"
+]
+}
+},
+{
+"id": "core-03",
+"stratum": "core",
+"file": "sqlglot/serde.py",
+"failing": 36,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/serde.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/serde.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/serde.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/serde.py"
+]
+}
+},
+{
+"id": "core-04",
+"stratum": "core",
+"file": "sqlglot/errors.py",
+"failing": 11,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/errors.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/errors.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/errors.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/errors.py"
+]
+}
+},
+{
+"id": "core-05",
+"stratum": "core",
+"file": "sqlglot/transforms.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/transforms.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/transforms.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/transforms.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/transforms.py"
+]
+}
+},
+{
+"id": "core-06",
+"stratum": "core",
+"file": "sqlglot/transforms.py",
+"failing": 3,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/transforms.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/transforms.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/transforms.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/transforms.py"
+]
+}
+},
+{
+"id": "core-07",
+"stratum": "core",
+"file": "sqlglot/jsonpath.py",
+"failing": 3,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/jsonpath.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/jsonpath.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/jsonpath.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/jsonpath.py"
+]
+}
+},
+{
+"id": "core-08",
+"stratum": "core",
+"file": "sqlglot/optimizer/qualify_columns.py",
+"failing": 8,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/qualify_columns.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/qualify_columns.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/qualify_columns.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/qualify_columns.py"
+]
+}
+},
+{
+"id": "core-09",
+"stratum": "core",
+"file": "sqlglot/optimizer/simplify.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/simplify.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/simplify.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/simplify.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/simplify.py"
+]
+}
+},
+{
+"id": "core-10",
+"stratum": "core",
+"file": "sqlglot/optimizer/normalize_identifiers.py",
+"failing": 2,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/normalize_identifiers.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/normalize_identifiers.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/normalize_identifiers.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/normalize_identifiers.py"
+]
+}
+},
+{
+"id": "core-11",
+"stratum": "core",
+"file": "sqlglot/generator.py",
+"failing": 15,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/generator.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/generator.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/generator.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/generator.py"
+]
+}
+},
+{
+"id": "core-12",
+"stratum": "core",
+"file": "sqlglot/parser.py",
+"failing": 18,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/parser.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/parser.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/parser.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/parser.py"
+]
+}
+},
+{
+"id": "core-13",
+"stratum": "core",
+"file": "sqlglot/dialects/dialect.py",
+"failing": 11,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/dialects/dialect.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/dialects/dialect.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/dialects/dialect.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/dialects/dialect.py"
+]
+}
+},
+{
+"id": "core-14",
+"stratum": "core",
+"file": "sqlglot/dialects/dialect.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/dialects/dialect.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/dialects/dialect.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/dialects/dialect.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/dialects/dialect.py"
+]
+}
+},
+{
+"id": "core-15",
+"stratum": "core",
+"file": "sqlglot/tokens.py",
+"failing": 338,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/tokens.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/tokens.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/tokens.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/tokens.py"
+]
+}
+},
+{
+"id": "core-16",
+"stratum": "core",
+"file": "sqlglot/tokens.py",
+"failing": 10,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/tokens.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/tokens.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/tokens.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/tokens.py"
+]
+}
+},
+{
+"id": "coverage-01",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/optimizer/pushdown_projections.py",
+"failing": 40,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/optimizer/pushdown_projections.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/pushdown_projections.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/pushdown_projections.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/pushdown_projections.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+}
+},
+{
+"id": "coverage-02",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/optimizer/merge_subqueries.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/optimizer/merge_subqueries.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/merge_subqueries.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/merge_subqueries.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/merge_subqueries.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+}
+},
+{
+"id": "coverage-03",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/optimizer/unnest_subqueries.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/optimizer/unnest_subqueries.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/unnest_subqueries.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/unnest_subqueries.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/unnest_subqueries.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+}
+},
+{
+"id": "coverage-04",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/optimizer/eliminate_ctes.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/optimizer/eliminate_ctes.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_ctes.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_ctes.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_ctes.py: source module; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py"
+]
+}
+},
+{
+"id": "coverage-05",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/optimizer/canonicalize.py",
+"failing": 6,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/canonicalize.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/canonicalize.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/canonicalize.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/canonicalize.py"
+]
+}
+},
+{
+"id": "coverage-06",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/optimizer/annotate_types.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/annotate_types.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/annotate_types.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/annotate_types.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/optimizer/annotate_types.py"
+]
+}
+},
+{
+"id": "coverage-07",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/schema.py",
+"failing": 24,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/schema.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/schema.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/schema.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/schema.py"
+]
+}
+},
+{
+"id": "coverage-08",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/anonymize.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/anonymize.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 29,
+"missed_tests": [],
+"reasons": [
+"sqlglot/anonymize.py: source module"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 29,
+"missed_tests": [],
+"reasons": [
+"sqlglot/anonymize.py: source module"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 29,
+"missed_tests": [],
+"reasons": [
+"sqlglot/anonymize.py: source module"
+]
+}
+},
+{
+"id": "coverage-09",
+"stratum": "coverage_blind_spot",
+"file": "sqlglot/typing/presto.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/typing/presto.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1277,
+"missed_tests": [],
+"reasons": [
+"sqlglot/typing/presto.py: source module, dialects athena, dune, presto, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1277,
+"missed_tests": [],
+"reasons": [
+"sqlglot/typing/presto.py: source module, dialects athena, dune, presto, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1277,
+"missed_tests": [],
+"reasons": [
+"sqlglot/typing/presto.py: source module, dialects athena, dune, presto, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+}
+},
+{
+"id": "dialect-01",
+"stratum": "cross_dialect",
+"file": "sqlglot/parsers/redshift.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/parsers/redshift.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 830,
+"missed_tests": [],
+"reasons": [
+"sqlglot/parsers/redshift.py: source module, dialects redshift"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 830,
+"missed_tests": [],
+"reasons": [
+"sqlglot/parsers/redshift.py: source module, dialects redshift"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 830,
+"missed_tests": [],
+"reasons": [
+"sqlglot/parsers/redshift.py: source module, dialects redshift"
+]
+}
+},
+{
+"id": "dialect-02",
+"stratum": "cross_dialect",
+"file": "sqlglot/generators/spark2.py",
+"failing": 24,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/spark2.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 998,
+"missed_tests": [
+"tests/dialects/test_athena.py::TestAthena::test_athena",
+"tests/dialects/test_athena.py::TestAthena::test_create_table",
+"tests/dialects/test_athena.py::TestAthena::test_ddl",
+"tests/dialects/test_athena.py::TestAthena::test_dml"
+],
+"reasons": [
+"sqlglot/generators/spark2.py: source module, dialects databricks, spark, spark2"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 998,
+"missed_tests": [
+"tests/dialects/test_athena.py::TestAthena::test_athena",
+"tests/dialects/test_athena.py::TestAthena::test_create_table",
+"tests/dialects/test_athena.py::TestAthena::test_ddl",
+"tests/dialects/test_athena.py::TestAthena::test_dml"
+],
+"reasons": [
+"sqlglot/generators/spark2.py: source module, dialects databricks, spark, spark2"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 998,
+"missed_tests": [
+"tests/dialects/test_athena.py::TestAthena::test_athena",
+"tests/dialects/test_athena.py::TestAthena::test_create_table",
+"tests/dialects/test_athena.py::TestAthena::test_ddl",
+"tests/dialects/test_athena.py::TestAthena::test_dml"
+],
+"reasons": [
+"sqlglot/generators/spark2.py: source module, dialects databricks, spark, spark2"
+]
+}
+},
+{
+"id": "dialect-03",
+"stratum": "cross_dialect",
+"file": "sqlglot/dialects/postgres.py",
+"failing": 4,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/dialects/postgres.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1024,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/postgres.py: source module, dialects materialize, postgres, redshift, risingwave"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1024,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/postgres.py: source module, dialects materialize, postgres, redshift, risingwave"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1024,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/postgres.py: source module, dialects materialize, postgres, redshift, risingwave"
+]
+}
+},
+{
+"id": "dialect-04",
+"stratum": "cross_dialect",
+"file": "sqlglot/dialects/mysql.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/dialects/mysql.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1308,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/mysql.py: source module, dialects athena, doris, drill, dune, mysql, presto, singlestore, starrocks, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1308,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/mysql.py: source module, dialects athena, doris, drill, dune, mysql, presto, singlestore, starrocks, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1308,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/mysql.py: source module, dialects athena, doris, drill, dune, mysql, presto, singlestore, starrocks, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+}
+},
+{
+"id": "dialect-05",
+"stratum": "cross_dialect",
+"file": "sqlglot/generators/presto.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/presto.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1276,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/presto.py: source module, dialects athena, dune, presto, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1276,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/presto.py: source module, dialects athena, dune, presto, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1276,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/presto.py: source module, dialects athena, dune, presto, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+}
+},
+{
+"id": "dialect-06",
+"stratum": "cross_dialect",
+"file": "sqlglot/dialects/teradata.py",
+"failing": 2,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/dialects/teradata.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1276,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/teradata.py: source module, dialects athena, dune, presto, teradata, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1276,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/teradata.py: source module, dialects athena, dune, presto, teradata, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1276,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/teradata.py: source module, dialects athena, dune, presto, teradata, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+}
+},
+{
+"id": "dialect-07",
+"stratum": "cross_dialect",
+"file": "sqlglot/dialects/hive.py",
+"failing": 4,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/dialects/hive.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1299,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/hive.py: source module, dialects athena, databricks, dune, hive, presto, spark, spark2, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1299,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/hive.py: source module, dialects athena, databricks, dune, hive, presto, spark, spark2, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1299,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/hive.py: source module, dialects athena, databricks, dune, hive, presto, spark, spark2, trino; used by sqlglot/executor/__init__.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/pushdown_predicates.py"
+]
+}
+},
+{
+"id": "dialect-08",
+"stratum": "cross_dialect",
+"file": "sqlglot/generators/exasol.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/exasol.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 450,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 449,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 450,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+}
+},
+{
+"id": "dialect-09",
+"stratum": "cross_dialect",
+"file": "sqlglot/generators/drill.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/drill.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 657,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/drill.py: source module, dialects drill"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 657,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/drill.py: source module, dialects drill"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 657,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/drill.py: source module, dialects drill"
+]
+}
+},
+{
+"id": "dialect-10",
+"stratum": "cross_dialect",
+"file": "sqlglot/generators/postgres.py",
+"failing": 2,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/postgres.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1024,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/postgres.py: source module, dialects materialize, postgres, redshift, risingwave"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1024,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/postgres.py: source module, dialects materialize, postgres, redshift, risingwave"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1024,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/postgres.py: source module, dialects materialize, postgres, redshift, risingwave"
+]
+}
+},
+{
+"id": "equiv-01",
+"stratum": "ast_equivalent",
+"file": "sqlglot/helper.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+}
+},
+{
+"id": "equiv-02",
+"stratum": "ast_equivalent",
+"file": "sqlglot/generators/sqlite.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/sqlite.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 789,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/sqlite.py: source module, dialects sqlite"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 788,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/sqlite.py: source module, dialects sqlite"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 789,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/sqlite.py: source module, dialects sqlite"
+]
+}
+},
+{
+"id": "global-01",
+"stratum": "global_state",
+"file": "sqlglot/generators/exasol.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/exasol.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 450,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 449,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 450,
+"missed_tests": [],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+}
+},
+{
+"id": "import-01",
+"stratum": "import_time",
+"file": "sqlglot/parsers/dremio.py",
+"failing": 37,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/parsers/dremio.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 246,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid",
+"tests/dialects/test_spark.py::TestSpark::test_strip_modifiers"
+],
+"reasons": [
+"sqlglot/parsers/dremio.py: source module, dialects dremio"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 246,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid",
+"tests/dialects/test_spark.py::TestSpark::test_strip_modifiers"
+],
+"reasons": [
+"sqlglot/parsers/dremio.py: source module, dialects dremio"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 246,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid",
+"tests/dialects/test_spark.py::TestSpark::test_strip_modifiers"
+],
+"reasons": [
+"sqlglot/parsers/dremio.py: source module, dialects dremio"
+]
+}
+},
+{
+"id": "import-02",
+"stratum": "import_time",
+"file": "sqlglot/generators/exasol.py",
+"failing": 46,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/exasol.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 450,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid"
+],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 449,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid",
+"tests/dialects/test_spark.py::TestSpark::test_strip_modifiers"
+],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 450,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid"
+],
+"reasons": [
+"sqlglot/generators/exasol.py: source module, dialects exasol"
+]
+}
+},
+{
+"id": "import-03",
+"stratum": "import_time",
+"file": "sqlglot/optimizer/eliminate_joins.py",
+"failing": 149,
+"collect_errors": [
+"tests/dialects/test_postgres.py",
+"tests/test_executor.py",
+"tests/test_optimize_cross_joins.py",
+"tests/test_simplify_between.py"
+],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/optimizer/eliminate_joins.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_joins.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py, sqlglot/optimizer/optimizer.py, sqlglot/planner.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_joins.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py, sqlglot/optimizer/optimizer.py, sqlglot/planner.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_joins.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py, sqlglot/optimizer/optimizer.py, sqlglot/planner.py"
+]
+}
+},
+{
+"id": "import-04",
+"stratum": "import_time",
+"file": "sqlglot/planner.py",
+"failing": 60,
+"collect_errors": [
+"tests/test_executor.py"
+],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/planner.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 60,
+"missed_tests": [],
+"reasons": [
+"sqlglot/planner.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 60,
+"missed_tests": [],
+"reasons": [
+"sqlglot/planner.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 60,
+"missed_tests": [],
+"reasons": [
+"sqlglot/planner.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py"
+]
+}
+},
+{
+"id": "import-05",
+"stratum": "import_time",
+"file": "sqlglot/lineage.py",
+"failing": 53,
+"collect_errors": [
+"tests/test_lineage.py"
+],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/lineage.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 83,
+"missed_tests": [],
+"reasons": [
+"sqlglot/lineage.py: source module"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 83,
+"missed_tests": [],
+"reasons": [
+"sqlglot/lineage.py: source module"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 83,
+"missed_tests": [],
+"reasons": [
+"sqlglot/lineage.py: source module"
+]
+}
+},
+{
+"id": "import-06",
+"stratum": "import_time",
+"file": "sqlglot/generators/drill.py",
+"failing": 36,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/generators/drill.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 657,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid",
+"tests/dialects/test_spark.py::TestSpark::test_strip_modifiers"
+],
+"reasons": [
+"sqlglot/generators/drill.py: source module, dialects drill"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 657,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid",
+"tests/dialects/test_spark.py::TestSpark::test_strip_modifiers"
+],
+"reasons": [
+"sqlglot/generators/drill.py: source module, dialects drill"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 657,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid",
+"tests/dialects/test_spark.py::TestSpark::test_strip_modifiers"
+],
+"reasons": [
+"sqlglot/generators/drill.py: source module, dialects drill"
+]
+}
+},
+{
+"id": "import-07",
+"stratum": "import_time",
+"file": "sqlglot/optimizer/qualify_tables.py",
+"failing": 727,
+"collect_errors": [
+"tests/dialects/test_athena.py",
+"tests/dialects/test_bigquery.py",
+"tests/dialects/test_clickhouse.py",
+"tests/dialects/test_oracle.py",
+"tests/dialects/test_postgres.py",
+"tests/dialects/test_singlestore.py",
+"tests/dialects/test_snowflake.py",
+"tests/dialects/test_tsql.py",
+"tests/test_executor.py",
+"tests/test_lineage.py",
+"tests/test_optimize_cross_joins.py",
+"tests/test_optimizer.py",
+"tests/test_schema.py",
+"tests/test_simplify_between.py"
+],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/optimizer/qualify_tables.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 786,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/qualify_tables.py: source module; used by sqlglot/executor/__init__.py, sqlglot/lineage.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/qualify.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 786,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/qualify_tables.py: source module; used by sqlglot/executor/__init__.py, sqlglot/lineage.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/qualify.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 786,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/qualify_tables.py: source module; used by sqlglot/executor/__init__.py, sqlglot/lineage.py, sqlglot/optimizer/optimizer.py, sqlglot/optimizer/qualify.py"
+]
+}
+},
+{
+"id": "import-08",
+"stratum": "global_state",
+"file": "sqlglot/lineage.py",
+"failing": 123,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/lineage.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 83,
+"missed_tests": [
+"tests/dialects/test_athena.py::TestAthena::test_qualify",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_isnull_alias",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pivot_date_output_column_names_duckdb",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pivot_output_column_names",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pseudocolumns",
+"tests/dialects/test_dialect.py::TestDialect::test_generate_date_array",
+"tests/dialects/test_dialect.py::TestDialect::test_nested_ctes",
+"tests/dialects/test_dialect.py::TestDialect::test_qualify",
+"tests/dialects/test_mysql.py::TestMySQL::test_null_ordering_simulation_resolves_ordered_against_projection",
+"tests/dialects/test_oracle.py::TestOracle::test_pivot_syntax_restrictions",
+"tests/dialects/test_oracle.py::TestOracle::test_pseudocolumns",
+"tests/dialects/test_redshift.py::TestRedshift::test_redshift",
+"tests/dialects/test_snowflake.py::TestSnowflake::test_pivot_output_column_names",
+"tests/dialects/test_spark.py::TestSpark::test_explode_projection_to_unnest",
+"tests/dialects/test_spark.py::TestSpark::test_transpile_annotated_exploded_column",
+"tests/dialects/test_starrocks.py::TestStarrocks::test_distinct_on",
+"tests/dialects/test_tsql.py::TestTSQL::test_null_ordering_simulation_resolves_ordered_against_projection",
+"tests/dialects/test_tsql.py::TestTSQL::test_qualify_derived_table_outputs",
+"tests/dialects/test_tsql.py::TestTSQL::test_top",
+"tests/dialects/test_tsql.py::TestTSQL::test_tsql",
+"tests/dialects/test_tsql.py::TestTSQL::test_unpivot_value_column_comes_first",
+"tests/test_executor.py::TestExecutor::test_distinct_order_by_column_from_different_table",
+"tests/test_executor.py::TestExecutor::test_execute_callable",
+"tests/test_executor.py::TestExecutor::test_execute_subqueries",
+"tests/test_executor.py::TestExecutor::test_execute_tables",
+"tests/test_executor.py::TestExecutor::test_group_by",
+"tests/test_executor.py::TestExecutor::test_nested_table_reference",
+"tests/test_executor.py::TestExecutor::test_nested_values",
+"tests/test_executor.py::TestExecutor::test_offset_order_by",
+"tests/test_executor.py::TestExecutor::test_outer_joins_preserve_unmatched_rows",
+"tests/test_executor.py::TestExecutor::test_set_operation_order_by",
+"tests/test_executor.py::TestExecutor::test_set_operations",
+"tests/test_executor.py::TestExecutor::test_subqueries",
+"tests/test_expressions.py::TestExprs::test_named_selects",
+"tests/test_expressions.py::TestExprs::test_named_selects_set_operations",
+"tests/test_expressions.py::TestExprs::test_union",
+"tests/test_optimize_cross_joins.py::TestOptimizeCrossJoins::test_conditional_cross_joins",
+"tests/test_optimize_cross_joins.py::TestOptimizeCrossJoins::test_unconditional_cross_join_is_preserved",
+"tests/test_optimizer.py::TestOptimizer::test_annotate_row_types",
+"tests/test_optimizer.py::TestOptimizer::test_annotate_table_as_struct_bigquery",
+"tests/test_optimizer.py::TestOptimizer::test_bigquery_unnest_alias_shadowing",
+"tests/test_optimizer.py::TestOptimizer::test_canonicalize_internal_names",
+"tests/test_optimizer.py::TestOptimizer::test_correlated_subqueries_annotation",
+"tests/test_optimizer.py::TestOptimizer::test_expand_alias_refs",
+"tests/test_optimizer.py::TestOptimizer::test_file_schema",
+"tests/test_optimizer.py::TestOptimizer::test_journal",
+"tests/test_optimizer.py::TestOptimizer::test_merge_any_join_inputs",
+"tests/test_optimizer.py::TestOptimizer::test_merge_asof_join_inputs",
+"tests/test_optimizer.py::TestOptimizer::test_merge_subqueries_match",
+"tests/test_optimizer.py::TestOptimizer::test_multiple_pivots_annotate_types",
+"tests/test_optimizer.py::TestOptimizer::test_no_pseudocolumn_expansion",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_distinct_on_predicates",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_in_nulls",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_snowflake_asof_without_on",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_special_joins",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_subqueries_in_join_on",
+"tests/test_optimizer.py::TestOptimizer::test_pushdown_projections_keeps_recursive_cte_self_referenced_columns",
+"tests/test_optimizer.py::TestOptimizer::test_pushdown_projections_prunes_non_self_referencing_ctes",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_columns",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_columns__invalid",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_group_by_conflict_bigquery",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_semi_anti_join_alias_shadowing_column",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_skips_unneeded_annotation",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_snowflake_positional_column_with_visible_schema",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_star_rename_unexpanded",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_struct_star_long_cte_chain",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_struct_star_source_types",
+"tests/test_optimizer.py::TestOptimizer::test_quotes",
+"tests/test_optimizer.py::TestOptimizer::test_schema_with_spaces",
+"tests/test_optimizer.py::TestOptimizer::test_scope",
+"tests/test_optimizer.py::TestOptimizer::test_semi_anti_join",
+"tests/test_optimizer.py::TestOptimizer::test_starrocks_pivot_columns",
+"tests/test_optimizer.py::TestOptimizer::test_unknown_pivot_columns",
+"tests/test_optimizer.py::TestOptimizer::test_unnest_type_trace_is_memoized",
+"tests/test_optimizer.py::TestOptimizer::test_unpivot_cte_annotate_types",
+"tests/test_optimizer.py::TestOptimizer::test_validate_columns",
+"tests/test_schema.py::TestSchema::test_custom_schema",
+"tests/test_transforms.py::TestTransforms::test_eliminate_distinct_on",
+"tests/test_transforms.py::TestTransforms::test_eliminate_qualify"
+],
+"reasons": [
+"sqlglot/lineage.py: source module"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 83,
+"missed_tests": [
+"tests/dialects/test_athena.py::TestAthena::test_qualify",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_isnull_alias",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pivot_date_output_column_names_duckdb",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pivot_output_column_names",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pseudocolumns",
+"tests/dialects/test_dialect.py::TestDialect::test_generate_date_array",
+"tests/dialects/test_dialect.py::TestDialect::test_nested_ctes",
+"tests/dialects/test_dialect.py::TestDialect::test_qualify",
+"tests/dialects/test_mysql.py::TestMySQL::test_null_ordering_simulation_resolves_ordered_against_projection",
+"tests/dialects/test_oracle.py::TestOracle::test_pivot_syntax_restrictions",
+"tests/dialects/test_oracle.py::TestOracle::test_pseudocolumns",
+"tests/dialects/test_redshift.py::TestRedshift::test_redshift",
+"tests/dialects/test_snowflake.py::TestSnowflake::test_pivot_output_column_names",
+"tests/dialects/test_spark.py::TestSpark::test_explode_projection_to_unnest",
+"tests/dialects/test_spark.py::TestSpark::test_transpile_annotated_exploded_column",
+"tests/dialects/test_starrocks.py::TestStarrocks::test_distinct_on",
+"tests/dialects/test_tsql.py::TestTSQL::test_null_ordering_simulation_resolves_ordered_against_projection",
+"tests/dialects/test_tsql.py::TestTSQL::test_qualify_derived_table_outputs",
+"tests/dialects/test_tsql.py::TestTSQL::test_top",
+"tests/dialects/test_tsql.py::TestTSQL::test_tsql",
+"tests/dialects/test_tsql.py::TestTSQL::test_unpivot_value_column_comes_first",
+"tests/test_executor.py::TestExecutor::test_distinct_order_by_column_from_different_table",
+"tests/test_executor.py::TestExecutor::test_execute_callable",
+"tests/test_executor.py::TestExecutor::test_execute_subqueries",
+"tests/test_executor.py::TestExecutor::test_execute_tables",
+"tests/test_executor.py::TestExecutor::test_group_by",
+"tests/test_executor.py::TestExecutor::test_nested_table_reference",
+"tests/test_executor.py::TestExecutor::test_nested_values",
+"tests/test_executor.py::TestExecutor::test_offset_order_by",
+"tests/test_executor.py::TestExecutor::test_outer_joins_preserve_unmatched_rows",
+"tests/test_executor.py::TestExecutor::test_set_operation_order_by",
+"tests/test_executor.py::TestExecutor::test_set_operations",
+"tests/test_executor.py::TestExecutor::test_subqueries",
+"tests/test_expressions.py::TestExprs::test_named_selects",
+"tests/test_expressions.py::TestExprs::test_named_selects_set_operations",
+"tests/test_expressions.py::TestExprs::test_union",
+"tests/test_optimize_cross_joins.py::TestOptimizeCrossJoins::test_conditional_cross_joins",
+"tests/test_optimize_cross_joins.py::TestOptimizeCrossJoins::test_unconditional_cross_join_is_preserved",
+"tests/test_optimizer.py::TestOptimizer::test_annotate_row_types",
+"tests/test_optimizer.py::TestOptimizer::test_annotate_table_as_struct_bigquery",
+"tests/test_optimizer.py::TestOptimizer::test_bigquery_unnest_alias_shadowing",
+"tests/test_optimizer.py::TestOptimizer::test_canonicalize_internal_names",
+"tests/test_optimizer.py::TestOptimizer::test_correlated_subqueries_annotation",
+"tests/test_optimizer.py::TestOptimizer::test_expand_alias_refs",
+"tests/test_optimizer.py::TestOptimizer::test_file_schema",
+"tests/test_optimizer.py::TestOptimizer::test_journal",
+"tests/test_optimizer.py::TestOptimizer::test_merge_any_join_inputs",
+"tests/test_optimizer.py::TestOptimizer::test_merge_asof_join_inputs",
+"tests/test_optimizer.py::TestOptimizer::test_merge_subqueries_match",
+"tests/test_optimizer.py::TestOptimizer::test_multiple_pivots_annotate_types",
+"tests/test_optimizer.py::TestOptimizer::test_no_pseudocolumn_expansion",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_distinct_on_predicates",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_in_nulls",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_snowflake_asof_without_on",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_special_joins",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_subqueries_in_join_on",
+"tests/test_optimizer.py::TestOptimizer::test_pushdown_projections_keeps_recursive_cte_self_referenced_columns",
+"tests/test_optimizer.py::TestOptimizer::test_pushdown_projections_prunes_non_self_referencing_ctes",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_columns",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_columns__invalid",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_group_by_conflict_bigquery",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_semi_anti_join_alias_shadowing_column",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_skips_unneeded_annotation",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_snowflake_positional_column_with_visible_schema",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_star_rename_unexpanded",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_struct_star_long_cte_chain",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_struct_star_source_types",
+"tests/test_optimizer.py::TestOptimizer::test_quotes",
+"tests/test_optimizer.py::TestOptimizer::test_schema_with_spaces",
+"tests/test_optimizer.py::TestOptimizer::test_scope",
+"tests/test_optimizer.py::TestOptimizer::test_semi_anti_join",
+"tests/test_optimizer.py::TestOptimizer::test_starrocks_pivot_columns",
+"tests/test_optimizer.py::TestOptimizer::test_unknown_pivot_columns",
+"tests/test_optimizer.py::TestOptimizer::test_unnest_type_trace_is_memoized",
+"tests/test_optimizer.py::TestOptimizer::test_unpivot_cte_annotate_types",
+"tests/test_optimizer.py::TestOptimizer::test_validate_columns",
+"tests/test_schema.py::TestSchema::test_custom_schema",
+"tests/test_transforms.py::TestTransforms::test_eliminate_distinct_on",
+"tests/test_transforms.py::TestTransforms::test_eliminate_qualify"
+],
+"reasons": [
+"sqlglot/lineage.py: source module"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 83,
+"missed_tests": [
+"tests/dialects/test_athena.py::TestAthena::test_qualify",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_isnull_alias",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pivot_date_output_column_names_duckdb",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pivot_output_column_names",
+"tests/dialects/test_bigquery.py::TestBigQuery::test_pseudocolumns",
+"tests/dialects/test_dialect.py::TestDialect::test_generate_date_array",
+"tests/dialects/test_dialect.py::TestDialect::test_nested_ctes",
+"tests/dialects/test_dialect.py::TestDialect::test_qualify",
+"tests/dialects/test_mysql.py::TestMySQL::test_null_ordering_simulation_resolves_ordered_against_projection",
+"tests/dialects/test_oracle.py::TestOracle::test_pivot_syntax_restrictions",
+"tests/dialects/test_oracle.py::TestOracle::test_pseudocolumns",
+"tests/dialects/test_redshift.py::TestRedshift::test_redshift",
+"tests/dialects/test_snowflake.py::TestSnowflake::test_pivot_output_column_names",
+"tests/dialects/test_spark.py::TestSpark::test_explode_projection_to_unnest",
+"tests/dialects/test_spark.py::TestSpark::test_transpile_annotated_exploded_column",
+"tests/dialects/test_starrocks.py::TestStarrocks::test_distinct_on",
+"tests/dialects/test_tsql.py::TestTSQL::test_null_ordering_simulation_resolves_ordered_against_projection",
+"tests/dialects/test_tsql.py::TestTSQL::test_qualify_derived_table_outputs",
+"tests/dialects/test_tsql.py::TestTSQL::test_top",
+"tests/dialects/test_tsql.py::TestTSQL::test_tsql",
+"tests/dialects/test_tsql.py::TestTSQL::test_unpivot_value_column_comes_first",
+"tests/test_executor.py::TestExecutor::test_distinct_order_by_column_from_different_table",
+"tests/test_executor.py::TestExecutor::test_execute_callable",
+"tests/test_executor.py::TestExecutor::test_execute_subqueries",
+"tests/test_executor.py::TestExecutor::test_execute_tables",
+"tests/test_executor.py::TestExecutor::test_group_by",
+"tests/test_executor.py::TestExecutor::test_nested_table_reference",
+"tests/test_executor.py::TestExecutor::test_nested_values",
+"tests/test_executor.py::TestExecutor::test_offset_order_by",
+"tests/test_executor.py::TestExecutor::test_outer_joins_preserve_unmatched_rows",
+"tests/test_executor.py::TestExecutor::test_set_operation_order_by",
+"tests/test_executor.py::TestExecutor::test_set_operations",
+"tests/test_executor.py::TestExecutor::test_subqueries",
+"tests/test_expressions.py::TestExprs::test_named_selects",
+"tests/test_expressions.py::TestExprs::test_named_selects_set_operations",
+"tests/test_expressions.py::TestExprs::test_union",
+"tests/test_optimize_cross_joins.py::TestOptimizeCrossJoins::test_conditional_cross_joins",
+"tests/test_optimize_cross_joins.py::TestOptimizeCrossJoins::test_unconditional_cross_join_is_preserved",
+"tests/test_optimizer.py::TestOptimizer::test_annotate_row_types",
+"tests/test_optimizer.py::TestOptimizer::test_annotate_table_as_struct_bigquery",
+"tests/test_optimizer.py::TestOptimizer::test_bigquery_unnest_alias_shadowing",
+"tests/test_optimizer.py::TestOptimizer::test_canonicalize_internal_names",
+"tests/test_optimizer.py::TestOptimizer::test_correlated_subqueries_annotation",
+"tests/test_optimizer.py::TestOptimizer::test_expand_alias_refs",
+"tests/test_optimizer.py::TestOptimizer::test_file_schema",
+"tests/test_optimizer.py::TestOptimizer::test_journal",
+"tests/test_optimizer.py::TestOptimizer::test_merge_any_join_inputs",
+"tests/test_optimizer.py::TestOptimizer::test_merge_asof_join_inputs",
+"tests/test_optimizer.py::TestOptimizer::test_merge_subqueries_match",
+"tests/test_optimizer.py::TestOptimizer::test_multiple_pivots_annotate_types",
+"tests/test_optimizer.py::TestOptimizer::test_no_pseudocolumn_expansion",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_distinct_on_predicates",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_in_nulls",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_snowflake_asof_without_on",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_special_joins",
+"tests/test_optimizer.py::TestOptimizer::test_optimize_subqueries_in_join_on",
+"tests/test_optimizer.py::TestOptimizer::test_pushdown_projections_keeps_recursive_cte_self_referenced_columns",
+"tests/test_optimizer.py::TestOptimizer::test_pushdown_projections_prunes_non_self_referencing_ctes",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_columns",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_columns__invalid",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_group_by_conflict_bigquery",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_semi_anti_join_alias_shadowing_column",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_skips_unneeded_annotation",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_snowflake_positional_column_with_visible_schema",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_star_rename_unexpanded",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_struct_star_long_cte_chain",
+"tests/test_optimizer.py::TestOptimizer::test_qualify_struct_star_source_types",
+"tests/test_optimizer.py::TestOptimizer::test_quotes",
+"tests/test_optimizer.py::TestOptimizer::test_schema_with_spaces",
+"tests/test_optimizer.py::TestOptimizer::test_scope",
+"tests/test_optimizer.py::TestOptimizer::test_semi_anti_join",
+"tests/test_optimizer.py::TestOptimizer::test_starrocks_pivot_columns",
+"tests/test_optimizer.py::TestOptimizer::test_unknown_pivot_columns",
+"tests/test_optimizer.py::TestOptimizer::test_unnest_type_trace_is_memoized",
+"tests/test_optimizer.py::TestOptimizer::test_unpivot_cte_annotate_types",
+"tests/test_optimizer.py::TestOptimizer::test_validate_columns",
+"tests/test_schema.py::TestSchema::test_custom_schema",
+"tests/test_transforms.py::TestTransforms::test_eliminate_distinct_on",
+"tests/test_transforms.py::TestTransforms::test_eliminate_qualify"
+],
+"reasons": [
+"sqlglot/lineage.py: source module"
+]
+}
+},
+{
+"id": "import-09",
+"stratum": "import_time",
+"file": "sqlglot/dialects/dremio.py",
+"failing": 37,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/dremio.py: def/class removed or renamed: Dremio"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/dremio.py: def/class removed or renamed: Dremio"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 246,
+"missed_tests": [
+"tests/dialects/test_druid.py::TestDruid::test_druid",
+"tests/dialects/test_spark.py::TestSpark::test_strip_modifiers"
+],
+"reasons": [
+"sqlglot/dialects/dremio.py: source module, dialects dremio"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"sqlglot/dialects/dremio.py: def/class removed or renamed: Dremio"
+]
+}
+},
+{
+"id": "shared-01",
+"stratum": "shared_utility",
+"file": "sqlglot/helper.py",
+"failing": 1384,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+}
+},
+{
+"id": "shared-02",
+"stratum": "shared_utility",
+"file": "sqlglot/helper.py",
+"failing": 11,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+}
+},
+{
+"id": "shared-03",
+"stratum": "shared_utility",
+"file": "sqlglot/helper.py",
+"failing": 187,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/helper.py"
+]
+}
+},
+{
+"id": "shared-04",
+"stratum": "signature",
+"file": "sqlglot/optimizer/qualify.py",
+"failing": 21,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/optimizer/qualify.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 786,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/qualify.py: source module; used by sqlglot/executor/__init__.py, sqlglot/lineage.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 786,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/qualify.py: source module; used by sqlglot/executor/__init__.py, sqlglot/lineage.py, sqlglot/optimizer/optimizer.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 786,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/qualify.py: source module; used by sqlglot/executor/__init__.py, sqlglot/lineage.py, sqlglot/optimizer/optimizer.py"
+]
+}
+},
+{
+"id": "shared-05",
+"stratum": "signature",
+"file": "sqlglot/optimizer/eliminate_joins.py",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/optimizer/eliminate_joins.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_joins.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py, sqlglot/optimizer/optimizer.py, sqlglot/planner.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_joins.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py, sqlglot/optimizer/optimizer.py, sqlglot/planner.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 326,
+"missed_tests": [],
+"reasons": [
+"sqlglot/optimizer/eliminate_joins.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/python.py, sqlglot/optimizer/optimizer.py, sqlglot/planner.py"
+]
+}
+},
+{
+"id": "shared-06",
+"stratum": "global_state",
+"file": "sqlglot/__init__.py",
+"failing": 223,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/__init__.py"
+]
+},
+"balanced": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/__init__.py"
+]
+},
+"aggressive": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/__init__.py"
+]
+},
+"precision": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"core module sqlglot/__init__.py"
+]
+}
+},
+{
+"id": "shared-07",
+"stratum": "shared_utility",
+"file": "sqlglot/executor/env.py",
+"failing": 1,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"coverage missing for source change(s): sqlglot/executor/env.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 60,
+"missed_tests": [],
+"reasons": [
+"sqlglot/executor/env.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/context.py, sqlglot/executor/python.py"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 60,
+"missed_tests": [],
+"reasons": [
+"sqlglot/executor/env.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/context.py, sqlglot/executor/python.py"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 60,
+"missed_tests": [],
+"reasons": [
+"sqlglot/executor/env.py: source module; used by sqlglot/executor/__init__.py, sqlglot/executor/context.py, sqlglot/executor/python.py"
+]
+}
+},
+{
+"id": "tests-01",
+"stratum": "test_or_fixture",
+"file": "tests/fixtures/identity.sql",
+"failing": 2,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": false,
+"selected": 33,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/identity.sql: fixture consumers"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 2,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/identity.sql: fixture consumers"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 2,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/identity.sql: fixture consumers"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 2,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/identity.sql: fixture consumers"
+]
+}
+},
+{
+"id": "tests-02",
+"stratum": "test_or_fixture",
+"file": "tests/dialects/test_dialect.py",
+"failing": 451,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"shared test module tests/dialects/test_dialect.py"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1020,
+"missed_tests": [],
+"reasons": [
+"tests/dialects/test_dialect.py: shared test module, 33 importing test files"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1020,
+"missed_tests": [],
+"reasons": [
+"tests/dialects/test_dialect.py: shared test module, 33 importing test files"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1020,
+"missed_tests": [],
+"reasons": [
+"tests/dialects/test_dialect.py: shared test module, 33 importing test files"
+]
+}
+},
+{
+"id": "tests-03",
+"stratum": "test_or_fixture",
+"file": "tests/fixtures/optimizer/tpc-h/tpc-h.sql",
+"failing": 2,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": false,
+"selected": 227,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/optimizer/tpc-h/tpc-h.sql: fixture consumers"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 61,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/optimizer/tpc-h/tpc-h.sql: fixture consumers"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 61,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/optimizer/tpc-h/tpc-h.sql: fixture consumers"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 61,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/optimizer/tpc-h/tpc-h.sql: fixture consumers"
+]
+}
+},
+{
+"id": "tests-04",
+"stratum": "test_or_fixture",
+"file": "tests/fixtures/pretty.sql",
+"failing": 0,
+"collect_errors": [],
+"fallback": {
+"fell_back": true,
+"selected": 1620,
+"missed_tests": [],
+"reasons": [
+"dependencies",
+"coverage",
+"analysis_uncertain=True"
+]
+},
+"safe": {
+"fell_back": false,
+"selected": 28,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/pretty.sql: fixture consumers"
+]
+},
+"balanced": {
+"fell_back": false,
+"selected": 1,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/pretty.sql: fixture consumers"
+]
+},
+"aggressive": {
+"fell_back": false,
+"selected": 1,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/pretty.sql: fixture consumers"
+]
+},
+"precision": {
+"fell_back": false,
+"selected": 1,
+"missed_tests": [],
+"reasons": [
+"tests/fixtures/pretty.sql: fixture consumers"
+]
+}
+}
+]
+}

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/presto.py b/sqlglot/typing/presto.py
+index adaf013d4..c6a43fff0 100644
+--- a/sqlglot/typing/presto.py
++++ b/sqlglot/typing/presto.py
+@@ -5,6 +5,7 @@ from sqlglot.typing import EXPRESSION_METADATA
+ 
+ EXPRESSION_METADATA = {
+     **EXPRESSION_METADATA,
++    exp.FromBase64: {"returns": exp.DType.BINARY},
+     **{
+         expr_type: {"returns": exp.DType.BIGINT}
+         for expr_type in {

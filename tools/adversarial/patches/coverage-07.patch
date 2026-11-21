@@ -1,0 +1,13 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+index 0e8716a38..391d4f211 100644
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -716,7 +716,7 @@ def normalize_name(
+     elif normalize:
+         identifier = identifier.copy()
+ 
+-    if not normalize:
++    if normalize:
+         return identifier
+ 
+     # this is used for normalize_identifier, bigquery has special rules pertaining tables

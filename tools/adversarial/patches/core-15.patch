@@ -1,0 +1,13 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+index 7806999a1..c753c36ee 100644
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -374,7 +374,7 @@ class Tokenizer(_TokenizerBase):
+         "PRIMARY KEY": TokenType.PRIMARY_KEY,
+         "PROCEDURE": TokenType.PROCEDURE,
+         "OPERATOR": TokenType.OPERATOR,
+-        "QUALIFY": TokenType.QUALIFY,
++
+         "RANGE": TokenType.RANGE,
+         "RECURSIVE": TokenType.RECURSIVE,
+         "REGEXP": TokenType.RLIKE,

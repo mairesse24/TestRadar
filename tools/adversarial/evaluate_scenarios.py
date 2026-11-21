@@ -63,7 +63,9 @@ def build_data(gt_dirs: list[Path], data: Path) -> dict:
 def select(policy: str, patch: Path, tests: list[dict], graph, coverage):
     all_numbers = {test["number"] for test in tests}
     try:
-        if policy in ("safe", "balanced", "aggressive"):
+        if policy == "precision":  # only present in revisions that define it
+            selection, reasons = selector.analyze_precision(patch, tests, graph, coverage)
+        elif policy in ("safe", "balanced", "aggressive"):
             selection, reasons = selector.analyze_selective(patch, tests, graph, coverage, policy)
         else:
             selection, reasons = selector.analyze(patch, tests, graph, coverage, "safe")
@@ -102,7 +104,12 @@ def main() -> None:
     rows = {sid: {"id": sid, "stratum": answers[sid]["kind"], "file": files[sid], "failing": meta[sid]["failing"],
                   "collect_errors": meta[sid]["collect_errors"]} for sid in answers}
     scores = {}
-    for policy in POLICIES:
+    policies = POLICIES
+    if hasattr(selector, "analyze_precision"):
+        # Function-impact classification reads the pinned sources.
+        selector.SOURCES = Path(os.environ.get("PINNED_SQLGLOT", "/workspace/sqlglot-src"))
+        policies = POLICIES + ("precision",)
+    for policy in policies:
         lines = []
         for sid in sorted(answers):
             patch = data / "commits" / f"{sid}.patch"

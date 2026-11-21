@@ -1,0 +1,13 @@
+diff --git a/sqlglot/transforms.py b/sqlglot/transforms.py
+index 030d48d63..1781b3064 100644
+--- a/sqlglot/transforms.py
++++ b/sqlglot/transforms.py
+@@ -179,7 +179,7 @@ def eliminate_distinct_on(expression: exp.Expr) -> exp.Expr:
+                 new_selects = [exp.Star()]
+                 break
+ 
+-            if not isinstance(select, exp.Alias):
++            if isinstance(select, exp.Alias):
+                 alias = find_new_name(taken_names, select.output_name or "_col")
+                 quoted: bool | None = (
+                     select.this.args.get("quoted") if isinstance(select, exp.Column) else None

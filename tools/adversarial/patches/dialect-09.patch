@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/drill.py b/sqlglot/generators/drill.py
+index e39f40854..087afdf21 100644
+--- a/sqlglot/generators/drill.py
++++ b/sqlglot/generators/drill.py
+@@ -45,7 +45,7 @@ class DrillGenerator(generator.Generator):
+ 
+     TYPE_MAPPING = {
+         **generator.Generator.TYPE_MAPPING,
+-        exp.DType.INT: "INTEGER",
++        exp.DType.INT: "BIGINT",
+         exp.DType.SMALLINT: "INTEGER",
+         exp.DType.TINYINT: "INTEGER",
+         exp.DType.BINARY: "VARBINARY",

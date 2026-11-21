@@ -1,0 +1,13 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+index 3976bde29..f76cd60d2 100644
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -274,7 +274,7 @@ def is_type(text: str, target_type: Type) -> bool:
+         return False
+ 
+ 
+-def name_sequence(prefix: str) -> t.Callable[[], str]:
++def name_sequence(prefix: str, start: int) -> t.Callable[[], str]:
+     """Returns a name generator given a prefix (e.g. a0, a1, a2, ... if the prefix is "a")."""
+     sequence = count()
+     return lambda: f"{prefix}{next(sequence)}"

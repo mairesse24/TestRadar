@@ -1,0 +1,14 @@
+diff --git a/sqlglot/planner.py b/sqlglot/planner.py
+index cdf8bbda9..7a249845e 100644
+--- a/sqlglot/planner.py
++++ b/sqlglot/planner.py
+@@ -10,6 +10,9 @@ from sqlglot.optimizer.scope import find_all_in_scope, find_in_scope
+ from collections.abc import Iterator, Sequence, Iterable
+ 
+ 
++_PLAN_GUARD = exp.NotAnExpression
++
++
+ class Plan:
+     def __init__(self, expression: exp.Expr) -> None:
+         self.expression: exp.Expr = expression.copy()

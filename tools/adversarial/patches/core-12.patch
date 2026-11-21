@@ -1,0 +1,13 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+index 456314b26..93d03ceaa 100644
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -5719,7 +5719,7 @@ class Parser:
+         if not self._match_set((TokenType.PIVOT, TokenType.UNPIVOT), advance=False):
+             pivot.set("alias", self._parse_table_alias())
+ 
+-        if not unpivot:
++        if unpivot:
+             names = self._pivot_column_names(t.cast(list[exp.Expr], expressions))
+             has_prefix = bool(names) and self.PREFIXED_PIVOT_COLUMNS
+ 

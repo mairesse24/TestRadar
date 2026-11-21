@@ -1,0 +1,13 @@
+diff --git a/sqlglot/transforms.py b/sqlglot/transforms.py
+index 030d48d63..b5c0a2eaf 100644
+--- a/sqlglot/transforms.py
++++ b/sqlglot/transforms.py
+@@ -259,7 +259,7 @@ def eliminate_qualify(expression: exp.Expr) -> exp.Expr:
+                     qualify_filters = column
+                 else:
+                     select_candidate.replace(column)
+-            elif select_candidate.name not in expression.named_selects and not (
++            elif select_candidate.name in expression.named_selects and not (
+                 select_candidate.find_ancestor(exp.Window)
+             ):
+                 # A column that is only read by a window function is computed by the window
