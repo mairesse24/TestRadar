@@ -130,4 +130,14 @@ No `analyzer/__init__.py` is required. The scheduler uses the standard library o
 
 Unknown numbers are dropped, not raised. Pass only `number` values from `tests.json`. An empty selection becomes `"workers": []`, which scores as 0 for that commit and is a 300 second miss if a failing test was left out. That miss is the selector's decision; the scheduler does not add tests back.
 
-The pack minimizes `max(load_ms) + 2000 * nonempty workers` over 1..8 workers, with longest-processing-time-first assignment. It is a drop-in for `split` once `selected` is a set of test numbers.
+The pack minimizes `max(load_ms) + 2000 * nonempty workers`. Eight is a cap, not the number of workers it will pick. A lower bound (the longer of the longest selected test and the total duration split across `k` workers, plus 2000 ms per worker) skips counts that cannot win. Each remaining count is packed longest-first. When that makespan is still above the bound, a first-fit search on the makespan and then local moves and swaps try to lower the objective. A repaired packing is kept only when the objective is strictly smaller. Ties keep the smaller worker count.
+
+`schedule_tests_lpt` is the previous longest-first search, for comparison. The runtime should call `schedule_tests`. Identical catalog durations, selections, and worker caps are cached inside the process. On the full catalog the longest test is already the four-worker makespan, so the refined pack matches longest-first there. Uneven subsets are where the repair saves time.
+
+Compare the starter 3-worker split (`selector.split` on `main`: longest `seconds` first, three workers), longest-first, and `schedule_tests` without reading `answers.json`:
+
+```powershell
+python benchmark.py --compare-schedulers --data-dir sample
+```
+
+It prints makespan, worker overhead, the objective, and scheduling CPU (`process_time` of the scheduler, not container CPU).
