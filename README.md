@@ -1,6 +1,6 @@
 # TestRadar
 
-TestRadar is a test selection and worker scheduling project for the RWX Blast Radius track. The current baseline runs the full SQLGlot test suite for every patch across three workers. Planned work covers patch analysis, dependency and coverage mapping, test selection, and worker scheduling. See [TASKS.md](TASKS.md) for the feature branches and interfaces.
+TestRadar is a test selection and worker scheduling project for the RWX Blast Radius track. The current baseline runs the full SQLGlot test suite for every patch across three workers. The integration branch connects patch analysis, dependency and coverage mapping, test selection, and worker scheduling. See [TASKS.md](TASKS.md) for the feature branches and interfaces.
 
 ## The problem
 
@@ -37,6 +37,14 @@ make check    # the output's format only
 `make sample` prints your simulated seconds and misses, which are exact for that output. The board adds the CPU seconds your container used and takes the middle of 3 runs, so expect it a little higher. Your program never sees `sample/answers.json`: only the patches and `tests.json` are mounted.
 
 `sample/answers.json` lists the tests each sample commit breaks and the kind of change it is. The practice and final commits are hidden, and so is everything your program prints when it runs on them. A rejected submission tells you which rule it broke and nothing more, so reproduce problems here.
+
+## Integrated selector
+
+The image builds a reverse import map from the pinned SQLGlot checkout. It attempts a file-level coverage build using the locked test dependencies and the supplied test manifest. Coverage collection has a 120-second budget and can retain partial results. The runtime image contains the selector, analysis modules, and generated maps.
+
+The selector loads both maps once, parses each patch, passes candidates and uncertainty to the selection policy, and schedules the selected tests. Safe mode is the default. A missing or corrupt map, global dependency uncertainty, or coverage that provides only positive evidence triggers the full-suite fallback. The pinned graph has global uncertainty and the current coverage collector cannot certify exclusions, so the sample still runs the full suite on each patch. Scheduler improvements still apply to the fallback. The fallback count and reasons are written to stderr.
+
+To compare policies, repeat the restricted Docker invocation with `--mode balanced` after the image name and score that output separately. Balanced mode receives the same uncertainty signals and is for evaluation.
 
 ## Baseline reference
 

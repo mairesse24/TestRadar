@@ -56,7 +56,7 @@ schedule_tests(selected_numbers: set[int], tests: list[dict], max_workers: int =
 Provide a compatibility wrapper for an earlier patch parser interface if one exists and compatibility is practical. Use local stubs or fixtures for components that are still under development.
 
 ## Patch and impact analysis
-**Branch:** `feature/impact-analysis`
+**Branch:** `feature/analysis-engine`
 **Own:** `analyzer/contracts.py`, `analyzer/patch_parser.py`, `analyzer/dependency_graph.py`, `analyzer/coverage_map.py`, `tests/test_analysis.py`.
 
 ### A1. Patch parsing
@@ -97,7 +97,7 @@ Provide a compatibility wrapper for an earlier patch parser interface if one exi
 **Done when:** Policy unit tests pass and selection is deterministic. Report when it falls back to all tests.
 
 ## Worker scheduling and benchmarking
-**Branch:** `feature/worker-scheduling`
+**Branch:** `feature/runtime-optimization`
 **Own:** `analyzer/scheduler.py`, `benchmark.py`, `tests/test_scheduler.py`, `docs/DOCKER_TESTING.md`.
 
 ### C1. Scheduling
