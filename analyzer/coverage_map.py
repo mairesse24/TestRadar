@@ -3,6 +3,7 @@
 Generate offline with the existing test dependencies installed:
     python -m analyzer.coverage_map SQLGLOT_ROOT tests.json coverage.json
 
+The CLI checkpoints completed tests and stops after 420 seconds by default.
 Tracing covers the main thread during each pytest test protocol. Collection,
 native code, subprocesses, other threads and changes to execution paths can
 escape observation. Treat the artifact as positive evidence only; the
@@ -15,7 +16,9 @@ import argparse
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
+import tempfile
 
 from .contracts import PINNED_SQLGLOT, safe_path
 from .dependency_graph import pinned_files, read_map, write_map
@@ -39,12 +42,14 @@ class CoverageMap:
         return cls({path: set(ids) for path, ids in by_file.items()}, set(missing))
 
     def save(self, path: Path) -> None:
-        write_map(path, {
+        temporary = path.with_suffix(path.suffix + ".tmp")
+        write_map(temporary, {
             "schema": "testradar-coverage-v1",
             "source": PINNED_SQLGLOT,
             "files": {path: sorted(ids) for path, ids in self._by_file.items()},
             "missing": sorted(self.missing_test_ids),
         })
+        temporary.replace(path)
 
     def tests_for_changes(self, changes: list[dict]) -> set[str]:
         hits: set[str] = set()
@@ -67,7 +72,7 @@ def _node_list(value: object) -> bool:
     )
 
 
-def build(root: Path, manifest: Path) -> CoverageMap:
+def build(root: Path, manifest: Path, output: Path | None = None) -> CoverageMap:
     # pytest is a build-time dependency already used by the SQLGlot test suite.
     import pytest
 
@@ -83,6 +88,8 @@ def build(root: Path, manifest: Path) -> CoverageMap:
     }
     coverage: dict[str, set[str]] = {}
     observed: set[str] = set()
+    if output is not None:
+        CoverageMap(coverage, expected).save(output)
 
     class Recorder:
         @pytest.hookimpl(wrapper=True, tryfirst=True)
@@ -109,6 +116,8 @@ def build(root: Path, manifest: Path) -> CoverageMap:
                 observed.add(node_id)
                 for path in touched:
                     coverage.setdefault(path, set()).add(node_id)
+                if output is not None and len(observed) % 25 == 0:
+                    CoverageMap(coverage, expected - observed).save(output)
             return result
 
     previous_cwd = Path.cwd()
@@ -138,8 +147,26 @@ def main() -> None:
     parser.add_argument("sqlglot_root", type=Path)
     parser.add_argument("tests_json", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--timeout", type=int, default=420, help="coverage build wall-time budget in seconds")
+    parser.add_argument("--collect", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
-    build(args.sqlglot_root.resolve(), args.tests_json.resolve()).save(args.output)
+    output = args.output.resolve()
+    if args.timeout < 1:
+        parser.error("--timeout must be positive")
+    if args.collect:
+        build(args.sqlglot_root.resolve(), args.tests_json.resolve(), output).save(output)
+        return
+    # Bound wall time even when a native call or test cannot make progress.
+    with tempfile.TemporaryDirectory(dir=output.parent) as directory:
+        checkpoint = Path(directory) / "coverage.json"
+        try:
+            subprocess.run([
+                sys.executable, "-m", "analyzer.coverage_map", str(args.sqlglot_root.resolve()),
+                str(args.tests_json.resolve()), str(checkpoint), "--collect",
+            ], check=True, timeout=args.timeout)
+        except subprocess.TimeoutExpired:
+            print("Coverage collection reached its budget; using the last checkpoint", file=sys.stderr)
+        CoverageMap.load(str(checkpoint)).save(output)
 
 
 if __name__ == "__main__":
