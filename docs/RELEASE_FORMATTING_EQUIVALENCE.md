@@ -78,3 +78,61 @@ tests). The hardened rule misses none.
 
 `performance_scenarios.json` perf-eq-01 now uses a different comment text,
 relabelled (0 failing).
+
+## Validation (Docker entrypoint, scorer flags, 3 runs each)
+
+Image `tr-rc-formatting` was built from 49f6bcc **without build arguments**:
+
+```
+DOCKER_BUILDKIT=0 docker build --no-cache --platform linux/amd64 \
+  --cpuset-cpus 0-3 --memory 8g --memory-swap 8g -t tr-rc-formatting .
+```
+
+* Build time: 141 s.
+* Image size: 128 MB (8.1 MB of it is the pinned source).
+* Maps are byte-identical to the validated ones (coverage be7997b2d436,
+  dependencies e075eb7024a4).
+* `docker inspect` shows `TESTRADAR_POLICY=balanced` and
+  `TESTRADAR_EXPERIMENTS=equivalent`.
+* Every run produced identical output.
+
+The comparison image is `tr-final-balanced` (1955e89).
+
+| Set | Final s | Misses | CPU s | 1955e89 s | Misses | CPU s |
+|---|---:|---:|---|---:|---:|---|
+| 30 samples | 401.155 | 0 | 0.71–0.77 | 480.207 | 0 | 0.41–0.42 |
+| 63 mutants | 1534.953 | 0 | 1.07–1.08 | 1534.953 | 0 | 0.44–0.48 |
+| 58 adversarial | 1573.743 | 0 | 1.56 | 1623.246 | 0 | 0.43–0.45 |
+| 10 structural | 368.170 | 0 | 0.50–0.51 | 368.170 | 0 | 0.36–0.37 |
+| 11 performance | 194.429 | 0 | 1.46–1.47 | 295.517 | 0 | 0.37–0.43 |
+| 9 audit | 147.268 | 0 | 0.91–0.98 | 331.353 | 0 | 0.37–0.38 |
+
+Where time was saved, in seconds:
+
+* Samples (−79.052):
+  * bap8 36.817
+  * 9u5k 12.686
+  * f4xa 11.186
+  * 986c 9.750
+  * bvw2 8.613
+* Adversarial (−49.503): equiv-01 36.817 and equiv-02 12.686.
+
+Applying the sample ratio to the official hidden-set score gives about
+631.4 × 401.155 / 480.207 ≈ 527 s simulated. CPU rises by about 0.3–1.1 s
+per run, because both versions of each modified module are parsed.
+
+## Residual risks
+
+* The hidden set may contain fewer formatting-only edits than the samples;
+  then the saving shrinks, but the selection is never smaller than the
+  release's for any other edit.
+* Theoretical channels with no test in the pinned suite:
+  * line-number-dependent warning de-duplication;
+  * code-object equality or hashing;
+  * traceback text.
+
+  A hidden commit that also edits a test file is still handled, because
+  changed test files are selected normally.
+* The rule assumes the tests run on the same Python minor version as the
+  image (3.13).
+* Labels are from local pytest runs, not the official harness.
