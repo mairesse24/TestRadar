@@ -13,6 +13,8 @@ WORKER_COST_MILLISECONDS = 2_000
 MAXIMUM_WORKERS = 8
 _CACHE_LIMIT = 64
 _LOCAL_STEPS = 32
+_EXACT_TEST_LIMIT = 20
+_EXACT_NODE_LIMIT = 4096
 _FNV_OFFSET = 1469598103934665603
 _FNV_PRIME = 1099511628211
 
@@ -94,7 +96,8 @@ def schedule_tests(
     and the total duration divided across that many workers), a first-fit
     makespan search and then local moves and swaps try to lower the objective.
     A repaired packing replaces longest-first only when its objective is
-    strictly smaller. Negative durations skip the repair and use
+    strictly smaller. Small selections also try a node-budgeted capacity search.
+    Negative durations skip the repair and use
     ``schedule_tests_lpt``.
 
     Identical catalog durations, selections, and worker caps are cached.
@@ -210,7 +213,75 @@ def _pack_count(
         repaired_objective = _objective(repaired_span, len(repaired))
         if repaired_objective < best_objective:
             best_workers, best_span, best_objective = repaired, repaired_span, repaired_objective
+    if best_span > bound and len(chosen) <= _EXACT_TEST_LIMIT:
+        exact = _bounded_pack(chosen, durations, worker_count, bound, best_span)
+        if exact is not None:
+            exact_span = max(_loads(exact, durations))
+            exact_objective = _objective(exact_span, len(exact))
+            if exact_objective < best_objective:
+                return exact, exact_span, exact_objective
     return best_workers, best_span, best_objective
+
+
+def _bounded_pack(
+    chosen: list[int],
+    durations: dict[int, int],
+    width: int,
+    bound: int,
+    current_span: int,
+) -> list[list[int]] | None:
+    """Search only for better packings, with a fixed node budget per width."""
+    remaining = _EXACT_NODE_LIMIT
+    improving = None
+
+    def fit(capacity: int) -> list[list[int]] | None:
+        loads = [0] * width
+        workers: list[list[int]] = [[] for _ in loads]
+        visited: set[tuple[int, tuple[int, ...]]] = set()
+
+        def assign(index: int) -> bool:
+            nonlocal remaining
+            if index == len(chosen):
+                return True
+            if remaining == 0:
+                return False
+            remaining -= 1
+            state = index, tuple(sorted(loads))
+            if state in visited:
+                return False
+            visited.add(state)
+            number = chosen[index]
+            duration = durations[number]
+            equivalent_loads: set[int] = set()
+            for worker in sorted(range(width), key=loads.__getitem__, reverse=True):
+                load = loads[worker]
+                if load in equivalent_loads or load + duration > capacity:
+                    continue
+                equivalent_loads.add(load)
+                loads[worker] += duration
+                workers[worker].append(number)
+                if assign(index + 1):
+                    return True
+                workers[worker].pop()
+                loads[worker] -= duration
+                if remaining == 0:
+                    break
+            return False
+
+        if assign(0):
+            return [worker for worker in workers if worker]
+        return None
+
+    high = current_span - 1
+    while bound <= high and remaining:
+        capacity = (bound + high) // 2
+        packing = fit(capacity)
+        if packing is None:
+            bound = capacity + 1
+        else:
+            improving = packing
+            high = max(_loads(packing, durations)) - 1
+    return improving
 
 
 def _objective(span: int, worker_count: int) -> int:
