@@ -23,5 +23,8 @@ WORKDIR /app
 COPY selector.py ./
 COPY analyzer/*.py ./analyzer/
 COPY --from=maps /maps/ ./maps/
-ENV PYTHONDONTWRITEBYTECODE=1
+# Selection policy baked into the image: fallback (validated full suite),
+# safe or balanced. See docs/SELECTION_POLICY.md.
+ARG TESTRADAR_POLICY=fallback
+ENV PYTHONDONTWRITEBYTECODE=1 TESTRADAR_POLICY=${TESTRADAR_POLICY}
 ENTRYPOINT ["python", "/app/selector.py"]

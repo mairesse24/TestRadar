@@ -155,11 +155,18 @@ class DependencyGraph:
         """Flag incomplete static analysis or queried paths outside the graph."""
         return self._uncertain or not changed_paths or not changed_paths <= self._importers.keys()
 
-    def impacted_files(self, changed_paths: set[str]) -> set[str]:
+    def knows(self, path: str) -> bool:
+        return path in self._importers
+
+    def impacted_files(self, changed_paths: set[str], stop_at: frozenset[str] = frozenset()) -> set[str]:
+        """Reverse import closure; paths in ``stop_at`` are included but not expanded."""
         impacted = set(changed_paths)
         pending = list(changed_paths)
         while pending:
-            for importer in self._importers.get(pending.pop(), ()):
+            current = pending.pop()
+            if current in stop_at:
+                continue
+            for importer in self._importers.get(current, ()):
                 if importer not in impacted:
                     impacted.add(importer)
                     pending.append(importer)
