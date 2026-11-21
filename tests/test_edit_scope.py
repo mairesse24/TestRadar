@@ -1,0 +1,130 @@
+import os
+from pathlib import Path
+import tempfile
+import unittest
+from unittest import mock
+
+from analyzer import edit_scope
+from analyzer.patch_parser import parse_patch
+import selector
+
+DIALECT = '''from sqlglot import generator
+
+
+def _factory(name):
+    return lambda self, e: name
+
+
+def _helper(self, e):
+    return "x"
+
+
+class FooGenerator(generator.Generator):
+    TRANSFORMS = {"a": _helper, "b": _factory("b")}
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @property
+    def flag(self):
+        return 1
+
+    def count_sql(self, e):
+        # count
+        return "COUNT"
+'''
+
+
+def _diff(path, old, new):
+    import difflib
+    lines = difflib.unified_diff(
+        old.splitlines(keepends=True), new.splitlines(keepends=True),
+        f"a/{path}", f"b/{path}", n=3,
+    )
+    return f"diff --git a/{path} b/{path}\n" + "".join(lines)
+
+
+class EditScopeTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        (self.root / "sqlglot" / "generators").mkdir(parents=True)
+        (self.root / "sqlglot" / "__init__.py").write_text("", encoding="utf-8")
+        (self.root / "sqlglot" / "generator.py").write_text(
+            "class Generator:\n    def __init__(self, **kw):\n        self.setup()\n\n"
+            "    def setup(self):\n        pass\n", encoding="utf-8")
+        self.path = "sqlglot/generators/foo.py"
+        (self.root / self.path).write_text(DIALECT, encoding="utf-8")
+        edit_scope._CONSTRUCTION_CACHE.clear()
+
+    def classify(self, new):
+        changes = parse_patch(_diff(self.path, DIALECT, new))
+        self.assertEqual(len(changes), 1)
+        rebuilt = edit_scope.reconstruct(DIALECT, changes[0])
+        self.assertEqual(rebuilt, new)
+        return edit_scope.classify(changes[0], self.root)
+
+    def test_comment_and_formatting_only_is_equivalent(self):
+        new = DIALECT.replace("        # count\n", "        # counts rows\n").replace(
+            '"a": _helper, "b": _factory("b")', '\n        "a": _helper,\n        "b": _factory("b"),\n    ')
+        self.assertEqual(self.classify(new).kind, "equivalent")
+
+    def test_docstring_or_literal_change_is_not_equivalent(self):
+        scope = self.classify(DIALECT.replace('return "COUNT"', 'return "COUNT "'))
+        self.assertEqual(scope.kind, "bodies")
+        self.assertTrue(scope.construction_safe)
+
+    def test_class_level_change_is_unclassified(self):
+        self.assertIsNone(self.classify(DIALECT.replace('"a": _helper', '"a": _factory("a")')))
+
+    def test_import_time_and_constructor_bodies_are_not_construction_safe(self):
+        for old, new in (
+            ("return lambda self, e: name", "return lambda self, e: name.upper()"),
+            ("super().__init__(**kwargs)", "super().__init__(**kwargs)\n        self.x = 1"),
+            ("return 1", "return 2"),
+            ('return "x"\n\n\nclass', 'return "y"\n\n\nclass'),
+        ):
+            with self.subTest(new=new):
+                scope = self.classify(DIALECT.replace(old, new))
+                self.assertEqual(scope.kind, "bodies")
+                if "x\"" in old:  # _helper is only referenced in a dict, not called
+                    self.assertTrue(scope.construction_safe)
+                else:
+                    self.assertFalse(scope.construction_safe, scope.detail)
+
+    def test_names_reached_from_core_constructors_are_not_safe(self):
+        text = DIALECT.replace(
+            "    def count_sql(self, e):",
+            "    def setup(self):\n        return None\n\n    def count_sql(self, e):")
+        (self.root / self.path).write_text(text, encoding="utf-8")
+        changes = parse_patch(_diff(self.path, text, text.replace("return None", "return 1")))
+        scope = edit_scope.classify(changes[0], self.root)
+        self.assertFalse(scope.construction_safe)
+
+    def test_mismatched_patch_is_unclassified(self):
+        changes = parse_patch(_diff(self.path, DIALECT.replace("COUNT", "CNT"), DIALECT))
+        self.assertIsNone(edit_scope.classify(changes[0], self.root))
+
+    def test_missing_pinned_source_is_unclassified(self):
+        change = parse_patch(_diff(self.path, DIALECT, DIALECT + "\n# end\n"))[0]
+        with mock.patch.dict(os.environ, {"TESTRADAR_PINNED": str(self.root / "absent")}):
+            with mock.patch.object(edit_scope, "pinned_root", return_value=None):
+                self.assertIsNone(edit_scope.classify(change))
+
+
+class ExperimentsFlagTest(unittest.TestCase):
+    def test_flags_default_off_and_ignore_unknown(self):
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop(selector.EXPERIMENTS_ENV, None)
+            self.assertEqual(selector.enabled_experiments(), frozenset())
+        with mock.patch.dict(os.environ, {selector.EXPERIMENTS_ENV: "equivalent, bogus"}):
+            self.assertEqual(selector.enabled_experiments(), frozenset({"equivalent"}))
+
+    def test_construction_only_ids_are_all_dialect_tests(self):
+        from analyzer import test_selector
+        self.assertLessEqual(test_selector.CONSTRUCTION_ONLY_TEST_IDS, set(test_selector.ALL_DIALECT_TEST_IDS))
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -24,6 +24,7 @@ from pathlib import Path
 import re
 import sys
 
+from analyzer import edit_scope
 from analyzer.coverage_map import CoverageMap
 from analyzer.dependency_graph import DependencyGraph
 from analyzer.patch_parser import parse_patch
@@ -36,6 +37,20 @@ MAPS = Path("/app/maps")
 POLICIES = ("fallback", "safe", "balanced")
 DEFAULT_POLICY = "fallback"
 POLICY_ENV = "TESTRADAR_POLICY"
+# Optional, separately validated narrowing rules (comma separated):
+#   equivalent   - formatting/comment-only edits (identical syntax tree) run nothing
+#   construction - function-body-only dialect edits skip construction-only tests
+EXPERIMENTS_ENV = "TESTRADAR_EXPERIMENTS"
+KNOWN_EXPERIMENTS = ("equivalent", "construction")
+
+
+def enabled_experiments() -> frozenset[str]:
+    raw = os.environ.get(EXPERIMENTS_ENV, "")
+    names = {item.strip() for item in raw.split(",") if item.strip()}
+    unknown = names - set(KNOWN_EXPERIMENTS)
+    if unknown:
+        print(f"ignoring unknown experiments: {', '.join(sorted(unknown))}", file=sys.stderr)
+    return frozenset(names & set(KNOWN_EXPERIMENTS))
 
 # Dynamic loading or execution introduced by a patch is not described by any
 # map derived from the pinned source.
@@ -153,7 +168,26 @@ def analyze_selective(
 ) -> tuple[Selection, list[str]]:
     """The ``safe`` and ``balanced`` policies."""
     changes = _read_changes(patch)
-    reasons = hard_signals(changes, graph, coverage)
+    experiments = enabled_experiments()
+    scopes: dict = {}
+    if experiments and changes:
+        for change in changes:
+            scope = edit_scope.classify(change) if isinstance(change, dict) else None
+            if scope is None:
+                continue
+            if scope.kind == "equivalent" and "equivalent" in experiments:
+                scopes[change["path"]] = scope
+            elif scope.kind == "bodies" and "construction" in experiments:
+                scopes[change["path"]] = scope
+    # A file whose syntax tree is unchanged carries no behaviour, so its
+    # text cannot raise a hard signal either.
+    signal_changes = [
+        c for c in changes
+        if not (isinstance(c, dict) and getattr(scopes.get(c.get("path")), "kind", "") == "equivalent")
+    ]
+    if changes and not signal_changes:
+        return Selection(set(), False, [f"{c['path']}: syntax tree unchanged" for c in changes]), []
+    reasons = hard_signals(signal_changes, graph, coverage)
     paths = _paths(changes)
     impacted = graph.impacted_files(paths, stop_at=REGISTRY_MODULES) if graph is not None else set()
     covered: set[str] = set()
@@ -163,6 +197,7 @@ def analyze_selective(
         covered = coverage.tests_for_changes(changes)
     selection = explain_selection(
         changes, tests, impacted, covered, analysis_uncertain=bool(reasons), mode=mode,
+        edit_scopes=scopes,
     )
     return selection, reasons
 

@@ -27,10 +27,17 @@ COPY selector.py ./
 COPY analyzer/*.py ./analyzer/
 COPY --from=maps /maps/ ./maps/
 COPY --from=maps /build/analyzer/test_selector.py ./analyzer/test_selector.py
+# Pinned source, read only by the optional edit-scope rules
+# (TESTRADAR_EXPERIMENTS); without it those rules never narrow.
+COPY --from=maps /sqlglot/sqlglot/ ./pinned/sqlglot/
 # Selection policy baked into the image: balanced (measured default),
 # safe, or fallback (the validated full-suite behaviour). Build with
 # --build-arg TESTRADAR_POLICY=fallback to restore it. See
 # docs/SELECTION_POLICY.md.
 ARG TESTRADAR_POLICY=balanced
-ENV PYTHONDONTWRITEBYTECODE=1 TESTRADAR_POLICY=${TESTRADAR_POLICY}
+# Comma-separated opt-in narrowing rules: equivalent, construction.
+# Empty keeps the release behaviour. See docs/SELECTION_PERFORMANCE.md.
+ARG TESTRADAR_EXPERIMENTS=
+ENV PYTHONDONTWRITEBYTECODE=1 TESTRADAR_POLICY=${TESTRADAR_POLICY} \
+    TESTRADAR_EXPERIMENTS=${TESTRADAR_EXPERIMENTS}
 ENTRYPOINT ["python", "/app/selector.py"]
