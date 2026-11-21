@@ -81,6 +81,17 @@ LOG = logging.getLogger("analyzer.test_selector")
 
 MODES = ("safe", "balanced", "aggressive")
 
+# All-dialect tests that only resolve every dialect and construct its
+# generator or read its class-level tables (no SQL is parsed or generated):
+#   test_generator_memory: Dialect.get_or_raise(name).generator() in a loop
+#   test_canonical_time_format_vocabulary: reads TIME/FORMAT mappings
+# An edit confined to function bodies that are not reachable while importing
+# or constructing (analyzer.edit_scope, construction_safe) cannot change them.
+CONSTRUCTION_ONLY_TEST_IDS: frozenset[str] = frozenset({
+    "tests/test_generator.py::TestGenerator::test_generator_memory",
+    "tests/test_time.py::TestTime::test_canonical_time_format_vocabulary",
+})
+
 # --------------------------------------------------------------------------
 # Path classification tables (hand-curated from the sqlglot layout at the
 # pinned commit; documented so reviewers can challenge each entry).
@@ -1185,8 +1196,14 @@ def explain_selection(
     *,
     analysis_uncertain: bool = False,
     mode: str = "safe",
+    edit_scopes: dict | None = None,
 ) -> Selection:
-    """Like select_tests but also says whether (and why) it fell back to ALL."""
+    """Like select_tests but also says whether (and why) it fell back to ALL.
+
+    ``edit_scopes`` optionally maps a changed path to an
+    ``analyzer.edit_scope.EditScope`` proven from the pinned source.
+    """
+    edit_scopes = edit_scopes or {}
     index = _test_index(tests if isinstance(tests, list) else list(tests or []))
     all_numbers = index.all_numbers
     numbers_by_file = index.numbers_by_file
@@ -1357,6 +1374,10 @@ def explain_selection(
                     return everything(f"{status} source module {path}")
                 if not known and not aggressive:
                     return everything(f"source module {path} is not in the pinned dependency map")
+                scope = edit_scopes.get(path)
+                if scope is not None and scope.kind == "equivalent":
+                    reasons.append(f"{path}: {scope.detail}, no behaviour change")
+                    continue
                 structural = _structural_reason(change)
                 if structural and not aggressive:
                     return everything(f"{path}: {structural}")
@@ -1392,7 +1413,11 @@ def explain_selection(
                     matched = True
                     for dialect in sorted(dialects):
                         add_dialect(dialect)
-                    add_ids(ALL_DIALECT_TEST_IDS)
+                    if scope is not None and scope.kind == "bodies" and scope.construction_safe:
+                        add_ids(i for i in ALL_DIALECT_TEST_IDS if i not in CONSTRUCTION_ONLY_TEST_IDS)
+                        reasons.append(f"{path}: {scope.detail}; construction-only all-dialect tests not needed")
+                    else:
+                        add_ids(ALL_DIALECT_TEST_IDS)
                     add_files(DIALECT_INFRA_TEST_FILES)
                     if path.startswith("sqlglot/typing/"):
                         add_files(["tests/test_typing.py"])
