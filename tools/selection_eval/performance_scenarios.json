@@ -1,0 +1,158 @@
+{
+ "mutants": [
+  {
+   "id": "perf-eq-01",
+   "stratum": "performance_narrowing",
+   "intent": "comment-only lines added in core parser.py",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 2109,
+     "old": "    def _match(\n",
+     "new": "    # Matching helpers below advance the token position on success.\n    def _match(\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-eq-02",
+   "stratum": "performance_narrowing",
+   "intent": "import statement reformatted in typing/snowflake.py (test_typing compares code objects)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/typing/snowflake.py",
+     "line": 5,
+     "old": "from sqlglot import exp\n",
+     "new": "from sqlglot import (\n    exp,\n)\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-eq-03",
+   "stratum": "performance_narrowing",
+   "intent": "multi-line reformat of a condition in duckdb countif_sql",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 3329,
+     "old": "        if self.dialect.version >= (1, 2):\n",
+     "new": "        if self.dialect.version >= (\n            1,\n            2,\n        ):\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-eq-04",
+   "stratum": "performance_narrowing",
+   "intent": "control: value-equal literal change (2 -> 2.0) is not syntax-equivalent",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 3329,
+     "old": "        if self.dialect.version >= (1, 2):\n",
+     "new": "        if self.dialect.version >= (1, 2.0):\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-eq-05",
+   "stratum": "performance_narrowing",
+   "intent": "docstring-only change in a duckdb transform passed to a class-level call",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 708,
+     "old": "    Transform SEQ functions to `range` column references when inside a GENERATOR context.\n",
+     "new": "    Rewrite SEQ functions to `range` column references when inside a GENERATOR context.\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-con-01",
+   "stratum": "performance_narrowing",
+   "intent": "body of a duckdb factory called in the class body raises at import",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 330,
+     "old": "    \"\"\"\n",
+     "new": "    raise RuntimeError(\"factory disabled\")\n    \"\"\"\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-con-02",
+   "stratum": "performance_narrowing",
+   "intent": "bigquery generator __init__ body leaks memory per construction",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/bigquery.py",
+     "line": 734,
+     "old": "        self._escaped_identifier_end = r\"\\`\"\n",
+     "new": "        self._escaped_identifier_end = r\"\\`\"\n        type(self).SEEN = getattr(type(self), \"SEEN\", ()) + (object(),)\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-con-03",
+   "stratum": "performance_narrowing",
+   "intent": "duckdb countif_sql body raises",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 3329,
+     "old": "        if self.dialect.version >= (1, 2):\n",
+     "new": "        raise ValueError(\"countif disabled\")\n        if self.dialect.version >= (1, 2):\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-con-04",
+   "stratum": "performance_narrowing",
+   "intent": "hive parser build_cast body changed (descendant dialects)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/hive.py",
+     "line": 162,
+     "old": "        if self._prev.text.upper() == \"BD\":\n",
+     "new": "        if self._prev.text.upper() == \"BX\":\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-con-05",
+   "stratum": "performance_narrowing",
+   "intent": "spark2 struct_sql body mutates a class-level table when generating",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/spark2.py",
+     "line": 261,
+     "old": "        from sqlglot.generator import Generator\n",
+     "new": "        type(self).TRANSFORMS = {**type(self).TRANSFORMS}\n        from sqlglot.generator import Generator\n"
+    }
+   ]
+  },
+  {
+   "id": "perf-con-06",
+   "stratum": "performance_narrowing",
+   "intent": "duckdb countif_sql body leaks memory on each generation (not construction)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 3329,
+     "old": "        if self.dialect.version >= (1, 2):\n",
+     "new": "        type(self).LEAK = getattr(type(self), \"LEAK\", ()) + (object(),)\n        if self.dialect.version >= (1, 2):\n"
+    }
+   ]
+  }
+ ]
+}

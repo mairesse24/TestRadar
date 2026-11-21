@@ -1,6 +1,6 @@
-# Blast Radius starter
+# TestRadar
 
-A working submission for the Blast Radius track. It runs every test on every commit, so it never misses a failure and scores badly. Your job is to run less without missing.
+TestRadar is a test selection and worker scheduling project for the RWX Blast Radius track. The current baseline runs the full SQLGlot test suite for every patch across three workers. The integration branch connects patch analysis, dependency and coverage mapping, test selection, and worker scheduling. See [TASKS.md](TASKS.md) for the feature branches and interfaces.
 
 ## The problem
 
@@ -27,7 +27,7 @@ Lower is better. [SCORING.md](SCORING.md) has the exact rules; in short:
 
 ## Try it
 
-You need Docker, make and Python 3.9 or newer. The kit unpacks into the folder you are in, so unpack it into an empty one.
+You need Docker, make and Python 3.9 or newer. Run the commands from the repository root.
 
 ```sh
 make sample   # build, run once on the 30 sample commits under the scorer's limits, and score
@@ -38,9 +38,21 @@ make check    # the output's format only
 
 `sample/answers.json` lists the tests each sample commit breaks and the kind of change it is. The practice and final commits are hidden, and so is everything your program prints when it runs on them. A rejected submission tells you which rule it broke and nothing more, so reproduce problems here.
 
-## Submit
+## Integrated selector
 
-Push to a public GitHub repository with the `Dockerfile` at its top, then enter the repository and the commit hash on the track page. The final scores the commit you pick. If you pick none, your best practice submission counts.
+The image builds a reverse import map from the pinned SQLGlot checkout. It attempts a file-level coverage build using the locked test dependencies and the supplied test manifest. Coverage collection has a 120-second budget and can retain partial results. The runtime image contains the selector, analysis modules, and generated maps.
+
+The selector loads both maps once, parses each patch, passes candidates and uncertainty to the selection policy, and schedules the selected tests. Safe mode is the default. A missing or corrupt map, global dependency uncertainty, or coverage that provides only positive evidence triggers the full-suite fallback. The pinned graph has global uncertainty and the current coverage collector cannot certify exclusions, so the sample still runs the full suite on each patch. Scheduler improvements still apply to the fallback. The fallback count and reasons are written to stderr.
+
+To compare policies, repeat the restricted Docker invocation with `--mode balanced` after the image name and score that output separately. Balanced mode receives the same uncertainty signals and is for evaluation.
+
+## Baseline reference
+
+The checked-in sample output scores **1210.470 simulated seconds** with **zero missed commits**. Verify it with `python score.py sample sample/answers.json output-docker.jsonl`. This check scores the saved output. Use `make sample` to generate and score a new Docker run.
+
+## Submission
+
+The project owner handles competition submission after reviewing the validated commit. The selected repository must be public and have a root-level `Dockerfile`. The final scores the commit chosen on the track page, or the best practice submission if no commit is selected.
 
 ## Rules
 
