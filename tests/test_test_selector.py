@@ -524,6 +524,30 @@ class StructuralAndNewModules(unittest.TestCase):
         c["added_text"] = ["def diff(source, target, extra=None):"]
         self.assertFalse(sel2([c], mode="balanced").fell_back)
 
+    def test_shared_class_state_mutation_is_all(self):
+        for line in (
+            '    PostgresParser.FUNCTIONS.pop("GET_BIT", None)',
+            '    HiveGenerator.TYPE_MAPPING[exp.DType.TEXT] = "VARCHAR"',
+            '    generator.Generator.TYPE_MAPPING[exp.DType.LONGTEXT] = "CLOB"',
+            'exp.Column.output_name = property(lambda self: "")',
+        ):
+            c = change("sqlglot/lineage.py")
+            c["added_text"] = [line]
+            with self.subTest(line=line):
+                self.assertEqual(sel2([c], mode="balanced").numbers, ALL2)
+
+    def test_local_state_edits_are_not_shared_class_state(self):
+        for line in (
+            '        expression.args["kind"] = kind',
+            "        self.TYPE_MAPPING = {}",
+            "        if Parser.X == 1:",
+            '    TYPE_MAPPING = {',
+        ):
+            c = change("sqlglot/lineage.py")
+            c["added_text"] = [line]
+            with self.subTest(line=line):
+                self.assertFalse(sel2([c], mode="balanced").fell_back)
+
     def test_new_unreferenced_module(self):
         c = change("sqlglot/optimizer/extra_rules.py", status="added", old_path=None)
         c["removed_text"] = []
@@ -645,6 +669,12 @@ class RealSampleTests(unittest.TestCase):
         for table in (ts.DIALECT_TEST_FILE_MENTIONS, ts.FIXTURE_SETUP_FILES, ts.MODULE_TEST_IMPORTERS):
             for values in table.values():
                 self.assertTrue(set(values) <= files)
+
+    def test_every_dialect_loop_in_a_dialect_file_is_all_dialect(self):
+        # tests/dialects/test_spark.py and test_druid.py loop over Dialects.
+        ids = set(ts.ALL_DIALECT_TEST_IDS)
+        self.assertIn("tests/dialects/test_spark.py::TestSpark::test_strip_modifiers", ids)
+        self.assertIn("tests/dialects/test_druid.py::TestDruid::test_druid", ids)
 
     def test_postgres_change_reaches_redshift_tests(self):
         out = ts.select_tests([change("sqlglot/generators/postgres.py")], self.tests, set(), set(), mode="balanced")

@@ -302,6 +302,12 @@ DIALECT_TEST_ID_MENTIONS: dict[str, tuple[str, ...]] = {
     'tsql': ('tests/test_anonymize.py::TestAnonymize::test_quotes_preserved', 'tests/test_expressions.py::TestExprs::test_ref_type_builder', 'tests/test_generator.py::TestGenerator::test_unsupported_slice', 'tests/test_optimizer.py::TestOptimizer::test_annotate_funcs', 'tests/test_optimizer.py::TestOptimizer::test_canonicalize', 'tests/test_optimizer.py::TestOptimizer::test_simplify', 'tests/test_parser.py::TestParser::test_ref_type', 'tests/test_parser.py::TestParser::test_text_match_excludes_delimited_tokens', 'tests/test_schema.py::TestSchema::test_schema_add_table_error_formatting', 'tests/test_schema.py::TestSchema::test_schema_normalization'),
 }
 ALL_DIALECT_TEST_IDS: tuple[str, ...] = (
+    'tests/dialects/test_bigquery.py::TestBigQuery::test_week',
+    'tests/dialects/test_dialect.py::TestDialect::test_enum',
+    'tests/dialects/test_dialect.py::TestDialect::test_fetch_first_implicit_count',
+    'tests/dialects/test_dialect.py::TestDialect::test_partition_by_excluding',
+    'tests/dialects/test_druid.py::TestDruid::test_druid',
+    'tests/dialects/test_spark.py::TestSpark::test_strip_modifiers',
     'tests/test_generator.py::TestGenerator::test_generator_memory',
     'tests/test_time.py::TestTime::test_canonical_time_format_vocabulary',
 )
@@ -949,6 +955,15 @@ def _changed_line_count(change: dict) -> int:
 
 _MODULE_IMPORT = re.compile(r"^(from\s+[\w.]+\s+import\b|import\s+\w)")
 _DEF_OR_CLASS = re.compile(r"^\s*(?:async\s+)?(def|class)\s+(\w+)")
+# Assignment to, or in-place mutation of, an attribute of a named class
+# (``Parent.FUNCTIONS.pop(...)``, ``exp.Column.x = ...``,
+# ``generator.Generator.TYPE_MAPPING[k] = v``). Run in a class body or at
+# module level, it changes shared state for every importer of that class.
+_FOREIGN_STATE_EDIT = re.compile(
+    r"^\s*(?:[a-z_]\w*\.)*[A-Z]\w*\.\w+(?:\[[^\]]*\])*\s*[-+*/|&]?=(?!=)"
+    r"|^\s*(?:[a-z_]\w*\.)*[A-Z]\w*\.[A-Z_][A-Z0-9_]*\."
+    r"(?:pop|popitem|update|clear|setdefault|add|discard|remove|append|extend|insert)\("
+)
 
 
 def _structural_reason(change: dict) -> str | None:
@@ -963,6 +978,9 @@ def _structural_reason(change: dict) -> str | None:
     for line in added + removed:
         if _MODULE_IMPORT.match(line) or line.startswith("__all__"):
             return "module-level import or __all__ edit"
+    for line in added + removed:
+        if _FOREIGN_STATE_EDIT.match(line):
+            return "shared class state assigned or mutated"
     defined_added = {m.group(2) for m in map(_DEF_OR_CLASS.match, added) if m}
     defined_removed = {m.group(2) for m in map(_DEF_OR_CLASS.match, removed) if m}
     if defined_removed - defined_added:
@@ -1706,15 +1724,17 @@ def derive_static_maps(sqlglot_root: str, tests: list[dict]) -> dict:
                 hits = matched_fixtures(consts)
                 for p in hits:
                     fixture_ids.setdefault(p, set()).add(tid)
+                segment = ast.get_source_segment(src, fn) or ""
+                # Tests that loop over every dialect run for any dialect
+                # change, including tests that live in another dialect's file.
+                if re.search(r"\bDialects\b|Dialect\.classes|\bDIALECTS\b", segment):
+                    all_dialect_ids.add(tid)
                 if tf.startswith("tests/dialects/"):
                     continue
-                segment = ast.get_source_segment(src, fn) or ""
                 lowered = {c.lower() for c in consts}
                 idents = {n.id for n in ast.walk(fn) if isinstance(n, ast.Name)}
                 idents |= {n.attr for n in ast.walk(fn) if isinstance(n, ast.Attribute)}
                 via_fixture = set().union(*(fixture_dialects.get(p, set()) for p in hits)) if hits else set()
-                if re.search(r"\bDialects\b|Dialect\.classes|\bDIALECTS\b", segment):
-                    all_dialect_ids.add(tid)
                 for name in names:
                     if (
                         name in lowered
