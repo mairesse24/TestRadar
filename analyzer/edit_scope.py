@@ -22,7 +22,6 @@ their existing conservative behaviour.
 from __future__ import annotations
 
 import ast
-import copy
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -91,8 +90,9 @@ def _dump(node: ast.AST) -> str:
     return ast.dump(node, annotate_fields=True, include_attributes=False)
 
 
-def _units(tree: ast.Module) -> tuple[str, dict]:
-    """Return (skeleton without bodies, {(qualified name, ordinal): (body, decorated)})."""
+def _units(text: str) -> tuple[str, dict]:
+    """Parse ``text`` and return (skeleton dump without function bodies,
+    {(qualified name, ordinal): (body, decorated, first line, last line)})."""
     bodies: dict = {}
 
     class Strip(ast.NodeTransformer):
@@ -110,15 +110,17 @@ def _units(tree: ast.Module) -> tuple[str, dict]:
             ordinal = sum(1 for key in bodies if key[0] == name)
             # Same-named definitions (overloads, redefinitions) are kept
             # apart by their order; the skeleton comparison pins that order.
-            bodies[(name, ordinal)] = (ast.Module(body=node.body, type_ignores=[]),
-                                       bool(node.decorator_list))
+            bodies[(name, ordinal)] = (
+                ast.Module(body=node.body, type_ignores=[]), bool(node.decorator_list),
+                node.lineno, node.end_lineno or node.lineno,
+            )
             node.body = [ast.Pass()]
             return node  # nested defs stay inside the stripped body
 
         visit_FunctionDef = _function
         visit_AsyncFunctionDef = _function
 
-    skeleton = Strip().visit(copy.deepcopy(tree))
+    skeleton = Strip().visit(ast.parse(text))
     return _dump(skeleton), bodies
 
 
@@ -205,27 +207,34 @@ def classify(change: dict, root: Path | None = None) -> EditScope | None:
         new_text = reconstruct(old_text, change)
         if new_text is None:
             return None
-        old_tree, new_tree = ast.parse(old_text), ast.parse(new_text)
+        old_skeleton, old_bodies = _units(old_text)
+        new_skeleton, new_bodies = _units(new_text)
     except (OSError, SyntaxError, ValueError, UnicodeError, RecursionError):
         return None
-    if _dump(old_tree) == _dump(new_tree):
-        return EditScope("equivalent", detail="syntax tree unchanged")
-    old_skeleton, old_bodies = _units(old_tree)
-    new_skeleton, new_bodies = _units(new_tree)
     if old_skeleton != new_skeleton or old_bodies.keys() != new_bodies.keys():
         return None
+    # A function none of whose lines were removed (old file) or added (new
+    # file) has identical text on both sides; only touched bodies are
+    # compared. The syntax tree is unchanged exactly when the skeletons and
+    # every body agree.
+    removed, added = set(change.get("old_lines") or ()), set(change.get("new_lines") or ())
     changed: set[str] = set()
     decorated: set[str] = set()
-    for key, (body, has_decorators) in old_bodies.items():
-        other, other_decorators = new_bodies[key]
-        if _dump(body) != _dump(other):
+    for key, (body, has_decorators, first, last) in old_bodies.items():
+        other, other_decorators, new_first, new_last = new_bodies[key]
+        touched = (
+            any(first <= n <= last for n in removed)
+            or any(new_first <= n <= new_last for n in added)
+            or last - first != new_last - new_first
+        )
+        if touched and _dump(body) != _dump(other):
             changed.add(key[0])
             if has_decorators or other_decorators:
                 decorated.add(key[0])
     if not changed:
-        return None
+        return EditScope("equivalent", detail="syntax tree unchanged")
     entry = construction_names(root)
-    import_time = _import_time_names(old_tree) | _import_time_names(new_tree)
+    import_time = _import_time_names(ast.parse(old_text)) | _import_time_names(ast.parse(new_text))
     risky = []
     for name in changed:
         short = name.rsplit(".", 1)[-1]
