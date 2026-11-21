@@ -23,6 +23,9 @@ WORKDIR /app
 COPY selector.py ./
 COPY analyzer/*.py ./analyzer/
 COPY --from=maps /maps/ ./maps/
+# Optional function-entry artifact for TESTRADAR_POLICY=blocks.
+# The default policy does not read it.
+COPY maps/blocks.json ./maps/blocks.json
 # Selection policy baked into the image: balanced (measured default),
 # safe, or fallback (the validated full-suite behaviour). Build with
 # --build-arg TESTRADAR_POLICY=fallback to restore it. See

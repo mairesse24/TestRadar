@@ -11,6 +11,9 @@ The selection policy is chosen at image build time through the
               suite; source changes also need complete coverage evidence.
 ``balanced``  selective. Same hard signals; source changes are narrowed with
               the selector's pinned static maps, and coverage only adds tests.
+``blocks``    balanced, then a smaller set when every hunk is an executed
+              function body recorded in ``maps/blocks.json``. Missing or
+              ineligible edits keep the balanced selection.
 
 See docs/SELECTION_POLICY.md for the signal classification and residual risks.
 """
@@ -24,16 +27,17 @@ from pathlib import Path
 import re
 import sys
 
+from analyzer.block_map import BlockMap
 from analyzer.coverage_map import CoverageMap
 from analyzer.dependency_graph import DependencyGraph
 from analyzer.patch_parser import parse_patch
 from analyzer.scheduler import schedule_tests
-from analyzer.test_selector import REGISTRY_MODULES, Selection, explain_selection
+from analyzer.test_selector import PROMOTE_TO_ALL_SHARE, REGISTRY_MODULES, Selection, explain_selection
 
 
 DATA = Path("/data")
 MAPS = Path("/app/maps")
-POLICIES = ("fallback", "safe", "balanced")
+POLICIES = ("fallback", "safe", "balanced", "blocks")
 DEFAULT_POLICY = "fallback"
 POLICY_ENV = "TESTRADAR_POLICY"
 
@@ -167,17 +171,63 @@ def analyze_selective(
     return selection, reasons
 
 
+def load_block_map(directory: Path) -> BlockMap | None:
+    path = directory / "blocks.json"
+    if not path.exists():
+        print("Block map unavailable: maps/blocks.json is absent; using balanced", file=sys.stderr)
+        return None
+    try:
+        return BlockMap.load(str(path))
+    except (OSError, ValueError) as error:
+        print(f"Block map unavailable: {error}; using balanced", file=sys.stderr)
+        return None
+
+
+def narrow_blocks(
+    selection: Selection,
+    changes: list,
+    tests: list[dict],
+    blocks: BlockMap | None,
+) -> Selection:
+    """Keep balanced unless every hunk is an executed function-body edit."""
+    if blocks is None:
+        return selection
+    try:
+        narrowed = blocks.narrow(selection.numbers, changes, tests)
+    except Exception as error:
+        print(f"block narrowing failed ({type(error).__name__}); keeping balanced", file=sys.stderr)
+        return selection
+    if narrowed is None:
+        return selection
+    seconds = {
+        test["number"]: test["seconds"]
+        for test in tests
+        if isinstance(test, dict) and isinstance(test.get("number"), int)
+    }
+    total = sum(seconds.values())
+    chosen = sum(seconds.get(number, 0) for number in narrowed)
+    if total and chosen >= PROMOTE_TO_ALL_SHARE * total:
+        return selection
+    reasons = list(selection.reasons) + [f"block entries: {len(narrowed)} tests"]
+    return Selection(narrowed, False, reasons)
+
+
 def run(data: Path, maps: Path, policy: str) -> None:
     tests = json.loads((data / "tests.json").read_text(encoding="utf-8"))["tests"]
     graph, coverage = load_analysis_maps(maps)
+    blocks = load_block_map(maps) if policy == "blocks" else None
     all_numbers = {test["number"] for test in tests}
     full_schedule = schedule_tests(all_numbers, tests)
     fallback_count = 0
     commit_count = 0
     for patch in sorted((data / "commits").glob("*.patch")):
         try:
-            if policy in ("safe", "balanced"):
-                selection, uncertainty = analyze_selective(patch, tests, graph, coverage, policy)
+            if policy in ("safe", "balanced", "blocks"):
+                selection, uncertainty = analyze_selective(
+                    patch, tests, graph, coverage, "balanced" if policy == "blocks" else policy,
+                )
+                if policy == "blocks" and not uncertainty:
+                    selection = narrow_blocks(selection, _read_changes(patch), tests, blocks)
             else:
                 selection, uncertainty = analyze(patch, tests, graph, coverage, "safe")
         except Exception as error:  # never skip tests because analysis crashed
@@ -212,8 +262,10 @@ def configured_policy(value: str | None) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--policy", choices=POLICIES, default=None)
+    parser.add_argument("--data", type=Path, default=DATA)
+    parser.add_argument("--maps", type=Path, default=MAPS)
     args = parser.parse_args()
-    run(DATA, MAPS, args.policy or configured_policy(os.environ.get(POLICY_ENV)))
+    run(args.data, args.maps, args.policy or configured_policy(os.environ.get(POLICY_ENV)))
 
 
 if __name__ == "__main__":
