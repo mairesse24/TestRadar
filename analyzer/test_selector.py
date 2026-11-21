@@ -1797,6 +1797,35 @@ def _render_generated(maps: dict) -> str:
     return "\n".join(lines)
 
 
+def refresh_generated(target: str, sqlglot_root: str, tests_list: list[dict]) -> bool:
+    """Rewrite the generated block of ``target`` from a pinned checkout.
+
+    Used by the image build. Returns True when the derived tables equal the
+    checked-in block. On any derivation error the file is left unchanged
+    (the checked-in tables stay valid) and the error is reported on stderr.
+    """
+    with open(target, encoding="utf-8") as handle:
+        text = handle.read()
+    begin, end = "# BEGIN GENERATED\n", "# END GENERATED\n"
+    start, stop = text.index(begin) + len(begin), text.index(end)
+    try:
+        derived = _render_generated(derive_static_maps(sqlglot_root, tests_list)) + "\n"
+    except Exception as error:  # keep the checked-in tables
+        print(f"static maps: derivation failed ({type(error).__name__}); "
+              "keeping checked-in tables", file=sys.stderr)
+        return False
+    current = text[start:stop]
+    if derived == current:
+        print("static maps: derived tables identical to checked-in tables", file=sys.stderr)
+        return True
+    changed = len(set(derived.splitlines()) ^ set(current.splitlines()))
+    with open(target, "w", encoding="utf-8") as handle:
+        handle.write(text[:start] + derived + text[stop:])
+    print(f"static maps: derived tables differ from checked-in tables ({changed} lines); "
+          "using derived tables", file=sys.stderr)
+    return False
+
+
 if __name__ == "__main__":  # pragma: no cover - developer tool
     import json
 
@@ -1804,6 +1833,12 @@ if __name__ == "__main__":  # pragma: no cover - developer tool
         with open(sys.argv[3], encoding="utf-8") as handle:
             tests_list = json.load(handle)["tests"]
         print(_render_generated(derive_static_maps(sys.argv[2], tests_list)))
+    elif len(sys.argv) == 5 and sys.argv[1] == "--refresh":
+        with open(sys.argv[3], encoding="utf-8") as handle:
+            tests_list = json.load(handle)["tests"]
+        refresh_generated(sys.argv[4], sys.argv[2], tests_list)
     else:
-        print("usage: test_selector.py --derive <sqlglot checkout> <tests.json>", file=sys.stderr)
+        print("usage: test_selector.py --derive <sqlglot checkout> <tests.json>\n"
+              "       test_selector.py --refresh <sqlglot checkout> <tests.json> <test_selector.py>",
+              file=sys.stderr)
         sys.exit(2)

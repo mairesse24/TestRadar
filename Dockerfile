@@ -7,6 +7,9 @@ RUN git init -q /sqlglot \
     && git -C /sqlglot checkout -q --detach FETCH_HEAD \
     && mkdir /maps \
     && python -B -m analyzer.dependency_graph /sqlglot /maps/dependencies.json
+# Re-derive the selector's static tables from the pinned checkout; the image
+# uses this copy (identical to the checked-in tables when nothing drifted).
+RUN python -B analyzer/test_selector.py --refresh /sqlglot tests.json analyzer/test_selector.py
 # Coverage is optional positive evidence. Keep the dependency artifact if the
 # locked test environment cannot be installed or coverage cannot checkpoint.
 RUN if python -m pip --disable-pip-version-check --timeout 10 --retries 1 install --no-cache-dir -r requirements.lock; then \
@@ -23,6 +26,7 @@ WORKDIR /app
 COPY selector.py ./
 COPY analyzer/*.py ./analyzer/
 COPY --from=maps /maps/ ./maps/
+COPY --from=maps /build/analyzer/test_selector.py ./analyzer/test_selector.py
 # Selection policy baked into the image: balanced (measured default),
 # safe, or fallback (the validated full-suite behaviour). Build with
 # --build-arg TESTRADAR_POLICY=fallback to restore it. See

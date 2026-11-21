@@ -694,5 +694,32 @@ class RealSampleTests(unittest.TestCase):
                 self.assertEqual(getattr(ts, name), value)
 
 
+    @unittest.skipUnless(os.environ.get("SQLGLOT_SRC"), "set SQLGLOT_SRC to a pinned sqlglot checkout")
+    def test_refresh_rewrites_only_the_generated_block(self):
+        import shutil
+        import tempfile
+        source = ROOT / "analyzer" / "test_selector.py"
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "test_selector.py"
+            shutil.copy(source, target)
+            self.assertTrue(ts.refresh_generated(str(target), os.environ["SQLGLOT_SRC"], self.tests))
+            self.assertEqual(target.read_bytes(), source.read_bytes())
+            stale = source.read_text(encoding="utf-8").replace(
+                "'tests/dialects/test_druid.py::TestDruid::test_druid',", "", 1)
+            target.write_text(stale, encoding="utf-8")
+            self.assertFalse(ts.refresh_generated(str(target), os.environ["SQLGLOT_SRC"], self.tests))
+            self.assertEqual(target.read_bytes(), source.read_bytes())
+
+    def test_refresh_keeps_tables_when_derivation_fails(self):
+        import shutil
+        import tempfile
+        source = ROOT / "analyzer" / "test_selector.py"
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "test_selector.py"
+            shutil.copy(source, target)
+            self.assertFalse(ts.refresh_generated(str(target), str(Path(tmp) / "missing"), self.tests))
+            self.assertEqual(target.read_bytes(), source.read_bytes())
+
+
 if __name__ == "__main__":
     unittest.main()
