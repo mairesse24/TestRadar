@@ -24,7 +24,10 @@ existing mappings alone cannot establish that a changed test module has no
 implicit consumers, or that an unobserved test is unaffected by a source
 edit. File-level coverage records observed hits and cannot prove exclusions.
 
-The deployed policy, map generators and artifact formats are unchanged.
-Both safe and balanced continue receiving the existing dependency and
-coverage uncertainty signals. The validated integration commit
-`b3252d3fa681b987cc4b00b6cd5ff319789b9725` remains in branch history.
+The fallback policy keeps the validated behaviour: every signal above is
+final. `docs/SELECTION_POLICY.md` describes the optional `safe` and
+`balanced` policies. They treat missing or corrupt artifacts and malformed
+patches as hard fallbacks and the graph's global dynamic-loading flag as a
+known limitation handled by the selector's pinned maps. The map generators
+and artifact formats are unchanged. The validated integration commit
+`8244dff92038bdee3ccc6052b042fc77af2829f7` remains in branch history.
