@@ -1,0 +1,137 @@
+{
+ "mutants": [
+  {
+   "id": "aud-cookie-01",
+   "stratum": "formatting_audit",
+   "intent": "ascii coding cookie on a module with non-ASCII comments (import fails)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/tokens.py",
+     "line": 1,
+     "old": "from __future__ import annotations\n",
+     "new": "# -*- coding: ascii -*-\nfrom __future__ import annotations\n"
+    }
+   ]
+  },
+  {
+   "id": "aud-cookie-02",
+   "stratum": "formatting_audit",
+   "intent": "unknown codec in a coding cookie (import fails)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/normalize.py",
+     "line": 1,
+     "old": "from __future__ import annotations\n",
+     "new": "# coding: no-such-codec\nfrom __future__ import annotations\n"
+    }
+   ]
+  },
+  {
+   "id": "aud-cookie-03",
+   "stratum": "formatting_audit",
+   "intent": "latin-1 coding cookie on a module whose non-ASCII text is in comments and attribute strings",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/dialect.py",
+     "line": 1,
+     "old": "from __future__ import annotations\n",
+     "new": "# -*- coding: latin-1 -*-\nfrom __future__ import annotations\n"
+    }
+   ]
+  },
+  {
+   "id": "aud-bom-01",
+   "stratum": "formatting_audit",
+   "intent": "UTF-8 byte order mark added to a module",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/trie.py",
+     "line": 1,
+     "old": "import typing as t\n",
+     "new": "﻿import typing as t\n"
+    }
+   ]
+  },
+  {
+   "id": "aud-semicolon-01",
+   "stratum": "formatting_audit",
+   "intent": "two statements joined with a semicolon in Generator.__init__ (same syntax tree)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 969,
+     "old": "        self.identify = identify\n",
+     "new": "        self.identify = identify; self.normalize = normalize\n"
+    },
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 970,
+     "old": "        self.normalize = normalize\n",
+     "new": ""
+    }
+   ]
+  },
+  {
+   "id": "aud-eof-01",
+   "stratum": "formatting_audit",
+   "intent": "trailing newline removed at end of file",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/trie.py",
+     "line": 82,
+     "old": "    return (TrieResult.PREFIX, current)\n",
+     "new": "    return (TrieResult.PREFIX, current)"
+    }
+   ]
+  },
+  {
+   "id": "aud-lineshift-01",
+   "stratum": "formatting_audit",
+   "intent": "40 comment lines inserted at the top of parser.py (every line number shifts)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 1,
+     "old": "from __future__ import annotations\n",
+     "new": "# placeholder comment 0\n# placeholder comment 1\n# placeholder comment 2\n# placeholder comment 3\n# placeholder comment 4\n# placeholder comment 5\n# placeholder comment 6\n# placeholder comment 7\n# placeholder comment 8\n# placeholder comment 9\n# placeholder comment 10\n# placeholder comment 11\n# placeholder comment 12\n# placeholder comment 13\n# placeholder comment 14\n# placeholder comment 15\n# placeholder comment 16\n# placeholder comment 17\n# placeholder comment 18\n# placeholder comment 19\n# placeholder comment 20\n# placeholder comment 21\n# placeholder comment 22\n# placeholder comment 23\n# placeholder comment 24\n# placeholder comment 25\n# placeholder comment 26\n# placeholder comment 27\n# placeholder comment 28\n# placeholder comment 29\n# placeholder comment 30\n# placeholder comment 31\n# placeholder comment 32\n# placeholder comment 33\n# placeholder comment 34\n# placeholder comment 35\n# placeholder comment 36\n# placeholder comment 37\n# placeholder comment 38\n# placeholder comment 39\nfrom __future__ import annotations\n"
+    }
+   ]
+  },
+  {
+   "id": "aud-lineshift-02",
+   "stratum": "formatting_audit",
+   "intent": "blank lines inserted before the module-level warning in tokens.py",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/tokens.py",
+     "line": 18,
+     "old": "    if not SQLGLOTC_INSTALLED:\n",
+     "new": "\n\n\n    if not SQLGLOTC_INSTALLED:\n"
+    }
+   ]
+  },
+  {
+   "id": "aud-typing-01",
+   "stratum": "formatting_audit",
+   "intent": "trailing comment in a typing module whose source test_typing reads",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/typing/snowflake.py",
+     "line": 3,
+     "old": "import typing as t\n",
+     "new": "import typing as t  # aliased for annotations\n"
+    }
+   ]
+  }
+ ]
+}
