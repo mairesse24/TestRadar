@@ -121,14 +121,18 @@ def hard_signals(
     if coverage is None:
         reasons.append("coverage: map unavailable or invalid")
     for change in changes:
-        added_file = change["status"] == "added"
-        for path in filter(None, (change["old_path"], change["new_path"], change["path"])):
-            python = path.endswith(".py") and path.startswith(("sqlglot/", "tests/"))
-            if not python:
-                continue
-            if graph is not None and not added_file and not graph.knows(path):
-                reasons.append(f"dependencies: {path} is not in the pinned dependency map")
-        if not (change["path"] or "").endswith(".py"):
+        status = change["status"]
+        # The pre-change file must exist in the pinned graph. New paths of
+        # added, renamed or copied files cannot be in it by construction; the
+        # selector applies its own fallbacks to those statuses.
+        pinned = change["path"] if status == "modified" else change["old_path"]
+        if (graph is not None and status != "added" and pinned
+                and pinned.endswith(".py") and pinned.startswith(("sqlglot/", "tests/"))
+                and not graph.knows(pinned)):
+            reasons.append(f"dependencies: {pinned} is not in the pinned dependency map")
+        # A brand-new file is loaded only through an edit to an existing file,
+        # and a deleted file adds no dependency; both are judged by the selector.
+        if status in ("added", "deleted") or not (change["path"] or "").endswith(".py"):
             continue
         for line in change["added_text"] + change["removed_text"]:
             if _DYNAMIC.search(line):
