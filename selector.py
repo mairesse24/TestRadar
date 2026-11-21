@@ -26,6 +26,7 @@ import sys
 
 from analyzer.coverage_map import CoverageMap
 from analyzer.dependency_graph import DependencyGraph
+from analyzer.function_impact import classify
 from analyzer.patch_parser import parse_patch
 from analyzer.scheduler import schedule_tests
 from analyzer.test_selector import REGISTRY_MODULES, Selection, explain_selection
@@ -33,7 +34,8 @@ from analyzer.test_selector import REGISTRY_MODULES, Selection, explain_selectio
 
 DATA = Path("/data")
 MAPS = Path("/app/maps")
-POLICIES = ("fallback", "safe", "balanced")
+POLICIES = ("fallback", "safe", "balanced", "precision")
+SOURCES = Path("/app/pinned")
 DEFAULT_POLICY = "fallback"
 POLICY_ENV = "TESTRADAR_POLICY"
 
@@ -167,6 +169,21 @@ def analyze_selective(
     return selection, reasons
 
 
+def analyze_precision(patch: Path, tests: list[dict], graph: DependencyGraph | None,
+                      coverage: CoverageMap | None) -> tuple[Selection, list[str]]:
+    changes = _read_changes(patch)
+    reasons = hard_signals(changes, graph, coverage)
+    if not reasons and coverage is not None:
+        impact = classify(SOURCES, changes)
+        if impact.equivalent:
+            hits = coverage.tests_for_functions(impact.functions)
+            if hits:
+                selected = {test["number"] for test in tests if test["id"] in hits}
+                if selected:
+                    return Selection(selected, False, ["positioned AST and comments unchanged"]), []
+    return analyze_selective(patch, tests, graph, coverage, "balanced")
+
+
 def run(data: Path, maps: Path, policy: str) -> None:
     tests = json.loads((data / "tests.json").read_text(encoding="utf-8"))["tests"]
     graph, coverage = load_analysis_maps(maps)
@@ -176,7 +193,9 @@ def run(data: Path, maps: Path, policy: str) -> None:
     commit_count = 0
     for patch in sorted((data / "commits").glob("*.patch")):
         try:
-            if policy in ("safe", "balanced"):
+            if policy == "precision":
+                selection, uncertainty = analyze_precision(patch, tests, graph, coverage)
+            elif policy in ("safe", "balanced"):
                 selection, uncertainty = analyze_selective(patch, tests, graph, coverage, policy)
             else:
                 selection, uncertainty = analyze(patch, tests, graph, coverage, "safe")

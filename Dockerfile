@@ -23,6 +23,7 @@ WORKDIR /app
 COPY selector.py ./
 COPY analyzer/*.py ./analyzer/
 COPY --from=maps /maps/ ./maps/
+COPY --from=maps /sqlglot/sqlglot/ ./pinned/sqlglot/
 # Selection policy baked into the image: balanced (measured default),
 # safe, or fallback (the validated full-suite behaviour). Build with
 # --build-arg TESTRADAR_POLICY=fallback to restore it. See

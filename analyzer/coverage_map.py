@@ -1,10 +1,10 @@
-"""File-level per-test coverage from a local checkout of pinned SQLGlot.
+"""File and function-entry per-test coverage from a local checkout of pinned SQLGlot.
 
 Generate offline with the existing test dependencies installed:
     python -m analyzer.coverage_map SQLGLOT_ROOT tests.json coverage.json
 
 The CLI checkpoints completed tests and stops after 420 seconds by default.
-Tracing covers the main thread during each pytest test protocol. Collection,
+Observations are recorded during each pytest test protocol. Collection,
 native code, subprocesses, other threads and changes to execution paths can
 escape observation. Treat the artifact as positive evidence only; the
 is_uncertain method marks coverage-based exclusion as unsupported.
@@ -25,8 +25,10 @@ from .dependency_graph import pinned_files, read_map, write_map
 
 
 class CoverageMap:
-    def __init__(self, by_file: dict[str, set[str]], missing: set[str]):
+    def __init__(self, by_file: dict[str, set[str]], missing: set[str],
+                 functions: dict[str, dict[int, set[str]]] | None = None):
         self._by_file = by_file
+        self._functions = functions or {}
         self.missing_test_ids = frozenset(missing)
 
     @classmethod
@@ -39,15 +41,40 @@ class CoverageMap:
         for path, node_ids in by_file.items():
             if not safe_path(path) or not _node_list(node_ids):
                 raise ValueError("invalid coverage entry")
-        return cls({path: set(ids) for path, ids in by_file.items()}, set(missing))
+        functions = {}
+        entries = document.get("functions", {})
+        ids = sorted({node for nodes in by_file.values() for node in nodes}) if entries else []
+        if not isinstance(entries, dict):
+            raise ValueError("invalid function coverage map")
+        for file, lines in entries.items():
+            if file not in by_file or not isinstance(lines, dict):
+                raise ValueError("invalid function coverage path")
+            functions[file] = {}
+            for line, numbers in lines.items():
+                if (not line.isascii() or not line.isdecimal() or not 0 < int(line) <= 1_000_000
+                        or not isinstance(numbers, list)
+                        or any(type(number) is not int or not 0 <= number < len(ids) for number in numbers)):
+                    raise ValueError("invalid function coverage entry")
+                hits = {ids[number] for number in numbers}
+                if not hits <= set(by_file[file]):
+                    raise ValueError("invalid function coverage test")
+                functions[file][int(line)] = hits
+        return cls({path: set(ids) for path, ids in by_file.items()}, set(missing), functions)
 
     def save(self, path: Path) -> None:
         temporary = path.with_suffix(path.suffix + ".tmp")
+        indices = {node: index for index, node in enumerate(
+            sorted({node for nodes in self._by_file.values() for node in nodes})
+        )} if self._functions else {}
         write_map(temporary, {
             "schema": "testradar-coverage-v1",
             "source": PINNED_SQLGLOT,
             "files": {path: sorted(ids) for path, ids in self._by_file.items()},
             "missing": sorted(self.missing_test_ids),
+            "functions": {
+                file: {str(line): sorted(indices[node] for node in nodes) for line, nodes in lines.items()}
+                for file, lines in self._functions.items()
+            },
         })
         temporary.replace(path)
 
@@ -59,6 +86,9 @@ class CoverageMap:
                 if safe_path(path):
                     hits.update(self._by_file.get(path, ()))
         return hits
+
+    def tests_for_functions(self, functions: tuple[tuple[str, int], ...]) -> set[str]:
+        return {node for path, line in functions for node in self._functions.get(path, {}).get(line, ())}
 
     def is_uncertain(self, changes: list[dict]) -> bool:
         """File observations alone cannot justify excluding tests."""
@@ -87,6 +117,8 @@ def build(root: Path, manifest: Path, output: Path | None = None) -> CoverageMap
         for path in paths if path.startswith("sqlglot/") and path.endswith(".py")
     }
     coverage: dict[str, set[str]] = {}
+    functions: dict[str, dict[int, set[str]]] = {}
+    filenames: dict[str, str | None] = {}
     observed: set[str] = set()
     if output is not None:
         CoverageMap(coverage, expected).save(output)
@@ -97,27 +129,50 @@ def build(root: Path, manifest: Path, output: Path | None = None) -> CoverageMap
             node_id = item.nodeid
             if node_id not in expected:
                 return (yield)
-            touched: set[str] = set()
+            touched: set[tuple[str, int]] = set()
+
+            def observe(code, offset=0):
+                filename = code.co_filename
+                if filename not in filenames:
+                    filenames[filename] = source_paths.get(os.path.normcase(filename))
+                path = filenames[filename]
+                if path is not None:
+                    touched.add((path, code.co_firstlineno))
 
             def trace(frame, event, arg):
                 if event == "call":
-                    path = source_paths.get(os.path.normcase(frame.f_code.co_filename))
-                    if path is not None:
-                        touched.add(path)
+                    observe(frame.f_code)
                 return None
 
             previous = sys.gettrace()
-            sys.settrace(trace)
+            monitoring = getattr(sys, "monitoring", None)
+            tool = 4
+            monitor = monitoring is not None and monitoring.get_tool(tool) is None
+            if monitor:
+                monitoring.use_tool_id(tool, "testradar")
+                events = (monitoring.events.PY_START, monitoring.events.PY_RESUME)
+                for event in events:
+                    monitoring.register_callback(tool, event, observe)
+                monitoring.set_events(tool, events[0] | events[1])
+            else:
+                sys.settrace(trace)
             try:
                 result = yield
             finally:
-                sys.settrace(previous)
+                if monitor:
+                    monitoring.set_events(tool, 0)
+                    for event in events:
+                        monitoring.register_callback(tool, event, None)
+                    monitoring.free_tool_id(tool)
+                else:
+                    sys.settrace(previous)
             if touched:
                 observed.add(node_id)
-                for path in touched:
+                for path, line in touched:
                     coverage.setdefault(path, set()).add(node_id)
+                    functions.setdefault(path, {}).setdefault(line, set()).add(node_id)
                 if output is not None and len(observed) % 25 == 0:
-                    CoverageMap(coverage, expected - observed).save(output)
+                    CoverageMap(coverage, expected - observed, functions).save(output)
             return result
 
     previous_cwd = Path.cwd()
@@ -139,7 +194,7 @@ def build(root: Path, manifest: Path, output: Path | None = None) -> CoverageMap
             os.environ["SKIP_INTEGRATION"] = previous_flag
     if status != pytest.ExitCode.OK:
         print(f"Coverage collection incomplete (pytest exit code {int(status)})", file=sys.stderr)
-    return CoverageMap(coverage, expected - observed)
+    return CoverageMap(coverage, expected - observed, functions)
 
 
 def main() -> None:
@@ -161,7 +216,7 @@ def main() -> None:
         checkpoint = Path(directory) / "coverage.json"
         try:
             subprocess.run([
-                sys.executable, "-m", "analyzer.coverage_map", str(args.sqlglot_root.resolve()),
+                sys.executable, "-B", "-m", "analyzer.coverage_map", str(args.sqlglot_root.resolve()),
                 str(args.tests_json.resolve()), str(checkpoint), "--collect",
             ], check=True, timeout=args.timeout)
         except subprocess.TimeoutExpired:
