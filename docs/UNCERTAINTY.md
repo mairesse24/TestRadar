@@ -28,6 +28,7 @@ The fallback policy keeps the validated behaviour: every signal above is
 final. `docs/SELECTION_POLICY.md` describes the optional `safe` and
 `balanced` policies. They treat missing or corrupt artifacts and malformed
 patches as hard fallbacks and the graph's global dynamic-loading flag as a
-known limitation handled by the selector's pinned maps. The map generators
-and artifact formats are unchanged. The validated integration commit
+known limitation handled by the selector's pinned maps. The coverage generator and artifact formats are unchanged. The
+[enhanced dependency generator](DYNAMIC_DEPENDENCIES.md) adds positive
+edges without clearing global uncertainty. The validated integration commit
 `8244dff92038bdee3ccc6052b042fc77af2829f7` remains in branch history.

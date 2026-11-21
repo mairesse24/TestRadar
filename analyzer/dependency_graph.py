@@ -17,6 +17,7 @@ from pathlib import Path
 import subprocess
 
 from .contracts import PINNED_SQLGLOT, safe_path
+from .dynamic_imports import scan
 
 
 def pinned_files(root: Path) -> list[str]:
@@ -56,7 +57,7 @@ def _module(path: str) -> str:
     return name.replace("/", ".")
 
 
-def _imports(tree: ast.AST, package: str, modules: dict[str, str]) -> tuple[set[str], bool]:
+def _static_imports(tree: ast.AST, package: str, modules: dict[str, str]) -> tuple[set[str], bool]:
     imported: set[str] = set()
     uncertain = False
     for node in ast.walk(tree):
@@ -74,20 +75,20 @@ def _imports(tree: ast.AST, package: str, modules: dict[str, str]) -> tuple[set[
             imported.update(
                 f"{base}.{alias.name}" for alias in node.names if f"{base}.{alias.name}" in modules
             )
-        elif isinstance(node, ast.Call):
-            callee = node.func
-            name = callee.id if isinstance(callee, ast.Name) else (
-                callee.attr if isinstance(callee, ast.Attribute) else ""
-            )
-            if name in {"__import__", "import_module", "exec_module", "exec", "eval"}:
-                uncertain = True
     return imported, uncertain
+
+
+def _imports(tree: ast.AST, package: str, modules: dict[str, str]) -> tuple[set[str], bool]:
+    """Compatibility helper for the integration branch's dependency audit."""
+    imported, incomplete = _static_imports(tree, package, modules)
+    return imported, incomplete or any(site.kind != "literal" for site in scan(tree, package, modules))
 
 
 class DependencyGraph:
     def __init__(self, importers: dict[str, set[str]], uncertain: bool = False):
         self._importers = importers
         self._uncertain = uncertain
+        self._findings: list[dict] = []
 
     @classmethod
     def load(cls, path: str) -> DependencyGraph:
@@ -111,33 +112,43 @@ class DependencyGraph:
         )
         modules = {_module(path): path for path in paths}
         importers: dict[str, set[str]] = {path: set() for path in paths}
-        uncertain = len(modules) != len(paths) or not paths
+        graph = cls(importers, len(modules) != len(paths) or not paths)
+
+        def record(path: str, kind: str, targets: tuple[str, ...] = (), line: int | None = None):
+            graph._findings.append({"path": path, "kind": kind, "line": line, "targets": targets})
+            if kind != "literal":
+                graph._uncertain = True
         for path in paths:
             source = root / path
             if not source.resolve().is_relative_to(root.resolve()) or source.is_symlink():
-                uncertain = True
+                record(path, "unsupported_source")
                 continue
             try:
                 tree = ast.parse(source.read_bytes(), filename=path)
             except (OSError, SyntaxError, ValueError):
-                uncertain = True
+                record(path, "unsupported_source")
                 continue
             module = _module(path)
             package = module if path.endswith("/__init__.py") else module.rpartition(".")[0]
-            imported, incomplete = _imports(tree, package, modules)
-            uncertain |= incomplete
+            imported, incomplete = _static_imports(tree, package, modules)
+            if incomplete:
+                record(path, "unresolved_relative")
+            for site in scan(tree, module, modules):
+                record(path, site.kind, site.targets, site.line)
+                imported.update(target for target in site.targets if target in modules)
             # Importing a submodule also initializes its parent packages.
             imported.add(package)
-            for target in imported:
+            for target in sorted(imported):
                 if target.partition(".")[0] not in {"tests", "sqlglot"}:
                     continue
-                uncertain |= target not in modules
+                if target not in modules:
+                    record(path, "unresolved_internal", (target,))
                 parts = target.split(".")
                 for length in range(1, len(parts) + 1):
                     imported_path = modules.get(".".join(parts[:length]))
                     if imported_path is not None and imported_path != path:
                         importers[imported_path].add(path)
-        return cls(importers, uncertain)
+        return graph
 
     @classmethod
     def build(cls, root: Path) -> DependencyGraph:
@@ -149,6 +160,15 @@ class DependencyGraph:
             "source": PINNED_SQLGLOT,
             "uncertain": self._uncertain,
             "importers": {path: sorted(edges) for path, edges in self._importers.items()},
+        })
+
+    def save_evidence(self, path: Path) -> None:
+        """Save a build-time explanation alongside the compatible graph artifact."""
+        write_map(path, {
+            "schema": "testradar-import-evidence-v1",
+            "source": PINNED_SQLGLOT,
+            "uncertain": self._uncertain,
+            "findings": self._findings,
         })
 
     def is_uncertain(self, changed_paths: set[str]) -> bool:
@@ -177,8 +197,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("sqlglot_root", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--evidence", type=Path, help="optional JSON report for build-time review")
     args = parser.parse_args()
-    DependencyGraph.build(args.sqlglot_root).save(args.output)
+    graph = DependencyGraph.build(args.sqlglot_root)
+    graph.save(args.output)
+    if args.evidence is not None:
+        graph.save_evidence(args.evidence)
 
 
 if __name__ == "__main__":
