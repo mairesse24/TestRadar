@@ -1,7 +1,7 @@
-# Task board — RWX Blast Radius
+# TestRadar workstreams
 
-## Shared contracts (freeze before parallel work)
-Use Python 3.13 standard-library-friendly code. These are the initial integration interfaces; Codex owns `analyzer/contracts.py` and should implement typed dataclasses / TypedDicts with the exact fields below. No agent may silently change these names.
+## Shared interfaces
+Use Python 3.13 standard-library-friendly code. Patch and impact analysis owns `analyzer/contracts.py` and implements typed dataclasses or TypedDicts matching the fields below. Coordinate interface changes with integration and validation before implementation.
 
 ```python
 # FileChange representation (from patch analyzer)
@@ -53,10 +53,10 @@ schedule_tests(selected_numbers: set[int], tests: list[dict], max_workers: int =
 # Return valid worker lists, optimize max(load) + 2 * nonempty worker count.
 ```
 
-**Important:** Existing Phase 2 `patch_parser.py` may have a different interface. Codex must adapt with a backwards-compatible wrapper if practical. Until contracts are merged, other agents can use stubs or fixtures; do not import files that have not yet landed in their branch.
+Provide a compatibility wrapper for an earlier patch parser interface if one exists and compatibility is practical. Use local stubs or fixtures for components that are still under development.
 
-## CODEX — Agent A: Patch + dependency + coverage analysis
-**Branch:** `agent/codex-analysis`
+## Patch and impact analysis
+**Branch:** `feature/impact-analysis`
 **Own:** `analyzer/contracts.py`, `analyzer/patch_parser.py`, `analyzer/dependency_graph.py`, `analyzer/coverage_map.py`, `tests/test_analysis.py`.
 
 ### A1. Patch parsing
@@ -79,8 +79,8 @@ schedule_tests(selected_numbers: set[int], tests: list[dict], max_workers: int =
 
 **Done when:** All public interfaces exist, tests pass, build-time map generation documented, and uncertainty propagates.
 
-## GROK — Agent B: Test selection policy
-**Branch:** `agent/grok-selection`
+## Test selection policy
+**Branch:** `feature/test-selection`
 **Own:** `analyzer/test_selector.py`, `tests/test_test_selector.py`.
 
 ### B1. Selection algorithm
@@ -96,8 +96,8 @@ schedule_tests(selected_numbers: set[int], tests: list[dict], max_workers: int =
 
 **Done when:** Policy unit tests pass and selection is deterministic. Report when it falls back to all tests.
 
-## CURSOR — Agent C: Worker scheduler + benchmark
-**Branch:** `agent/cursor-runtime`
+## Worker scheduling and benchmarking
+**Branch:** `feature/worker-scheduling`
 **Own:** `analyzer/scheduler.py`, `benchmark.py`, `tests/test_scheduler.py`, `docs/DOCKER_TESTING.md`.
 
 ### C1. Scheduling
@@ -114,28 +114,29 @@ schedule_tests(selected_numbers: set[int], tests: list[dict], max_workers: int =
 
 **Done when:** Scheduler tests pass and benchmark tooling works with starter sample outputs.
 
-## INTEGRATOR — Human + ChatGPT
-**Own:** `selector.py`, root `Dockerfile`, `requirements.lock`, `.gitignore`, `README.md`, `AGENTS.md`, `TASKS.md`, GitHub submission.
+## Integration and validation
+**Branch:** `feature/integration`
+
+**Own:** `selector.py`, root `Dockerfile`, `requirements.lock`, `.gitignore`, `README.md`, `AGENTS.md`, and `TASKS.md`.
 
 ### I1. Baseline preservation
-- Commit current known-good starter and copy `selector.py` to `selector_baseline.py` for local reference if desired (do not include unneeded files in final image).
+- Use the existing full-suite selector and Dockerfile as the reference baseline. Preserve their Git history and saved sample output.
 - Verify `python score.py sample sample/answers.json output-docker.jsonl` gives 1210.470 and 0 misses.
 
 ### I2. Integration
-- Merge contract first, then analysis, selection, scheduling. Do not merge blindly.
+- Review each completed component against the shared interfaces and its tests. Obtain approval before merging.
 - Integrate reading `/data/tests.json` and `/data/commits/*.patch` with one JSON line per commit.
 - Preload static maps once; fallback to full suite if maps are missing or corrupt.
 - Validate output schema, no logging to stdout, and CPU/memory limits.
 
 ### I3. Validation and submission
-- Run unit tests, `make check`, Docker sample, inspect miss count, and compare against baseline.
+- Run unit tests, `make check`, and `make sample`. Record simulated seconds, missed commits, runtime and its measurement method, and unresolved issues. Compare with the baseline.
 - Evaluate with held-out changes where feasible; avoid sample overfitting.
-- Preserve best valid commit; only submit after human review.
+- Record the best validated commit for the project owner, who handles submission.
 
 ## Coordination order
-1. Integrator commits these instructions and baseline.
-2. Codex publishes `contracts.py` quickly.
-3. Grok and Cursor begin independently against published contract.
-4. Codex completes patch/dependency maps; coverage is second priority.
-5. Integrator merges in dependency order and runs end-to-end checks.
-6. Optimize based on measured scores, not intuition.
+1. Verify the baseline and review `analyzer/contracts.py` against the documented interfaces.
+2. Review patch parsing and dependency mapping, then coverage mapping and its fallback behavior. Verify the maps come from the pinned SQLGlot source.
+3. Review test selection, including full-suite fallback for uncertain analysis, then worker scheduling and benchmark tooling.
+4. After approval for each merge, integrate the completed components into `feature/integration` in that order and wire the selector and Dockerfile.
+5. Run the restricted Docker validation and scorer. Compare measured results against the baseline before optimizing.
