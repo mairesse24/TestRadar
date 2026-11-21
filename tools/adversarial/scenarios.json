@@ -1,0 +1,817 @@
+{
+ "seed": 20261121,
+ "mutants": [
+  {
+   "id": "dialect-01",
+   "stratum": "cross_dialect",
+   "intent": "leaf parser mutates its parent's FUNCTIONS table at import",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/redshift.py",
+     "line": 38,
+     "old": "    FUNCTIONS = {\n",
+     "new": "    PostgresParser.FUNCTIONS.pop(\"GET_BIT\", None)\n    FUNCTIONS = {\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-02",
+   "stratum": "cross_dialect",
+   "intent": "child generator mutates the parent's TYPE_MAPPING at import",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/spark2.py",
+     "line": 156,
+     "old": "    TRANSFORMS = {\n",
+     "new": "    HiveGenerator.TYPE_MAPPING[exp.DType.TEXT] = \"VARCHAR\"\n    TRANSFORMS = {\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-03",
+   "stratum": "cross_dialect",
+   "intent": "base tokenizer keyword removed (inherited by descendants)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/postgres.py",
+     "line": 108,
+     "old": "            \"~\": TokenType.RLIKE,\n",
+     "new": "\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-04",
+   "stratum": "cross_dialect",
+   "intent": "base tokenizer keyword removed (mysql family)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/mysql.py",
+     "line": 105,
+     "old": "            \"DISTINCTROW\": TokenType.DISTINCT,\n",
+     "new": "\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-05",
+   "stratum": "cross_dialect",
+   "intent": "base generator type mapping changed (presto family)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/presto.py",
+     "line": 307,
+     "old": "        exp.DType.BIT: \"BOOLEAN\",\n",
+     "new": "        exp.DType.BIT: \"BIT\",\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-06",
+   "stratum": "cross_dialect",
+   "intent": "dialect used only by name from another dialect (teradata time formats)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/teradata.py",
+     "line": 19,
+     "old": "        \"YYYY\": \"%Y\",\n",
+     "new": "        \"YYYY\": \"%y\",\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-07",
+   "stratum": "cross_dialect",
+   "intent": "base dialect class attribute changed (hive family)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/hive.py",
+     "line": 23,
+     "old": "    SAFE_DIVISION = True\n",
+     "new": "    SAFE_DIVISION = False\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-08",
+   "stratum": "cross_dialect",
+   "intent": "leaf generator type mapping changed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/exasol.py",
+     "line": 294,
+     "old": "        exp.DType.TINYINT: \"SMALLINT\",\n",
+     "new": "        exp.DType.TINYINT: \"TINYINT\",\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-09",
+   "stratum": "cross_dialect",
+   "intent": "leaf mysql-family generator type mapping changed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/drill.py",
+     "line": 48,
+     "old": "        exp.DType.INT: \"INTEGER\",\n",
+     "new": "        exp.DType.INT: \"BIGINT\",\n"
+    }
+   ]
+  },
+  {
+   "id": "dialect-10",
+   "stratum": "cross_dialect",
+   "intent": "base generator type mapping changed (postgres family)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/postgres.py",
+     "line": 339,
+     "old": "        exp.DType.FLOAT: \"REAL\",\n",
+     "new": "        exp.DType.FLOAT: \"FLOAT4\",\n"
+    }
+   ]
+  },
+  {
+   "id": "import-01",
+   "stratum": "import_time",
+   "intent": "class-body AttributeError in a leaf dialect parser",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/dremio.py",
+     "line": 104,
+     "old": "        \"BIT_AND\": exp.BitwiseAndAgg.from_arg_list,\n",
+     "new": "        \"BIT_AND\": exp.BitwiseAndAggregate.from_arg_list,\n"
+    }
+   ]
+  },
+  {
+   "id": "import-02",
+   "stratum": "import_time",
+   "intent": "class-body AttributeError in a leaf dialect generator",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/exasol.py",
+     "line": 295,
+     "old": "        exp.DType.MEDIUMINT: \"INT\",\n",
+     "new": "        exp.DType.MEDIUMINTEGER: \"INT\",\n"
+    }
+   ]
+  },
+  {
+   "id": "import-03",
+   "stratum": "import_time",
+   "intent": "default argument evaluated at import in an optimizer rule",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/eliminate_joins.py",
+     "line": 13,
+     "old": "def eliminate_joins(expression: E) -> E:\n",
+     "new": "def eliminate_joins(expression: E, _unused=exp.NotAnExpression) -> E:\n"
+    }
+   ]
+  },
+  {
+   "id": "import-04",
+   "stratum": "import_time",
+   "intent": "module-level statement raising at import in planner",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/planner.py",
+     "line": 13,
+     "old": "class Plan:\n",
+     "new": "_PLAN_GUARD = exp.NotAnExpression\n\n\nclass Plan:\n"
+    }
+   ]
+  },
+  {
+   "id": "import-05",
+   "stratum": "import_time",
+   "intent": "syntax error in a non-core module",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/lineage.py",
+     "line": 200,
+     "old": "def to_node(\n",
+     "new": "def to_node((\n"
+    }
+   ]
+  },
+  {
+   "id": "import-06",
+   "stratum": "import_time",
+   "intent": "syntax error in a leaf dialect generator",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/drill.py",
+     "line": 44,
+     "old": "    ARRAY_SIZE_NAME = \"REPEATED_COUNT\"\n",
+     "new": "    ARRAY_SIZE_NAME = \"REPEATED_COUNT\"(\n"
+    }
+   ]
+  },
+  {
+   "id": "import-07",
+   "stratum": "import_time",
+   "intent": "decorator evaluated at import in an optimizer rule",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_tables.py",
+     "line": 16,
+     "old": "def qualify_tables(\n",
+     "new": "@exp.not_a_decorator\ndef qualify_tables(\n"
+    }
+   ]
+  },
+  {
+   "id": "import-08",
+   "stratum": "global_state",
+   "intent": "non-core module monkeypatches a core class at import",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/lineage.py",
+     "line": 12,
+     "old": "from sqlglot.schema import ensure_schema\n",
+     "new": "from sqlglot.schema import ensure_schema\n\nexp.Column.output_name = property(lambda self: \"\")\n"
+    }
+   ]
+  },
+  {
+   "id": "import-09",
+   "stratum": "import_time",
+   "intent": "dialect class renamed (registry key changes)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/dremio.py",
+     "line": 9,
+     "old": "class Dremio(Dialect):\n",
+     "new": "class DremioDialect(Dialect):\n"
+    }
+   ]
+  },
+  {
+   "id": "core-01",
+   "stratum": "core",
+   "intent": "behaviour change inside format_time",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/time.py",
+     "line": 48,
+     "old": "                chars = chars[0]\n",
+     "new": "                chars = chars[-1]\n"
+    }
+   ]
+  },
+  {
+   "id": "core-02",
+   "stratum": "core",
+   "intent": "behaviour change inside in_trie",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/trie.py",
+     "line": 75,
+     "old": "        if char not in current:\n",
+     "new": "        if char in current:\n"
+    }
+   ]
+  },
+  {
+   "id": "core-03",
+   "stratum": "core",
+   "intent": "behaviour change inside load",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/serde.py",
+     "line": 84,
+     "old": "    if not payloads:\n",
+     "new": "    if payloads:\n"
+    }
+   ]
+  },
+  {
+   "id": "core-04",
+   "stratum": "core",
+   "intent": "behaviour change inside highlight_sql",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/errors.py",
+     "line": 143,
+     "old": "        start_context = sql[max(0, first_highlight_start - context_length) : first_highlight_start]\n",
+     "new": "        start_context = sql[max(0, first_highlight_start + context_length) : first_highlight_start]\n"
+    }
+   ]
+  },
+  {
+   "id": "core-05",
+   "stratum": "core",
+   "intent": "behaviour change inside eliminate_qualify",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 262,
+     "old": "            elif select_candidate.name not in expression.named_selects and not (\n",
+     "new": "            elif select_candidate.name in expression.named_selects and not (\n"
+    }
+   ]
+  },
+  {
+   "id": "core-06",
+   "stratum": "core",
+   "intent": "behaviour change inside eliminate_distinct_on",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 182,
+     "old": "            if not isinstance(select, exp.Alias):\n",
+     "new": "            if isinstance(select, exp.Alias):\n"
+    }
+   ]
+  },
+  {
+   "id": "core-07",
+   "stratum": "core",
+   "intent": "behaviour change inside parse",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/jsonpath.py",
+     "line": 94,
+     "old": "        if _match(TokenType.PLACEHOLDER) or _match(TokenType.L_PAREN):\n",
+     "new": "        if _match(TokenType.PLACEHOLDER) and _match(TokenType.L_PAREN):\n"
+    }
+   ]
+  },
+  {
+   "id": "core-08",
+   "stratum": "core",
+   "intent": "behaviour change inside qualify_columns",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_columns.py",
+     "line": 94,
+     "old": "        if dialect.FORCE_EARLY_ALIAS_REF_EXPANSION and expand_alias_refs:\n",
+     "new": "        if dialect.FORCE_EARLY_ALIAS_REF_EXPANSION or expand_alias_refs:\n"
+    }
+   ]
+  },
+  {
+   "id": "core-09",
+   "stratum": "core",
+   "intent": "behaviour change inside simplify_not",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 898,
+     "old": "                            exp.not_(condition.left, copy=False),\n",
+     "new": "                            exp.not_(condition.left, copy=True),\n"
+    }
+   ]
+  },
+  {
+   "id": "core-10",
+   "stratum": "core",
+   "intent": "behaviour change inside normalize_identifiers",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/normalize_identifiers.py",
+     "line": 84,
+     "old": "            elif not node.is_star:\n",
+     "new": "            elif node.is_star:\n"
+    }
+   ]
+  },
+  {
+   "id": "core-11",
+   "stratum": "core",
+   "intent": "behaviour change inside tablesample_sql",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 2696,
+     "old": "        if percent and not self.dialect.TABLESAMPLE_SIZE_IS_PERCENT:\n",
+     "new": "        if percent or not self.dialect.TABLESAMPLE_SIZE_IS_PERCENT:\n"
+    }
+   ]
+  },
+  {
+   "id": "core-12",
+   "stratum": "core",
+   "intent": "behaviour change inside _parse_pivot",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 5722,
+     "old": "        if not unpivot:\n",
+     "new": "        if unpivot:\n"
+    }
+   ]
+  },
+  {
+   "id": "core-13",
+   "stratum": "core",
+   "intent": "behaviour change inside strposition_sql",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/dialect.py",
+     "line": 1623,
+     "old": "    if supports_occurrence and occurrence and supports_position and not position:\n",
+     "new": "    if supports_occurrence and occurrence and supports_position or not position:\n"
+    }
+   ]
+  },
+  {
+   "id": "core-14",
+   "stratum": "core",
+   "intent": "behaviour change inside build_formatted_time",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/dialect.py",
+     "line": 1902,
+     "old": "            fmt = target_dialect.TIME_FORMAT if default is True else default or None\n",
+     "new": "            fmt = target_dialect.TIME_FORMAT if default is True else default and None\n"
+    }
+   ]
+  },
+  {
+   "id": "core-15",
+   "stratum": "core",
+   "intent": "tokenizer keyword removed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/tokens.py",
+     "line": 377,
+     "old": "        \"QUALIFY\": TokenType.QUALIFY,\n",
+     "new": "\n"
+    }
+   ]
+  },
+  {
+   "id": "core-16",
+   "stratum": "core",
+   "intent": "tokenizer keyword remapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/tokens.py",
+     "line": 325,
+     "old": "        \"ILIKE\": TokenType.ILIKE,\n",
+     "new": "        \"ILIKE\": TokenType.LIKE,\n"
+    }
+   ]
+  },
+  {
+   "id": "shared-01",
+   "stratum": "shared_utility",
+   "intent": "shared helper gains a required parameter",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/helper.py",
+     "line": 277,
+     "old": "def name_sequence(prefix: str) -> t.Callable[[], str]:\n",
+     "new": "def name_sequence(prefix: str, start: int) -> t.Callable[[], str]:\n"
+    }
+   ]
+  },
+  {
+   "id": "shared-02",
+   "stratum": "shared_utility",
+   "intent": "shared helper behaviour change",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/helper.py",
+     "line": 316,
+     "old": "        return [None] * (min_num_words - len(words)) + words\n",
+     "new": "        return [None] * (min_num_words + len(words)) + words\n"
+    }
+   ]
+  },
+  {
+   "id": "shared-03",
+   "stratum": "shared_utility",
+   "intent": "shared helper behaviour change",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/helper.py",
+     "line": 338,
+     "old": "    return hasattr(value, \"__iter__\") and not isinstance(value, (str, bytes, Expr))\n",
+     "new": "    return hasattr(value, \"__iter__\") and isinstance(value, (str, bytes, Expr))\n"
+    }
+   ]
+  },
+  {
+   "id": "shared-04",
+   "stratum": "signature",
+   "intent": "non-core entry point loses a default",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify.py",
+     "line": 21,
+     "old": "    dialect: DialectType = None,\n",
+     "new": "    dialect: DialectType,\n"
+    }
+   ]
+  },
+  {
+   "id": "shared-05",
+   "stratum": "signature",
+   "intent": "non-core helper used by the planner changes behaviour",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/eliminate_joins.py",
+     "line": 212,
+     "old": "                    cs = [c for c in conditions if p == c]\n",
+     "new": "                    cs = [c for c in conditions if p != c]\n"
+    }
+   ]
+  },
+  {
+   "id": "shared-06",
+   "stratum": "global_state",
+   "intent": "package-level default setting changed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/__init__.py",
+     "line": 73,
+     "old": "pretty = False\n",
+     "new": "pretty = True\n"
+    }
+   ]
+  },
+  {
+   "id": "shared-07",
+   "stratum": "shared_utility",
+   "intent": "executor aggregate table entry changed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 254,
+     "old": "    \"ARRAYUNIQUEAGG\": filter_nulls(lambda acc: list(set(acc))),\n",
+     "new": "    \"ARRAYUNIQUEAGG\": filter_nulls(lambda acc: list(acc)),\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-01",
+   "stratum": "coverage_blind_spot",
+   "intent": "behaviour change inside pushdown_projections",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/pushdown_projections.py",
+     "line": 38,
+     "old": "    reachability = projection_reachability(expression, whole_query=True)\n",
+     "new": "    reachability = projection_reachability(expression, whole_query=False)\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-02",
+   "stratum": "coverage_blind_spot",
+   "intent": "behaviour change inside _mergeable",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/merge_subqueries.py",
+     "line": 295,
+     "old": "        if outer_args.get(\"where\") or outer_args.get(\"joins\"):\n",
+     "new": "        if outer_args.get(\"where\") and outer_args.get(\"joins\"):\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-03",
+   "stratum": "coverage_blind_spot",
+   "intent": "behaviour change inside decorrelate",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/unnest_subqueries.py",
+     "line": 326,
+     "old": "                or len(select.selects) != 1\n",
+     "new": "                and len(select.selects) != 1\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-04",
+   "stratum": "coverage_blind_spot",
+   "intent": "behaviour change inside eliminate_ctes",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/eliminate_ctes.py",
+     "line": 49,
+     "old": "                        if journal is not None and with_node.parent:\n",
+     "new": "                        if journal is not None or with_node.parent:\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-05",
+   "stratum": "coverage_blind_spot",
+   "intent": "behaviour change inside remove_redundant_casts",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/canonicalize.py",
+     "line": 140,
+     "old": "        and expression.this.type\n",
+     "new": "        or expression.this.type\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-06",
+   "stratum": "coverage_blind_spot",
+   "intent": "behaviour change inside _annotate_div",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/annotate_types.py",
+     "line": 1017,
+     "old": "            if expression.type and expression.type.this not in exp.DataType.REAL_TYPES:\n",
+     "new": "            if expression.type or expression.type.this not in exp.DataType.REAL_TYPES:\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-07",
+   "stratum": "coverage_blind_spot",
+   "intent": "behaviour change inside normalize_name",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/schema.py",
+     "line": 719,
+     "old": "    if not normalize:\n",
+     "new": "    if normalize:\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-08",
+   "stratum": "coverage_blind_spot",
+   "intent": "behaviour change inside anonymize",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/anonymize.py",
+     "line": 115,
+     "old": "                    end=length - 1,\n",
+     "new": "                    end=length + 1,\n"
+    }
+   ]
+  },
+  {
+   "id": "tests-01",
+   "stratum": "test_or_fixture",
+   "intent": "shared identity fixture line changed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "tests/fixtures/identity.sql",
+     "line": 2,
+     "old": "SUM(CASE WHEN x > 1 THEN 1 ELSE 0 END) / y\n",
+     "new": "SUM(CASE WHEN x > 1 THEN 1 ELSE 0 END) // y\n"
+    }
+   ]
+  },
+  {
+   "id": "tests-02",
+   "stratum": "test_or_fixture",
+   "intent": "shared test helper default changed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "tests/dialects/test_dialect.py",
+     "line": 55,
+     "old": "        self, sql, write_sql=None, pretty=False, check_command_warning=False, identify=False\n",
+     "new": "        self, sql, write_sql=None, pretty=True, check_command_warning=False, identify=False\n"
+    }
+   ]
+  },
+  {
+   "id": "tests-03",
+   "stratum": "test_or_fixture",
+   "intent": "fixture shared by executor and optimizer changed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "tests/fixtures/optimizer/tpc-h/tpc-h.sql",
+     "line": 13,
+     "old": "        avg(l_discount) as avg_disc,\n",
+     "new": "        max(l_discount) as avg_disc,\n"
+    }
+   ]
+  },
+  {
+   "id": "tests-04",
+   "stratum": "test_or_fixture",
+   "intent": "pretty-print fixture changed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "tests/fixtures/pretty.sql",
+     "line": 4,
+     "old": "SELECT * FROM test;\n",
+     "new": "SELECT * FROM  test;\n"
+    }
+   ]
+  },
+  {
+   "id": "global-01",
+   "stratum": "global_state",
+   "intent": "leaf dialect generator mutates the base Generator table at import",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/exasol.py",
+     "line": 291,
+     "old": "    TYPE_MAPPING = {\n",
+     "new": "    generator.Generator.TYPE_MAPPING[exp.DType.LONGTEXT] = \"CLOB\"\n    TYPE_MAPPING = {\n"
+    }
+   ]
+  },
+  {
+   "id": "coverage-09",
+   "stratum": "coverage_blind_spot",
+   "intent": "typing entry that restates the parent entry (checked only by an unobserved test)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/typing/presto.py",
+     "line": 7,
+     "old": "    **EXPRESSION_METADATA,\n",
+     "new": "    **EXPRESSION_METADATA,\n    exp.FromBase64: {\"returns\": exp.DType.BINARY},\n"
+    }
+   ]
+  },
+  {
+   "id": "equiv-01",
+   "stratum": "ast_equivalent",
+   "intent": "trailing whitespace only in a core helper (behaviour unchanged)",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/helper.py",
+     "line": 71,
+     "old": "        return seq[index]\n",
+     "new": "        return seq[index]   \n"
+    }
+   ]
+  },
+  {
+   "id": "equiv-02",
+   "stratum": "ast_equivalent",
+   "intent": "same-length quote style change in a dialect function body",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/sqlite.py",
+     "line": 40,
+     "old": "                \"constraints\", exp.ColumnConstraint(kind=exp.PrimaryKeyColumnConstraint())\n",
+     "new": "                'constraints', exp.ColumnConstraint(kind=exp.PrimaryKeyColumnConstraint())\n"
+    }
+   ]
+  }
+ ]
+}
