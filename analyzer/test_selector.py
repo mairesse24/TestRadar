@@ -964,6 +964,30 @@ _FOREIGN_STATE_EDIT = re.compile(
     r"|^\s*(?:[a-z_]\w*\.)*[A-Z]\w*\.[A-Z_][A-Z0-9_]*\."
     r"(?:pop|popitem|update|clear|setdefault|add|discard|remove|append|extend|insert)\("
 )
+# Further shared-state edits the pattern above does not see (each only adds
+# full-suite fallbacks): ``del`` of a class attribute, ``setattr``/``delattr``,
+# in-place methods on any class attribute (also ``__setitem__``), unbound
+# ``dict.update(Table, ...)``, subscript assignment to an upper-case table,
+# a bare alias of another class's table (``ALIAS = Parent.TYPE_MAPPING``,
+# no copy), runtime mutation of a class table through ``self``/``cls``, and
+# a bare call at module level (code run at import).
+_MUTATORS = r"(?:pop|popitem|update|clear|setdefault|add|discard|remove|append|extend|insert|__setitem__|__delitem__)"
+_SHARED_STATE_EDITS = tuple(re.compile(pattern) for pattern in (
+    r"^\s*del\s+(?:[a-z_]\w*\.)*[A-Z]\w*\.",
+    r"\b(?:setattr|delattr)\(",
+    r"^\s*(?:[a-z_]\w*\.)*[A-Z]\w*\.\w+\." + _MUTATORS + r"\(",
+    r"\b(?:dict|list|set)\." + _MUTATORS + r"\(",
+    r"^\s*(?:del\s+)?[A-Z_][A-Z0-9_]*(?:\[[^\]]*\])+\s*(?:[-+*/|&]?=(?!=)|$)",
+    r"^\s*\w+\s*=\s*(?:[a-z_]\w*\.)*[A-Z]\w*\.[A-Z_]*(?:MAPPING|TRIE|FUNCTIONS|TRANSFORMS|KEYWORDS"
+    r"|PARSERS|TOKENS|TYPES|SETTINGS|PROPERTIES|OPERATORS|CLASSES)\s*(?:#.*)?$",
+    r"\b(?:self|cls)\.[A-Z_][A-Z0-9_]*(?:\[[^\]]*\]\s*[-+*/|&]?=(?!=)|\." + _MUTATORS + r"\()",
+    r"^\s*del\s+(?:self|cls)\.[A-Z_][A-Z0-9_]*\[",
+    r"^[A-Za-z_][\w.]*\(",
+))
+_CLASS_NAME = re.compile(r"^\s*class\s+(\w+)\b")
+
+
+_KNOWN_DIALECTS = frozenset(DIALECT_TEST_FILE_MENTIONS) | frozenset(DIALECT_BASES)
 
 
 def _structural_reason(change: dict) -> str | None:
@@ -979,8 +1003,15 @@ def _structural_reason(change: dict) -> str | None:
         if _MODULE_IMPORT.match(line) or line.startswith("__all__"):
             return "module-level import or __all__ edit"
     for line in added + removed:
-        if _FOREIGN_STATE_EDIT.match(line):
+        if _FOREIGN_STATE_EDIT.match(line) or any(p.search(line) for p in _SHARED_STATE_EDITS):
             return "shared class state assigned or mutated"
+    # A class named after another dialect re-registers that dialect's name
+    # in the Dialect metaclass registry when this module is imported.
+    own = _dialect_of(change.get("path") or "")
+    for line in added + removed:
+        match = _CLASS_NAME.match(line)
+        if match and match.group(1).lower() in _KNOWN_DIALECTS and match.group(1).lower() != own:
+            return f"class named after dialect {match.group(1).lower()}"
     defined_added = {m.group(2) for m in map(_DEF_OR_CLASS.match, added) if m}
     defined_removed = {m.group(2) for m in map(_DEF_OR_CLASS.match, removed) if m}
     if defined_removed - defined_added:

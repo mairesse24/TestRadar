@@ -536,6 +536,37 @@ class StructuralAndNewModules(unittest.TestCase):
             with self.subTest(line=line):
                 self.assertEqual(sel2([c], mode="balanced").numbers, ALL2)
 
+    def test_indirect_shared_state_mutation_is_all(self):
+        for path, line in (
+            ("sqlglot/generators/spark2.py", "    _HIVE_TYPES = HiveGenerator.TYPE_MAPPING"),
+            ("sqlglot/generators/spark2.py", '    _HIVE_TYPES[exp.DType.TEXT] = "VARCHAR"'),
+            ("sqlglot/generators/spark2.py", "    del HiveGenerator.TYPE_MAPPING[exp.DType.TEXT]"),
+            ("sqlglot/lineage.py", 'setattr(exp.Column, "output_name", property(lambda self: ""))'),
+            ("sqlglot/lineage.py", "_install(exp.Column)"),
+            ("sqlglot/lineage.py", 'exp.Column.arg_types.pop("catalog")'),
+            ("sqlglot/generators/spark2.py", '    HiveGenerator.TYPE_MAPPING.__setitem__(exp.DType.TEXT, "V")'),
+            ("sqlglot/generators/spark2.py", '    dict.update(HiveGenerator.TYPE_MAPPING, {exp.DType.TEXT: "V"})'),
+            ("sqlglot/generators/spark2.py", '        self.TYPE_MAPPING[exp.DType.TEXT] = "VARCHAR"'),
+            ("sqlglot/generators/spark2.py", '    HiveGenerator.TYPE_MAPPING |= {exp.DType.TEXT: "V"}'),
+            ("sqlglot/dialects/dremio.py", "class Druid(Dialect):"),
+        ):
+            c = change(path)
+            c["added_text"] = [line]
+            with self.subTest(line=line):
+                self.assertEqual(sel2([c], mode="balanced").numbers, ALL2)
+
+    def test_ordinary_dialect_edits_stay_selective(self):
+        for path, line in (
+            ("sqlglot/dialects/snowflake.py", '        KEYWORDS.pop("GLOB")'),
+            ("sqlglot/dialects/postgres.py", "class Postgres(Dialect):"),
+            ("sqlglot/dialects/presto.py", "    IS_PREDICATE_PRECEDENCE = IsPredicatePrecedence.COMPARISON"),
+            ("sqlglot/generators/spark2.py", "        return self.func(\"X\", expression.this)"),
+        ):
+            c = change(path)
+            c["added_text"] = [line]
+            with self.subTest(line=line):
+                self.assertFalse(sel2([c], mode="balanced").fell_back)
+
     def test_local_state_edits_are_not_shared_class_state(self):
         for line in (
             '        expression.args["kind"] = kind',
