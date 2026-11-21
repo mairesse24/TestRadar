@@ -8,6 +8,7 @@ pytest is not installed in this environment. Run from the repo root:
 from __future__ import annotations
 
 import json
+import random
 import subprocess
 import sys
 import tempfile
@@ -17,7 +18,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from analyzer.scheduler import duration_milliseconds, schedule_tests  # noqa: E402
+from analyzer.scheduler import (  # noqa: E402
+    clear_schedule_cache,
+    duration_milliseconds,
+    schedule_tests,
+    schedule_tests_lpt,
+)
+from benchmark import run_schedule_comparison  # noqa: E402
 import score as score_py  # noqa: E402
 
 
@@ -32,6 +39,24 @@ def entry(number: int, seconds: float) -> dict:
 
 def catalog(*pairs: tuple[int, float]) -> list[dict]:
     return [entry(number, seconds) for number, seconds in pairs]
+
+
+def packing_objective(workers: list[list[int]], tests: list[dict]) -> tuple[int, int, int]:
+    """Return ``(objective_ms, nonempty workers, makespan_ms)`` using score.py rounding."""
+    durations: dict[int, int] = {}
+    for test in tests:
+        number = test.get("number")
+        seconds = test.get("seconds")
+        if isinstance(number, bool) or not isinstance(number, int):
+            continue
+        if isinstance(seconds, bool) or not isinstance(seconds, (int, float)):
+            continue
+        durations[number] = duration_milliseconds(seconds)
+    occupied = [worker for worker in workers if worker]
+    if not occupied:
+        return (0, 0, 0)
+    span = max(sum(durations[number] for number in worker) for worker in occupied)
+    return (span + 2000 * len(occupied), len(occupied), span)
 
 
 class SchedulerTests(unittest.TestCase):
@@ -155,6 +180,119 @@ class SchedulerTests(unittest.TestCase):
     def test_non_positive_max_workers_returns_empty(self) -> None:
         self.assertEqual(schedule_tests({1}, catalog((1, 1.0)), max_workers=0), [])
 
+    def test_full_sample_matches_longest_first_and_lower_bound(self) -> None:
+        sample = json.loads((ROOT / "sample" / "tests.json").read_text(encoding="utf-8"))
+        tests = sample["tests"]
+        selected = {test["number"] for test in tests}
+        clear_schedule_cache()
+        refined = schedule_tests(selected, tests)
+        previous = schedule_tests_lpt(selected, tests)
+        self.assertEqual(refined, previous)
+        longest = max(duration_milliseconds(test["seconds"]) for test in tests)
+        objective, width, span = packing_objective(refined, tests)
+        self.assertEqual(width, 4)
+        self.assertEqual(span, longest)
+        self.assertEqual(objective, longest + 8000)
+        self.assertEqual(objective, 36817)
+        mutated = [worker[:] for worker in refined]
+        mutated[0].append(-1)
+        clear_schedule_cache()
+        again = schedule_tests(selected, tests)
+        self.assertEqual(again, previous)
+        self.assertNotIn(-1, [number for worker in again for number in worker])
+
+    def test_classic_repair_uses_three_workers(self) -> None:
+        # 5000+5000+4000+4000+3000+3000+3000. Longest-first objective is 16000.
+        # First-fit at makespan 9000 is optimal: 15000.
+        tests = catalog(
+            (1, 5.0), (2, 5.0), (3, 4.0), (4, 4.0), (5, 3.0), (6, 3.0), (7, 3.0),
+        )
+        selected = {1, 2, 3, 4, 5, 6, 7}
+        previous = schedule_tests_lpt(selected, tests)
+        refined = schedule_tests(selected, tests)
+        self.assertEqual(packing_objective(previous, tests), (16000, 4, 8000))
+        self.assertEqual(refined, [[1, 3], [2, 4], [5, 6, 7]])
+        self.assertEqual(packing_objective(refined, tests), (15000, 3, 9000))
+        capped = schedule_tests(selected, tests, max_workers=2)
+        self.assertLessEqual(len(capped), 2)
+        self.assertEqual(packing_objective(capped, tests)[0], 18000)
+        self.assertLess(
+            packing_objective(capped, tests)[0],
+            packing_objective(schedule_tests_lpt(selected, tests, max_workers=2), tests)[0],
+        )
+
+    def test_pairwise_swap_lowers_makespan(self) -> None:
+        # Catalog milliseconds 6686, 3863, 3537, 2533, 2232, 1963, 1406.
+        # Longest-first makespan is 8033 (objective 14033). One swap reaches
+        # 7802 (objective 13802): test 1224 stays alone, and the rest do not
+        # split into two loads of 7767.
+        sample = json.loads((ROOT / "sample" / "tests.json").read_text(encoding="utf-8"))
+        numbers = {1224, 1107, 1123, 1428, 1440, 1295, 1382}
+        tests = [test for test in sample["tests"] if test["number"] in numbers]
+        previous = schedule_tests_lpt(numbers, tests)
+        refined = schedule_tests(numbers, tests)
+        self.assertEqual(packing_objective(previous, tests), (14033, 3, 8033))
+        self.assertEqual(packing_objective(refined, tests), (13802, 3, 7802))
+        self.assertEqual([worker for worker in refined if 1224 in worker], [[1224]])
+        self.assert_partition(numbers, refined)
+        self.assertLess(packing_objective(refined, tests)[0], packing_objective(previous, tests)[0])
+
+    def test_refined_objective_never_exceeds_longest_first(self) -> None:
+        sample = json.loads((ROOT / "sample" / "tests.json").read_text(encoding="utf-8"))
+        catalog_tests = sample["tests"]
+        durations = {
+            test["number"]: duration_milliseconds(test["seconds"]) for test in catalog_tests
+        }
+        long_tail = {number for number, duration in durations.items() if duration >= 200}
+        self.assertLess(
+            packing_objective(schedule_tests(long_tail, catalog_tests), catalog_tests)[0],
+            packing_objective(schedule_tests_lpt(long_tail, catalog_tests), catalog_tests)[0],
+        )
+        generator = random.Random(2026)
+        for seed in range(30):
+            generator.seed(seed)
+            count = generator.randint(1, 36)
+            pairs = []
+            for number in range(count):
+                seconds = generator.choice((0.0, 0.001, 0.05, 0.4, 1.0, 2.0, 3.0, 5.0, 8.0, 13.0))
+                pairs.append((number, float(seconds)))
+            tests = catalog(*pairs)
+            selected = set(range(count))
+            if count > 4 and seed % 2 == 0:
+                selected.discard(0)
+            refined = schedule_tests(selected, tests)
+            previous = schedule_tests_lpt(selected, tests)
+            self.assertLessEqual(
+                packing_objective(refined, tests)[0],
+                packing_objective(previous, tests)[0],
+            )
+            self.assert_partition(selected, refined)
+            self.assertLessEqual(len(refined), 8)
+            self.assertEqual(refined, schedule_tests(set(reversed(list(selected))), list(reversed(tests))))
+
+    def test_malformed_inputs_stay_predictable(self) -> None:
+        self.assertEqual(schedule_tests(None, catalog((1, 1.0))), [])
+        self.assertEqual(schedule_tests({1}, None), [])
+        self.assertEqual(schedule_tests({1}, "nope"), [])
+        self.assertEqual(schedule_tests({1}, [None, 3, "x"]), [])
+        self.assertEqual(schedule_tests({1}, catalog((1, float("nan")))), [])
+        self.assertEqual(schedule_tests({1}, catalog((1, float("inf")))), [])
+        self.assertEqual(schedule_tests({1}, [{"number": 1, "seconds": True}]), [])
+        self.assertEqual(schedule_tests({1}, [{"number": True, "seconds": 1.0}]), [])
+        self.assertEqual(schedule_tests({1}, catalog((1, 1.0)), max_workers=True), [])
+        self.assertEqual(schedule_tests({1}, catalog((1, 1.0)), max_workers=1.5), [])
+        negative = schedule_tests({1, 2}, catalog((1, -1.0), (2, 3.0)))
+        self.assert_partition({1, 2}, negative)
+        self.assertLessEqual(len(negative), 8)
+
+    def test_cache_does_not_ignore_catalog_edits(self) -> None:
+        tests = catalog((1, 1.0), (2, 1.0))
+        clear_schedule_cache()
+        self.assertEqual(schedule_tests({1, 2}, tests), [[1, 2]])
+        tests[0]["seconds"] = 5.0
+        tests[1]["seconds"] = 5.0
+        self.assertEqual(schedule_tests({1, 2}, tests), [[1], [2]])
+
     def assert_partition(self, selected: set[int], result: list[list[int]]) -> None:
         flat = [number for worker in result for number in worker]
         self.assertEqual(sorted(flat), sorted(selected))
@@ -276,6 +414,83 @@ class BenchmarkTests(unittest.TestCase):
             self.assertIn("answers have no patch", completed.stdout)
             self.assertIn("cpu: unmeasured", completed.stdout)
             self.assertIn("CPU time is unmeasured.", completed.stdout)
+
+    def test_compare_schedulers_reports_three_rules(self) -> None:
+        sample = json.loads((ROOT / "sample" / "tests.json").read_text(encoding="utf-8"))
+        text, rows = run_schedule_comparison(sample["tests"], repeats=1, source="sample/tests.json")
+        again, again_rows = run_schedule_comparison(sample["tests"], repeats=1, source="sample/tests.json")
+        self.assertEqual(
+            [(row["case"], row["method"], row["objective_ms"], row["packing"]) for row in rows],
+            [(row["case"], row["method"], row["objective_ms"], row["packing"]) for row in again_rows],
+        )
+        self.assertIn("answers_json: not read", text)
+        self.assertIn("determinism: pass", text)
+        full = {
+            row["method"]: row
+            for row in rows
+            if row["case"] == "full_suite"
+        }
+        self.assertEqual(full["baseline_three_worker"]["objective_ms"], 40349)
+        self.assertEqual(full["baseline_three_worker"]["workers"], 3)
+        self.assertEqual(full["baseline_three_worker"]["makespan_ms"], 34349)
+        self.assertEqual(full["lpt"]["objective_ms"], 36817)
+        self.assertEqual(full["improved"]["objective_ms"], 36817)
+        self.assertEqual(full["improved"]["scheduled"], 1620)
+        self.assertEqual(full["lpt"]["packing"], full["improved"]["packing"])
+        self.assertTrue(all(row["partition"] == "ok" for row in rows))
+        self.assertTrue(all(row["workers"] <= 8 for row in rows))
+        by_case: dict[str, dict[str, dict]] = {}
+        for row in rows:
+            by_case.setdefault(row["case"], {})[row["method"]] = row
+        for methods in by_case.values():
+            self.assertLessEqual(
+                methods["improved"]["objective_ms"],
+                methods["lpt"]["objective_ms"],
+            )
+            self.assertEqual(methods["improved"]["scheduled"], methods["lpt"]["scheduled"])
+        self.assertEqual(by_case["uneven_classic"]["lpt"]["objective_ms"], 16000)
+        self.assertEqual(by_case["uneven_classic"]["improved"]["objective_ms"], 15000)
+        self.assertEqual(by_case["uneven_swap"]["lpt"]["objective_ms"], 14033)
+        self.assertEqual(by_case["uneven_swap"]["improved"]["objective_ms"], 13802)
+        self.assertLess(
+            by_case["synthetic_seed3_n15"]["improved"]["objective_ms"],
+            by_case["synthetic_seed3_n15"]["lpt"]["objective_ms"],
+        )
+        self.assertIn("summary full_suite_30_commits_s", text)
+        self.assertIn("baseline_three_worker=1210.470", text)
+        self.assertIn("lpt=1104.510", text)
+        self.assertIn("improved=1104.510", text)
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data = root / "data"
+            data.mkdir()
+            (data / "tests.json").write_text(
+                json.dumps({"tests": [entry(1, 5.0), entry(2, 5.0)]}),
+                encoding="utf-8",
+            )
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "benchmark.py"),
+                    "--compare-schedulers",
+                    "--repeats",
+                    "1",
+                    "--data-dir",
+                    str(data),
+                ],
+                check=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
+            self.assertIn("method=baseline_three_worker", completed.stdout)
+            self.assertIn("method=lpt", completed.stdout)
+            self.assertIn("method=improved", completed.stdout)
+            self.assertIn("answers_json: not read", completed.stdout)
+            self.assertNotIn("CPU time is unmeasured.", completed.stdout)
+            self.assertNotIn("answers.json", completed.stdout)
 
     def run_benchmark(self, output: Path, data: Path, answers: Path) -> subprocess.CompletedProcess[str]:
         return self.run_benchmark_many([output], data, answers)
