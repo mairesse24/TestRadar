@@ -36,7 +36,7 @@ def expected_selections(data: Path, maps: Path, policy: str) -> tuple[dict[str, 
     graph, coverage = selector.load_analysis_maps(maps)
     expected = {}
     for patch in sorted((data / "commits").glob("*.patch")):
-        if policy in ("safe", "balanced"):
+        if policy in ("safe", "balanced", "dialect-focused"):
             selection, _ = selector.analyze_selective(patch, tests, graph, coverage, policy)
         else:
             selection, _ = selector.analyze(patch, tests, graph, coverage, "safe")

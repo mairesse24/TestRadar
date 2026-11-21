@@ -79,7 +79,7 @@ from typing import Iterable, NamedTuple
 
 LOG = logging.getLogger("analyzer.test_selector")
 
-MODES = ("safe", "balanced", "aggressive")
+MODES = ("safe", "balanced", "aggressive", "dialect-focused")
 
 # --------------------------------------------------------------------------
 # Path classification tables (hand-curated from the sqlglot layout at the
@@ -1151,12 +1151,21 @@ def explain_selection(
     if mode not in MODES:
         return everything(f"unknown mode {mode!r}")
     aggressive = mode == "aggressive"
-    relaxed = mode in ("balanced", "aggressive")
+    relaxed = mode in ("balanced", "aggressive", "dialect-focused")
 
     if analysis_uncertain:
         return everything("analysis_uncertain=True")
     if not isinstance(changes, list) or not changes:
         return everything("no file changes were parsed")
+
+    # This experiment keeps broader evidence whenever a patch crosses
+    # dialect boundaries into other file kinds or changes a module's identity.
+    narrow_dialects = mode == "dialect-focused" and all(
+        isinstance(change, dict)
+        and change.get("status") == "modified"
+        and _dialect_of(normalize_path(change.get("path")) or "") is not None
+        for change in changes
+    )
 
     impacted = set()
     for item in impacted_files or ():
@@ -1204,7 +1213,8 @@ def explain_selection(
 
     def add_dialect(dialect: str) -> None:
         add_files([f"tests/dialects/test_{dialect}.py"])
-        add_files(DIALECT_TEST_FILE_MENTIONS.get(dialect, ()))
+        if not narrow_dialects:
+            add_files(DIALECT_TEST_FILE_MENTIONS.get(dialect, ()))
         # aggressive: with coverage present, coverage replaces name mentions
         # outside tests/dialects/.
         if not (aggressive and covered):
@@ -1343,7 +1353,8 @@ def explain_selection(
                     matched = True
                     for dialect in sorted(dialects):
                         add_dialect(dialect)
-                    add_ids(ALL_DIALECT_TEST_IDS)
+                    if not narrow_dialects:
+                        add_ids(ALL_DIALECT_TEST_IDS)
                     add_files(DIALECT_INFRA_TEST_FILES)
                     if path.startswith("sqlglot/typing/"):
                         add_files(["tests/test_typing.py"])

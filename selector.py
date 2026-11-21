@@ -33,7 +33,7 @@ from analyzer.test_selector import REGISTRY_MODULES, Selection, explain_selectio
 
 DATA = Path("/data")
 MAPS = Path("/app/maps")
-POLICIES = ("fallback", "safe", "balanced")
+POLICIES = ("fallback", "safe", "balanced", "dialect-focused")
 DEFAULT_POLICY = "fallback"
 POLICY_ENV = "TESTRADAR_POLICY"
 
@@ -157,7 +157,7 @@ def analyze_selective(
     paths = _paths(changes)
     impacted = graph.impacted_files(paths, stop_at=REGISTRY_MODULES) if graph is not None else set()
     covered: set[str] = set()
-    if coverage is not None and (mode == "balanced" or not coverage.missing_test_ids):
+    if coverage is not None and (mode in ("balanced", "dialect-focused") or not coverage.missing_test_ids):
         # Positive evidence only. Safe mode counts coverage as present only
         # when every test was observed; balanced uses partial hits as extras.
         covered = coverage.tests_for_changes(changes)
@@ -176,7 +176,7 @@ def run(data: Path, maps: Path, policy: str) -> None:
     commit_count = 0
     for patch in sorted((data / "commits").glob("*.patch")):
         try:
-            if policy in ("safe", "balanced"):
+            if policy in ("safe", "balanced", "dialect-focused"):
                 selection, uncertainty = analyze_selective(patch, tests, graph, coverage, policy)
             else:
                 selection, uncertainty = analyze(patch, tests, graph, coverage, "safe")
