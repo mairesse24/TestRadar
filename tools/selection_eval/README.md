@@ -6,6 +6,7 @@ reads `sample/answers.json` or the ground truth produced here.
 
 | File | Purpose |
 | --- | --- |
+| `validate_pipeline.py` | Scores the actual restricted Docker entrypoint in every candidate policy. A separate byte-checked run reads container CPU counters on Linux and Docker Desktop. |
 | `evaluate.py` | Runs the selector over the sample commits and/or mutants, per mode and coverage input; prints simulated seconds (SCORING.md arithmetic, LPT over 1..8 workers), misses, full-suite fallbacks, share of tests selected and selector CPU time. |
 | `make_mutants.py` | Generates seeded, systematic mutants of the pinned sqlglot checkout across strata (core, base dialects, other dialects, optimizer/other, fixtures, multi-module, new files, renames, deletes). |
 | `run_mutants.py` | Applies each mutant in a git worktree, records `git diff -M` as the patch and runs the real sqlglot suite to obtain the failing tests (ground truth). |

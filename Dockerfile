@@ -23,10 +23,10 @@ WORKDIR /app
 COPY selector.py ./
 COPY analyzer/*.py ./analyzer/
 COPY --from=maps /maps/ ./maps/
-# Selection policy baked into the image: balanced (measured default),
-# safe, or fallback (the validated full-suite behaviour). Build with
-# --build-arg TESTRADAR_POLICY=fallback to restore it. See
+# Selection policy baked into the image: fallback (validated default),
+# safe, or balanced. Build with
+# --build-arg TESTRADAR_POLICY=balanced to evaluate selective execution. See
 # docs/SELECTION_POLICY.md.
-ARG TESTRADAR_POLICY=balanced
+ARG TESTRADAR_POLICY=fallback
 ENV PYTHONDONTWRITEBYTECODE=1 TESTRADAR_POLICY=${TESTRADAR_POLICY}
 ENTRYPOINT ["python", "/app/selector.py"]

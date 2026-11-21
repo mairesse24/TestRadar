@@ -7,15 +7,14 @@ build time, because the scorer passes no arguments:
 docker build --build-arg TESTRADAR_POLICY=balanced --tag blast-radius-entry .
 ```
 
-The Dockerfile builds `balanced` unless told otherwise; the measurements
-below are the reason. `selector.py` run without `TESTRADAR_POLICY` (outside
-the image) uses `fallback`.
+The Dockerfile and standalone selector default to `fallback`. Safe and
+balanced remain opt-in evaluation policies.
 
 | Policy | Image default | Behaviour |
 | --- | --- | --- |
-| `fallback` | no | The validated integration behaviour. Any uncertainty from the patch parser, the dependency graph or the coverage map forces the full suite. The coverage map always reports uncertainty, and the pinned graph is globally uncertain, so every commit runs every test. |
-| `safe` | no | Selective. Hard signals (below) force the full suite. A source change is narrowed only with complete coverage evidence; the pinned build leaves a few tests unobserved, so in practice source changes fall back and only test, fixture and documentation changes are narrowed. |
-| `balanced` | yes | Selective. Same hard signals. Source changes are narrowed with the selector's pinned static maps plus the graph's impact set; coverage hits only add tests. |
+| `fallback` | yes | The validated integration behaviour. Any uncertainty from the patch parser, the dependency graph or the coverage map forces the full suite. The coverage map always reports uncertainty, and the pinned graph is globally uncertain, so every commit runs every test. |
+| `safe` | no | Selective. Hard signals (below) force the full suite. A source change requires static candidates and a coverage hit from a build that observed every manifest test ID. Even then, coverage supplies only positive evidence. A partial build leaves source changes on fallback. |
+| `balanced` | no | Selective. Same hard signals. Source changes are narrowed with the selector's pinned static maps plus the graph's impact set; coverage hits only add tests. |
 
 Locally, `python selector.py --policy balanced` overrides the environment.
 An unknown `TESTRADAR_POLICY` value falls back to `fallback`.
@@ -62,12 +61,15 @@ The selector adds its own conservative fallbacks on top of these:
 ### Known limitations of usable evidence: soft signals
 
 These do not force a fallback in `safe` or `balanced`, because the
-evidence is valid for the pinned source and the selector's pinned maps
-already model the gap:
+artifacts are valid for the pinned source and these experimental policies
+use the selector's static mappings as additional evidence. Those mappings
+do not establish that dynamic edges are exhaustive:
 
 * **The graph's global `uncertain` flag.** `tools/audit_dependencies.py`
-  attributes it to one optional unresolved module (`sqlglot._version`) and
-  to dynamic loading in ten modules. The flag is a property of the pinned
+  identified one optional unresolved module (`sqlglot._version`) and
+  dynamic loading or execution. The enhanced graph adds tracked
+  package-prefix candidates while retaining the global flag. See
+  [dynamic dependency evidence](DYNAMIC_DEPENDENCIES.md). The flag is a property of the pinned
   source, not of a commit, so it is identical for every commit. Each site is
   handled as follows:
 
@@ -122,15 +124,15 @@ already model the gap:
   describes can be missed. Examples: a dialect obtained from a variable
   name, or behaviour exercised only inside a subprocess.
 * The coverage artifact is built against a 120-second budget. On a slower
-  build machine more tests stay unobserved. That cannot cause a miss in
+  build machine more tests stay unobserved. That does not remove static candidates in
   `balanced`, because coverage only adds, but it changes which extra tests
   are selected.
 * The sample set (30 commits) and the seeded mutant set (63) are small.
   Zero misses on them is not a guarantee for hidden commits.
 
-## Measured results (2026-11-21)
+## Historical results before enhanced graph integration (2026-11-21)
 
-Each policy was built as its own image from this branch, with
+Each policy was built as its own image before the enhanced graph was integrated, with
 `--build-arg TESTRADAR_POLICY=...`. The builds used the legacy builder
 limited to 4 CPUs and 8 GB, and took about 125-130 s. All three images
 carry byte-identical maps and code.
@@ -169,3 +171,56 @@ the mutant set:
 
 The CPU figures come from one 8-core Linux box with each container capped at
 2 CPUs. They are not the board's numbers.
+
+## Enhanced graph validation
+
+The baseline at `8244dff92038bdee3ccc6052b042fc77af2829f7` passed 85 Linux
+unit tests (0 failed, 0 skipped) in 14.967 s. The integrated candidate passed
+140 (0 failed, 0 skipped) in 26.562 s. Run
+`python -m unittest discover -s tests -v` on Linux with `SQLGLOT_SRC` set
+to the clean pinned checkout and the locked dependencies installed.
+
+Build each tag from its respective checkout:
+
+```sh
+docker build --platform linux/amd64 --progress=plain --tag testradar-selection:baseline .
+docker build --platform linux/amd64 --progress=plain --tag testradar-selection:candidate .
+```
+
+The baseline build succeeded in 9.120 s with cached map layers. The
+candidate build succeeded in 237.726 s and regenerated both maps. The
+enhanced graph has 1,770 edges and retains global uncertainty. The
+coverage build hit its time limit and left 420 manifest test IDs
+unobserved. All locked build dependencies installed.
+
+Run both validation commands from the candidate checkout:
+
+```sh
+python tools/selection_eval/validate_pipeline.py testradar-selection:baseline sample sample/answers.json --legacy
+python tools/selection_eval/validate_pipeline.py testradar-selection:candidate sample sample/answers.json
+```
+
+All four runs emitted 30 valid JSON lines under the scorer restrictions.
+CPU usage is from a separate matching-output run in each policy.
+
+| Image and policy | Simulated seconds | Missed commits | Full-suite fallbacks | Tests scheduled | Container CPU |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Known-good baseline | 1104.510 | 0 | 30 | 48,600 | 1.205563 s |
+| Candidate fallback (image default) | 1104.510 | 0 | 30 | 48,600 | 0.681624 s |
+| Candidate safe | 910.822 | 0 | 22 | 36,976 | 1.089674 s |
+| Candidate balanced | 797.785 | 0 | 19 | 31,500 | 0.821123 s |
+
+The 63 seeded mutation patches were also regenerated and run through
+the candidate's integrated parser and enhanced graph on Linux with the
+previously validated partial coverage artifact. Fallback scheduled
+102,060 tests (63 fallbacks), safe scheduled 91,796 (56), and balanced
+scheduled 79,677 (48). The original per-mutant failure labels were
+unavailable, so these counts do not measure mutation misses.
+
+Keep fallback for submission when minimizing false-negative risk.
+Safe can omit tests with unmodeled fixture or test-module dependencies.
+Balanced also relies on incomplete static relationships for source
+edits, including implicit loading, import-time effects and subprocess
+execution. Coverage adds observed candidates and does not certify
+exclusions. The sample results do not establish the safety of either
+selective policy on unseen commits.
