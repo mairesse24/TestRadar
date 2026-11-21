@@ -1,0 +1,3294 @@
+{
+ "seed": 20261121,
+ "pool_sizes": {
+  "core/argument_swap": 1766,
+  "core/condition_negation": 2048,
+  "core/constant_change": 4506,
+  "core/operator_swap": 2471,
+  "core/return_change": 1502,
+  "core/statement_deletion": 4837,
+  "dialect/argument_swap": 2127,
+  "dialect/condition_negation": 1630,
+  "dialect/constant_change": 4362,
+  "dialect/dialect_table": 3452,
+  "dialect/operator_swap": 1936,
+  "dialect/return_change": 1675,
+  "dialect/statement_deletion": 3585,
+  "executor/argument_swap": 74,
+  "executor/condition_negation": 112,
+  "executor/constant_change": 124,
+  "executor/operator_swap": 170,
+  "executor/return_change": 98,
+  "executor/statement_deletion": 244,
+  "optimizer/argument_swap": 1257,
+  "optimizer/condition_negation": 1161,
+  "optimizer/constant_change": 1178,
+  "optimizer/operator_swap": 1398,
+  "optimizer/return_change": 446,
+  "optimizer/statement_deletion": 2004,
+  "utility/argument_swap": 357,
+  "utility/condition_negation": 375,
+  "utility/constant_change": 617,
+  "utility/operator_swap": 621,
+  "utility/return_change": 228,
+  "utility/statement_deletion": 850
+ },
+ "excluded_signatures": 235,
+ "mutants": [
+  {
+   "id": "tm-core-operator_swap-00",
+   "stratum": "core/operator_swap",
+   "category": "operator_swap",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_query_modifiers",
+   "line": 4560,
+   "node": "Compare",
+   "desc": "compare In flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 4560,
+     "old": "                        modifier_token.token_type in (TokenType.LIMIT, TokenType.FETCH)\n",
+     "new": "                        (modifier_token.token_type not in (TokenType.LIMIT, TokenType.FETCH))\n",
+     "desc": "compare In flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-operator_swap-01",
+   "stratum": "core/operator_swap",
+   "category": "operator_swap",
+   "location": "core",
+   "path": "sqlglot/tokenizer_core.py",
+   "qualname": "TokenizerCore._extract_string",
+   "line": 1400,
+   "node": "Compare",
+   "desc": "compare Eq flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/tokenizer_core.py",
+     "line": 1400,
+     "old": "            escaped_delimiter = self._peek == delimiter or (\n",
+     "new": "            escaped_delimiter = (self._peek != delimiter) or (\n",
+     "desc": "compare Eq flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-operator_swap-02",
+   "stratum": "core/operator_swap",
+   "category": "operator_swap",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.select_sql",
+   "line": 3640,
+   "node": "BoolOp",
+   "desc": "and/or swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 3640,
+     "old": "        if not self.STAR_EXCLUDE_REQUIRES_DERIVED_TABLE and exclude:\n",
+     "new": "        if (not self.STAR_EXCLUDE_REQUIRES_DERIVED_TABLE or exclude):\n",
+     "desc": "and/or swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-operator_swap-03",
+   "stratum": "core/operator_swap",
+   "category": "operator_swap",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.mod_sql",
+   "line": 4946,
+   "node": "Compare",
+   "desc": "compare Is flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 4946,
+     "old": "        if isinstance(parent, self.MOD_PAREN_PARENT_TYPES) and parent.expression is expression:\n",
+     "new": "        if isinstance(parent, self.MOD_PAREN_PARENT_TYPES) and (parent.expression is not expression):\n",
+     "desc": "compare Is flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-operator_swap-04",
+   "stratum": "core/operator_swap",
+   "category": "operator_swap",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_ddl_select",
+   "line": 9417,
+   "node": "BinOp",
+   "desc": "binop BitOr swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 9417,
+     "old": "    def _parse_ddl_select(self) -> exp.Expr | None:\n",
+     "new": "    def _parse_ddl_select(self) -> (exp.Expr & None):\n",
+     "desc": "binop BitOr swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-constant_change-00",
+   "stratum": "core/constant_change",
+   "category": "constant_change",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_window",
+   "line": 9187,
+   "node": "Constant",
+   "desc": "constant False",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 9187,
+     "old": "        if self._match_set(self.WINDOW_BEFORE_PAREN_TOKENS, advance=False):\n",
+     "new": "        if self._match_set(self.WINDOW_BEFORE_PAREN_TOKENS, advance=True):\n",
+     "desc": "constant False"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-constant_change-01",
+   "stratum": "core/constant_change",
+   "category": "constant_change",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_ordered",
+   "line": 5953,
+   "node": "Constant",
+   "desc": "constant 'NULLS'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 5953,
+     "old": "        is_nulls_first = self._match_text_seq(\"NULLS\", \"FIRST\")\n",
+     "new": "        is_nulls_first = self._match_text_seq('NULLS_x', \"FIRST\")\n",
+     "desc": "constant 'NULLS'"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-constant_change-02",
+   "stratum": "core/constant_change",
+   "category": "constant_change",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_auto_increment",
+   "line": 8015,
+   "node": "Constant",
+   "desc": "constant 'ORDER'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 8015,
+     "old": "            elif self._match_text_seq(\"ORDER\"):\n",
+     "new": "            elif self._match_text_seq('ORDER_x'):\n",
+     "desc": "constant 'ORDER'"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-constant_change-03",
+   "stratum": "core/constant_change",
+   "category": "constant_change",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_analyze_histogram",
+   "line": 9976,
+   "node": "Constant",
+   "desc": "constant 'ASYNC'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 9976,
+     "old": "                if self._match_texts((\"SYNC\", \"ASYNC\")):\n",
+     "new": "                if self._match_texts((\"SYNC\", 'ASYNC_x')):\n",
+     "desc": "constant 'ASYNC'"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-constant_change-04",
+   "stratum": "core/constant_change",
+   "category": "constant_change",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator._embed_ignore_nulls",
+   "line": 5807,
+   "node": "Constant",
+   "desc": "constant 'inline'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 5807,
+     "old": "        if self.IGNORE_NULLS_IN_FUNC and not expression.meta_get(\"inline\"):\n",
+     "new": "        if self.IGNORE_NULLS_IN_FUNC and not expression.meta_get('inline_x'):\n",
+     "desc": "constant 'inline'"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-condition_negation-00",
+   "stratum": "core/condition_negation",
+   "category": "condition_negation",
+   "location": "core",
+   "path": "sqlglot/expressions/core.py",
+   "qualname": "Expression.add_comments",
+   "line": 1059,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/expressions/core.py",
+     "line": 1059,
+     "old": "                if not prepend:\n",
+     "new": "                if not (not prepend):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-condition_negation-01",
+   "stratum": "core/condition_negation",
+   "category": "condition_negation",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.hexstring_sql",
+   "line": 1701,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 1701,
+     "old": "        if not is_integer_type:\n",
+     "new": "        if not (not is_integer_type):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-condition_negation-02",
+   "stratum": "core/condition_negation",
+   "category": "condition_negation",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_generated_as_identity",
+   "line": 8086,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 8086,
+     "old": "            if self._match_text_seq(\"MINVALUE\"):\n",
+     "new": "            if not (self._match_text_seq('MINVALUE')):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-condition_negation-03",
+   "stratum": "core/condition_negation",
+   "category": "condition_negation",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_when_matched",
+   "line": 10044,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 10044,
+     "old": "                if this:\n",
+     "new": "                if not (this):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-condition_negation-04",
+   "stratum": "core/condition_negation",
+   "category": "condition_negation",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_drop",
+   "line": 2511,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 2511,
+     "old": "        if not kind or (iceberg and kind != \"TABLE\"):\n",
+     "new": "        if not (not kind or (iceberg and kind != 'TABLE')):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-return_change-00",
+   "stratum": "core/return_change",
+   "category": "return_change",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.generatedasidentitycolumnconstraint_sql",
+   "line": 1341,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 1341,
+     "old": "        return f\"GENERATED{this} AS {expr}{sequence_opts}\"\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-return_change-01",
+   "stratum": "core/return_change",
+   "category": "return_change",
+   "location": "core",
+   "path": "sqlglot/expressions/builders.py",
+   "qualname": "false",
+   "line": 1151,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/expressions/builders.py",
+     "line": 1151,
+     "old": "    return Boolean(this=False)\n",
+     "new": "    return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-return_change-02",
+   "stratum": "core/return_change",
+   "category": "return_change",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.tonumber_sql",
+   "line": 5281,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 5281,
+     "old": "            return self._tonumber_cast_sql(expression)\n",
+     "new": "            return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-return_change-03",
+   "stratum": "core/return_change",
+   "category": "return_change",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.identifier_sql",
+   "line": 2187,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 2187,
+     "old": "        return text\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-return_change-04",
+   "stratum": "core/return_change",
+   "category": "return_change",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.getextract_sql",
+   "line": 6688,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 6688,
+     "old": "            return self.sql(exp.Bracket(this=this, expressions=[expr]))\n",
+     "new": "            return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-statement_deletion-00",
+   "stratum": "core/statement_deletion",
+   "category": "statement_deletion",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_unnamed_constraint",
+   "line": 8179,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 8179,
+     "old": "        index = self._index\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-statement_deletion-01",
+   "stratum": "core/statement_deletion",
+   "category": "statement_deletion",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_is",
+   "line": 6468,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 6468,
+     "old": "                _with = False\n",
+     "new": "                pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-statement_deletion-02",
+   "stratum": "core/statement_deletion",
+   "category": "statement_deletion",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.update_sql",
+   "line": 2882,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 2882,
+     "old": "        order = self.sql(expression, \"order\")\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-statement_deletion-03",
+   "stratum": "core/statement_deletion",
+   "category": "statement_deletion",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_query_modifiers",
+   "line": 4596,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 4596,
+     "old": "                    modifier_token = self._curr\n",
+     "new": "                    pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-statement_deletion-04",
+   "stratum": "core/statement_deletion",
+   "category": "statement_deletion",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.no_identify",
+   "line": 1150,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 1150,
+     "old": "        result = func(*args, **kwargs)\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-argument_swap-00",
+   "stratum": "core/argument_swap",
+   "category": "argument_swap",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_data_deletion_property",
+   "line": 3203,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 3203,
+     "old": "                if self._match_text_seq(\"FILTER_COLUMN\", \"=\"):\n",
+     "new": "                if self._match_text_seq('=', 'FILTER_COLUMN'):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-argument_swap-01",
+   "stratum": "core/argument_swap",
+   "category": "argument_swap",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser._parse_property",
+   "line": 3037,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 3037,
+     "old": "        if self._match_text_seq(\"NOT\", \"DETERMINISTIC\"):\n",
+     "new": "        if self._match_text_seq('DETERMINISTIC', 'NOT'):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-argument_swap-02",
+   "stratum": "core/argument_swap",
+   "category": "argument_swap",
+   "location": "core",
+   "path": "sqlglot/parser.py",
+   "qualname": "Parser.parse_set_operation",
+   "line": 6209,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parser.py",
+     "line": 6209,
+     "old": "        if isinstance(expression, exp.Values):\n",
+     "new": "        if isinstance(exp.Values, expression):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-argument_swap-03",
+   "stratum": "core/argument_swap",
+   "category": "argument_swap",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.values_sql",
+   "line": 2922,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 2922,
+     "old": "                    exp.alias_(value, column_name) for value, column_name in zip(row, column_names)\n",
+     "new": "                    exp.alias_(value, column_name) for value, column_name in zip(column_names, row)\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-core-argument_swap-04",
+   "stratum": "core/argument_swap",
+   "category": "argument_swap",
+   "location": "core",
+   "path": "sqlglot/generator.py",
+   "qualname": "Generator.includeproperty_sql",
+   "line": 6433,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generator.py",
+     "line": 6433,
+     "old": "        column_def = self.sql(expression, \"column_def\")\n",
+     "new": "        column_def = self.sql('column_def', expression)\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-operator_swap-00",
+   "stratum": "dialect/operator_swap",
+   "category": "operator_swap",
+   "location": "dialect",
+   "path": "sqlglot/parsers/clickhouse.py",
+   "qualname": "_build_count_if",
+   "line": 39,
+   "node": "BinOp",
+   "desc": "binop BitOr swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/clickhouse.py",
+     "line": 39,
+     "old": "def _build_count_if(args: list) -> exp.CountIf | exp.CombinedAggFunc:\n",
+     "new": "def _build_count_if(args: list) -> (exp.CountIf & exp.CombinedAggFunc):\n",
+     "desc": "binop BitOr swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-operator_swap-01",
+   "stratum": "dialect/operator_swap",
+   "category": "operator_swap",
+   "location": "dialect",
+   "path": "sqlglot/generators/tsql.py",
+   "qualname": "TSQLGenerator.timestampfromparts_sql",
+   "line": 464,
+   "node": "Compare",
+   "desc": "compare Is flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/tsql.py",
+     "line": 464,
+     "old": "        if expression.args.get(\"milli\") is None:\n",
+     "new": "        if (expression.args.get('milli') is not None):\n",
+     "desc": "compare Is flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-operator_swap-02",
+   "stratum": "dialect/operator_swap",
+   "category": "operator_swap",
+   "location": "dialect",
+   "path": "sqlglot/typing/postgres.py",
+   "qualname": "_annotate_add_sub",
+   "line": 22,
+   "node": "BoolOp",
+   "desc": "and/or swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/typing/postgres.py",
+     "line": 22,
+     "old": "    if isinstance(expression, exp.Add) and left.is_type(exp.DType.INTERVAL):\n",
+     "new": "    if (isinstance(expression, exp.Add) or left.is_type(exp.DType.INTERVAL)):\n",
+     "desc": "and/or swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-operator_swap-03",
+   "stratum": "dialect/operator_swap",
+   "category": "operator_swap",
+   "location": "dialect",
+   "path": "sqlglot/dialects/athena.py",
+   "qualname": "_tokenize_as_hive",
+   "line": 139,
+   "node": "Compare",
+   "desc": "compare In flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/athena.py",
+     "line": 139,
+     "old": "    if first_type in (TokenType.DESCRIBE, TokenType.SHOW) or first_text == \"MSCK REPAIR\":\n",
+     "new": "    if (first_type not in (TokenType.DESCRIBE, TokenType.SHOW)) or first_text == \"MSCK REPAIR\":\n",
+     "desc": "compare In flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-operator_swap-04",
+   "stratum": "dialect/operator_swap",
+   "category": "operator_swap",
+   "location": "dialect",
+   "path": "sqlglot/generators/duckdb.py",
+   "qualname": "_struct_sql",
+   "line": 651,
+   "node": "Compare",
+   "desc": "compare Is flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 651,
+     "old": "        (expression.find(exp.PropertyEQ) is None)\n",
+     "new": "        ((expression.find(exp.PropertyEQ) is not None))\n",
+     "desc": "compare Is flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-constant_change-00",
+   "stratum": "dialect/constant_change",
+   "category": "constant_change",
+   "location": "dialect",
+   "path": "sqlglot/parsers/bigquery.py",
+   "qualname": "BigQueryParser._parse_unnest",
+   "line": 640,
+   "node": "Constant",
+   "desc": "constant 'explode_array'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/bigquery.py",
+     "line": 640,
+     "old": "                unnest.set(\"explode_array\", True)\n",
+     "new": "                unnest.set('explode_array_x', True)\n",
+     "desc": "constant 'explode_array'"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-constant_change-01",
+   "stratum": "dialect/constant_change",
+   "category": "constant_change",
+   "location": "dialect",
+   "path": "sqlglot/parsers/oracle.py",
+   "qualname": "OracleParser._parse_json_array",
+   "line": 264,
+   "node": "Constant",
+   "desc": "constant 'NULL'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/oracle.py",
+     "line": 264,
+     "old": "                null_handling=self._parse_on_handling(\"NULL\", \"NULL\", \"ABSENT\"),\n",
+     "new": "                null_handling=self._parse_on_handling('NULL_x', \"NULL\", \"ABSENT\"),\n",
+     "desc": "constant 'NULL'"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-constant_change-02",
+   "stratum": "dialect/constant_change",
+   "category": "constant_change",
+   "location": "dialect",
+   "path": "sqlglot/parsers/spark2.py",
+   "qualname": "Spark2Parser._parse_property",
+   "line": 130,
+   "node": "Constant",
+   "desc": "constant 'OPTIONS'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/spark2.py",
+     "line": 130,
+     "old": "        if self._match_text_seq(\"OPTIONS\", \"(\", advance=False):\n",
+     "new": "        if self._match_text_seq('OPTIONS_x', \"(\", advance=False):\n",
+     "desc": "constant 'OPTIONS'"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-constant_change-03",
+   "stratum": "dialect/constant_change",
+   "category": "constant_change",
+   "location": "dialect",
+   "path": "sqlglot/generators/singlestore.py",
+   "qualname": "SingleStoreGenerator.datatype_sql",
+   "line": 1500,
+   "node": "Constant",
+   "desc": "constant 'BLOB'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/singlestore.py",
+     "line": 1500,
+     "old": "            return \"BLOB\"\n",
+     "new": "            return 'BLOB_x'\n",
+     "desc": "constant 'BLOB'"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-constant_change-04",
+   "stratum": "dialect/constant_change",
+   "category": "constant_change",
+   "location": "dialect",
+   "path": "sqlglot/generators/duckdb.py",
+   "qualname": "DuckDBGenerator.timefromparts_sql",
+   "line": 3095,
+   "node": "Constant",
+   "desc": "constant 'overflow'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 3095,
+     "old": "        overflow = expression.args.get(\"overflow\")\n",
+     "new": "        overflow = expression.args.get('overflow_x')\n",
+     "desc": "constant 'overflow'"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-condition_negation-00",
+   "stratum": "dialect/condition_negation",
+   "category": "condition_negation",
+   "location": "dialect",
+   "path": "sqlglot/generators/bigquery.py",
+   "qualname": "_array_agg_fold_sql",
+   "line": 260,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/bigquery.py",
+     "line": 260,
+     "old": "    if ignore_nulls:\n",
+     "new": "    if not (ignore_nulls):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-condition_negation-01",
+   "stratum": "dialect/condition_negation",
+   "category": "condition_negation",
+   "location": "dialect",
+   "path": "sqlglot/generators/duckdb.py",
+   "qualname": "_scale_rounding_sql",
+   "line": 1377,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 1377,
+     "old": "    if isinstance(this, exp.Binary):\n",
+     "new": "    if not (isinstance(this, exp.Binary)):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-condition_negation-02",
+   "stratum": "dialect/condition_negation",
+   "category": "condition_negation",
+   "location": "dialect",
+   "path": "sqlglot/parsers/sqlite.py",
+   "qualname": "SQLiteParser._parse_factor_operand",
+   "line": 255,
+   "node": "While",
+   "desc": "while condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/sqlite.py",
+     "line": 255,
+     "old": "        while self._curr and (build := self.CONCAT_OPERATORS.get(self._curr.token_type)):\n",
+     "new": "        while not (self._curr and (build := self.CONCAT_OPERATORS.get(self._curr.token_type))):\n",
+     "desc": "while condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-condition_negation-03",
+   "stratum": "dialect/condition_negation",
+   "category": "condition_negation",
+   "location": "dialect",
+   "path": "sqlglot/generators/mysql.py",
+   "qualname": "MySQLGenerator.show_sql",
+   "line": 734,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/mysql.py",
+     "line": 734,
+     "old": "        if expression.name.startswith(\"CREATE\") and (db_id := self.sql(expression, \"db\")):\n",
+     "new": "        if not (expression.name.startswith('CREATE') and (db_id := self.sql(expression, 'db'))):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-condition_negation-04",
+   "stratum": "dialect/condition_negation",
+   "category": "condition_negation",
+   "location": "dialect",
+   "path": "sqlglot/generators/presto.py",
+   "qualname": "_date_diff_sql",
+   "line": 197,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/presto.py",
+     "line": 197,
+     "old": "        if dow is not None:\n",
+     "new": "        if not (dow is not None):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-return_change-00",
+   "stratum": "dialect/return_change",
+   "category": "return_change",
+   "location": "dialect",
+   "path": "sqlglot/generators/clickhouse.py",
+   "qualname": "_json_cast_sql",
+   "line": 178,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/clickhouse.py",
+     "line": 178,
+     "old": "    return f\"{this}.:{to_sql}\"\n",
+     "new": "    return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-return_change-01",
+   "stratum": "dialect/return_change",
+   "category": "return_change",
+   "location": "dialect",
+   "path": "sqlglot/typing/duckdb.py",
+   "qualname": "_annotate_date_trunc",
+   "line": 46,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/typing/duckdb.py",
+     "line": 46,
+     "old": "    return self._set_type(expression, expression.this.type)\n",
+     "new": "    return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-return_change-02",
+   "stratum": "dialect/return_change",
+   "category": "return_change",
+   "location": "dialect",
+   "path": "sqlglot/generators/duckdb.py",
+   "qualname": "DuckDBGenerator.tsordstotime_sql",
+   "line": 2952,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 2952,
+     "old": "            return self.sql(cast_expr(this=strptime, to=time_type))\n",
+     "new": "            return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-return_change-03",
+   "stratum": "dialect/return_change",
+   "category": "return_change",
+   "location": "dialect",
+   "path": "sqlglot/parsers/trino.py",
+   "qualname": "TrinoParser._parse_cte",
+   "line": 99,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/trino.py",
+     "line": 99,
+     "old": "        return super()._parse_cte()\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-return_change-04",
+   "stratum": "dialect/return_change",
+   "category": "return_change",
+   "location": "dialect",
+   "path": "sqlglot/parsers/clickhouse.py",
+   "qualname": "ClickHouseParser._parse_bracket",
+   "line": 669,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/clickhouse.py",
+     "line": 669,
+     "old": "            return varmap\n",
+     "new": "            return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-statement_deletion-00",
+   "stratum": "dialect/statement_deletion",
+   "category": "statement_deletion",
+   "location": "dialect",
+   "path": "sqlglot/generators/clickhouse.py",
+   "qualname": "ClickHouseGenerator.strtodate_sql",
+   "line": 509,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/clickhouse.py",
+     "line": 509,
+     "old": "        strtodate_sql = self.function_fallback_sql(expression)\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-statement_deletion-01",
+   "stratum": "dialect/statement_deletion",
+   "category": "statement_deletion",
+   "location": "dialect",
+   "path": "sqlglot/generators/snowflake.py",
+   "qualname": "_json_extract_value_array_sql",
+   "line": 237,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/snowflake.py",
+     "line": 237,
+     "old": "    transform_lambda = exp.Lambda(expressions=[ident], this=this)\n",
+     "new": "    pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-statement_deletion-02",
+   "stratum": "dialect/statement_deletion",
+   "category": "statement_deletion",
+   "location": "dialect",
+   "path": "sqlglot/generators/duckdb.py",
+   "qualname": "DuckDBGenerator.approxquantiles_sql",
+   "line": 5034,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 5034,
+     "old": "        this = expression.this\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-statement_deletion-03",
+   "stratum": "dialect/statement_deletion",
+   "category": "statement_deletion",
+   "location": "dialect",
+   "path": "sqlglot/parsers/mysql.py",
+   "qualname": "MySQLParser._parse_alter_table_alter_index",
+   "line": 736,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/mysql.py",
+     "line": 736,
+     "old": "            visible = False\n",
+     "new": "            pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-statement_deletion-04",
+   "stratum": "dialect/statement_deletion",
+   "category": "statement_deletion",
+   "location": "dialect",
+   "path": "sqlglot/generators/duckdb.py",
+   "qualname": "DuckDBGenerator.pad_sql",
+   "line": 3640,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/duckdb.py",
+     "line": 3640,
+     "old": "            chars_needed = length_arg - input_len\n",
+     "new": "            pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-argument_swap-00",
+   "stratum": "dialect/argument_swap",
+   "category": "argument_swap",
+   "location": "dialect",
+   "path": "sqlglot/generators/spark2.py",
+   "qualname": "_map_sql",
+   "line": 72,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/spark2.py",
+     "line": 72,
+     "old": "    return self.func(\"MAP_FROM_ARRAYS\", keys, values)\n",
+     "new": "    return self.func(keys, 'MAP_FROM_ARRAYS', values)\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-argument_swap-01",
+   "stratum": "dialect/argument_swap",
+   "category": "argument_swap",
+   "location": "dialect",
+   "path": "sqlglot/generators/tsql.py",
+   "qualname": "TSQLGenerator.is_sql",
+   "line": 487,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/tsql.py",
+     "line": 487,
+     "old": "        if isinstance(expression.expression, exp.Boolean):\n",
+     "new": "        if isinstance(exp.Boolean, expression.expression):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-argument_swap-02",
+   "stratum": "dialect/argument_swap",
+   "category": "argument_swap",
+   "location": "dialect",
+   "path": "sqlglot/parsers/clickhouse.py",
+   "qualname": "_build_split_by_char",
+   "line": 78,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/clickhouse.py",
+     "line": 78,
+     "old": "    if isinstance(sep, exp.Literal):\n",
+     "new": "    if isinstance(exp.Literal, sep):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-argument_swap-03",
+   "stratum": "dialect/argument_swap",
+   "category": "argument_swap",
+   "location": "dialect",
+   "path": "sqlglot/generators/snowflake.py",
+   "qualname": "SnowflakeGenerator.array_sql",
+   "line": 1077,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/snowflake.py",
+     "line": 1077,
+     "old": "        if isinstance(first_expr, exp.Select):\n",
+     "new": "        if isinstance(exp.Select, first_expr):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-argument_swap-04",
+   "stratum": "dialect/argument_swap",
+   "category": "argument_swap",
+   "location": "dialect",
+   "path": "sqlglot/generators/spark2.py",
+   "qualname": "_array_sort_sql",
+   "line": 41,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/spark2.py",
+     "line": 41,
+     "old": "    return self.func(\"SORT_ARRAY\", expression.this, exp.false())\n",
+     "new": "    return self.func(expression.this, 'SORT_ARRAY', exp.false())\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-dialect_table-00",
+   "stratum": "dialect/dialect_table",
+   "category": "dialect_table",
+   "location": "dialect",
+   "path": "sqlglot/generators/clickhouse.py",
+   "qualname": "ClickHouseGenerator",
+   "line": 355,
+   "node": "Dict",
+   "desc": "class-level table entry removed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/clickhouse.py",
+     "line": 355,
+     "old": "        exp.Median: rename_func(\"median\"),\n",
+     "new": "",
+     "desc": "class-level table entry removed"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-dialect_table-01",
+   "stratum": "dialect/dialect_table",
+   "category": "dialect_table",
+   "location": "dialect",
+   "path": "sqlglot/dialects/tsql.py",
+   "qualname": "TSQL",
+   "line": 60,
+   "node": "Dict",
+   "desc": "class-level table entry removed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/tsql.py",
+     "line": 60,
+     "old": "        \"wk\": \"%W\",\n",
+     "new": "",
+     "desc": "class-level table entry removed"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-dialect_table-02",
+   "stratum": "dialect/dialect_table",
+   "category": "dialect_table",
+   "location": "dialect",
+   "path": "sqlglot/dialects/duckdb.py",
+   "qualname": "DuckDB.Tokenizer",
+   "line": 131,
+   "node": "Dict",
+   "desc": "class-level table entry removed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/dialects/duckdb.py",
+     "line": 131,
+     "old": "            \"SIGNED\": TokenType.INT,\n",
+     "new": "",
+     "desc": "class-level table entry removed"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-dialect_table-03",
+   "stratum": "dialect/dialect_table",
+   "category": "dialect_table",
+   "location": "dialect",
+   "path": "sqlglot/generators/hive.py",
+   "qualname": "HiveGenerator",
+   "line": 308,
+   "node": "Dict",
+   "desc": "class-level table entry removed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/generators/hive.py",
+     "line": 308,
+     "old": "        exp.ILike: no_ilike_sql,\n",
+     "new": "",
+     "desc": "class-level table entry removed"
+    }
+   ]
+  },
+  {
+   "id": "tm-dialect-dialect_table-04",
+   "stratum": "dialect/dialect_table",
+   "category": "dialect_table",
+   "location": "dialect",
+   "path": "sqlglot/parsers/starrocks.py",
+   "qualname": "StarRocksParser",
+   "line": 67,
+   "node": "Dict",
+   "desc": "class-level table entry removed",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/parsers/starrocks.py",
+     "line": 67,
+     "old": "        \"DATE_TRUNC\": build_timestamp_trunc,\n",
+     "new": "",
+     "desc": "class-level table entry removed"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-operator_swap-00",
+   "stratum": "optimizer/operator_swap",
+   "category": "operator_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "_is_interval",
+   "line": 244,
+   "node": "Compare",
+   "desc": "compare IsNot flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 244,
+     "old": "    return isinstance(expression, exp.Interval) and extract_interval(expression) is not None\n",
+     "new": "    return isinstance(expression, exp.Interval) and (extract_interval(expression) is None)\n",
+     "desc": "compare IsNot flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-operator_swap-01",
+   "stratum": "optimizer/operator_swap",
+   "category": "operator_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/annotate_types.py",
+   "qualname": "TypeAnnotator._maybe_coerce",
+   "line": 673,
+   "node": "BoolOp",
+   "desc": "and/or swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/annotate_types.py",
+     "line": 673,
+     "old": "            if type1.expressions or not isinstance(type1.this, exp.DType):\n",
+     "new": "            if (type1.expressions and (not isinstance(type1.this, exp.DType))):\n",
+     "desc": "and/or swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-operator_swap-02",
+   "stratum": "optimizer/operator_swap",
+   "category": "operator_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "interval",
+   "line": 508,
+   "node": "BinOp",
+   "desc": "binop Mult swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 508,
+     "old": "        return relativedelta(microseconds=1000 * n)\n",
+     "new": "        return relativedelta(microseconds=(1000 // n))\n",
+     "desc": "binop Mult swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-operator_swap-03",
+   "stratum": "optimizer/operator_swap",
+   "category": "operator_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/unnest_subqueries.py",
+   "qualname": "unnest",
+   "line": 181,
+   "node": "Compare",
+   "desc": "compare In flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/unnest_subqueries.py",
+     "line": 181,
+     "old": "            join.side in (\"RIGHT\", \"FULL\") or join.method == \"POSITIONAL\" or join.kind == \"PASTE\"\n",
+     "new": "            (join.side not in ('RIGHT', 'FULL')) or join.method == \"POSITIONAL\" or join.kind == \"PASTE\"\n",
+     "desc": "compare In flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-operator_swap-04",
+   "stratum": "optimizer/operator_swap",
+   "category": "operator_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "_datetrunc_eq_expression",
+   "line": 275,
+   "node": "BinOp",
+   "desc": "binop BitOr swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 275,
+     "old": "    left: exp.Expr, drange: DateRange, target_type: exp.DataType | None\n",
+     "new": "    left: exp.Expr, drange: DateRange, target_type: (exp.DataType & None)\n",
+     "desc": "binop BitOr swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-constant_change-00",
+   "stratum": "optimizer/constant_change",
+   "category": "constant_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/annotate_types.py",
+   "qualname": "TypeAnnotator._annotate_set_operation",
+   "line": 724,
+   "node": "Constant",
+   "desc": "constant 'LEFT'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/annotate_types.py",
+     "line": 724,
+     "old": "                elif expression.side == \"LEFT\":\n",
+     "new": "                elif expression.side == 'LEFT_x':\n",
+     "desc": "constant 'LEFT'"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-constant_change-01",
+   "stratum": "optimizer/constant_change",
+   "category": "constant_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/qualify_tables.py",
+   "qualname": "qualify_tables",
+   "line": 164,
+   "node": "Constant",
+   "desc": "constant 1",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_tables.py",
+     "line": 164,
+     "old": "                if pivot := seq_get(source.args.get(\"pivots\") or [], -1):\n",
+     "new": "                if pivot := seq_get(source.args.get(\"pivots\") or [], -2):\n",
+     "desc": "constant 1"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-constant_change-02",
+   "stratum": "optimizer/constant_change",
+   "category": "constant_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/optimize_joins.py",
+   "qualname": "normalize",
+   "line": 114,
+   "node": "Constant",
+   "desc": "constant 'INNER'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/optimize_joins.py",
+     "line": 114,
+     "old": "            if join.kind in (\"INNER\", \"OUTER\"):\n",
+     "new": "            if join.kind in ('INNER_x', \"OUTER\"):\n",
+     "desc": "constant 'INNER'"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-constant_change-03",
+   "stratum": "optimizer/constant_change",
+   "category": "constant_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "Gen.subquery_sql",
+   "line": 1921,
+   "node": "Constant",
+   "desc": "constant 'alias'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 1921,
+     "old": "        alias = e.args.get(\"alias\")\n",
+     "new": "        alias = e.args.get('alias_x')\n",
+     "desc": "constant 'alias'"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-constant_change-04",
+   "stratum": "optimizer/constant_change",
+   "category": "constant_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "Gen.ilike_sql",
+   "line": 1848,
+   "node": "Constant",
+   "desc": "constant 'negate'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 1848,
+     "old": "        self._binary(e, \" NOT ILIKE \" if e.args.get(\"negate\") else \" ILIKE \")\n",
+     "new": "        self._binary(e, \" NOT ILIKE \" if e.args.get('negate_x') else \" ILIKE \")\n",
+     "desc": "constant 'negate'"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-condition_negation-00",
+   "stratum": "optimizer/condition_negation",
+   "category": "condition_negation",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "Simplifier.rewrite_between",
+   "line": 830,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 830,
+     "old": "        if isinstance(expression, exp.Between):\n",
+     "new": "        if not (isinstance(expression, exp.Between)):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-condition_negation-01",
+   "stratum": "optimizer/condition_negation",
+   "category": "condition_negation",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/unnest_subqueries.py",
+   "qualname": "decorrelate",
+   "line": 322,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/unnest_subqueries.py",
+     "line": 322,
+     "old": "        if find_in_scope(value, exp.AggFunc, exp.Anonymous):\n",
+     "new": "        if not (find_in_scope(value, exp.AggFunc, exp.Anonymous)):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-condition_negation-02",
+   "stratum": "optimizer/condition_negation",
+   "category": "condition_negation",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/annotate_types.py",
+   "qualname": "TypeAnnotator.annotate_expression",
+   "line": 469,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/annotate_types.py",
+     "line": 469,
+     "old": "            if scope and isinstance(expr, exp.TableColumn):\n",
+     "new": "            if not (scope and isinstance(expr, exp.TableColumn)):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-condition_negation-03",
+   "stratum": "optimizer/condition_negation",
+   "category": "condition_negation",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/qualify_columns.py",
+   "qualname": "_expand_stars",
+   "line": 1369,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_columns.py",
+     "line": 1369,
+     "old": "                if name in using_selections and using_selections[name] is None:\n",
+     "new": "                if not (name in using_selections and using_selections[name] is None):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-condition_negation-04",
+   "stratum": "optimizer/condition_negation",
+   "category": "condition_negation",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/annotate_types.py",
+   "qualname": "TypeAnnotator._fixup_order_by_aliases",
+   "line": 627,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/annotate_types.py",
+     "line": 627,
+     "old": "        if not isinstance(query, exp.Query):\n",
+     "new": "        if not (not isinstance(query, exp.Query)):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-return_change-00",
+   "stratum": "optimizer/return_change",
+   "category": "return_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/canonicalize.py",
+   "qualname": "replace_date_funcs",
+   "line": 108,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/canonicalize.py",
+     "line": 108,
+     "old": "        return exp.cast(node.this, to=node.type or exp.DType.TIMESTAMP)\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-return_change-01",
+   "stratum": "optimizer/return_change",
+   "category": "return_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "_is_pure_mul_chain",
+   "line": 142,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 142,
+     "old": "    return True\n",
+     "new": "    return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-return_change-02",
+   "stratum": "optimizer/return_change",
+   "category": "return_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/resolver.py",
+   "qualname": "Resolver._get_unambiguous_columns",
+   "line": 474,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/resolver.py",
+     "line": 474,
+     "old": "        return unambiguous_columns\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-return_change-03",
+   "stratum": "optimizer/return_change",
+   "category": "return_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "Simplifier._simplify_comparison",
+   "line": 1062,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 1062,
+     "old": "                                return false if av == bv else a\n",
+     "new": "                                return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-return_change-04",
+   "stratum": "optimizer/return_change",
+   "category": "return_change",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "cast_as_date",
+   "line": 389,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 389,
+     "old": "        return value.date()\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-statement_deletion-00",
+   "stratum": "optimizer/statement_deletion",
+   "category": "statement_deletion",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "Simplifier.simplify_conditionals",
+   "line": 1507,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 1507,
+     "old": "                    cond = cond.replace(this.pop().eq(cond))\n",
+     "new": "                    pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-statement_deletion-01",
+   "stratum": "optimizer/statement_deletion",
+   "category": "statement_deletion",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/qualify_columns.py",
+   "qualname": "_pop_table_column_aliases",
+   "line": 222,
+   "node": "Expr",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_columns.py",
+     "line": 222,
+     "old": "            table_alias.set(\"columns\", None)\n",
+     "new": "            pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-statement_deletion-02",
+   "stratum": "optimizer/statement_deletion",
+   "category": "statement_deletion",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/simplify.py",
+   "qualname": "Simplifier._flat_simplify",
+   "line": 1664,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/simplify.py",
+     "line": 1664,
+     "old": "            queue = deque(expression.flatten(unnest=False))\n",
+     "new": "            pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-statement_deletion-03",
+   "stratum": "optimizer/statement_deletion",
+   "category": "statement_deletion",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/qualify_columns.py",
+   "qualname": "validate_qualify_columns",
+   "line": 146,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_columns.py",
+     "line": 146,
+     "old": "    all_unqualified_columns = []\n",
+     "new": "    pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-statement_deletion-04",
+   "stratum": "optimizer/statement_deletion",
+   "category": "statement_deletion",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/qualify_columns.py",
+   "qualname": "_qualify_positional_column",
+   "line": 932,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_columns.py",
+     "line": 932,
+     "old": "    positional_columns = resolver.get_source_columns(column_table, only_visible=True)\n",
+     "new": "    pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-argument_swap-00",
+   "stratum": "optimizer/argument_swap",
+   "category": "argument_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/annotate_types.py",
+   "qualname": "TypeAnnotator._fixup_order_by_aliases",
+   "line": 656,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/annotate_types.py",
+     "line": 656,
+     "old": "                for node in ordered.walk(prune=lambda n: isinstance(n, exp.Subquery)):\n",
+     "new": "                for node in ordered.walk(prune=lambda n: isinstance(exp.Subquery, n)):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-argument_swap-01",
+   "stratum": "optimizer/argument_swap",
+   "category": "argument_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/qualify_columns.py",
+   "qualname": "_expand_order_by_and_distinct_on",
+   "line": 579,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_columns.py",
+     "line": 579,
+     "old": "        if not isinstance(clause, exp.Expr):\n",
+     "new": "        if not isinstance(exp.Expr, clause):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-argument_swap-02",
+   "stratum": "optimizer/argument_swap",
+   "category": "argument_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/qualify_columns.py",
+   "qualname": "qualify_outputs",
+   "line": 1507,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_columns.py",
+     "line": 1507,
+     "old": "                selection.set(\"alias\", exp.TableAlias(this=alias_identifier))\n",
+     "new": "                selection.set(exp.TableAlias(this=alias_identifier), 'alias')\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-argument_swap-03",
+   "stratum": "optimizer/argument_swap",
+   "category": "argument_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/canonicalize_internal_names.py",
+   "qualname": "canonicalize_internal_names._canon",
+   "line": 57,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/canonicalize_internal_names.py",
+     "line": 57,
+     "old": "        ident.set(\"this\", name)\n",
+     "new": "        ident.set(name, 'this')\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-optimizer-argument_swap-04",
+   "stratum": "optimizer/argument_swap",
+   "category": "argument_swap",
+   "location": "optimizer",
+   "path": "sqlglot/optimizer/qualify_columns.py",
+   "qualname": "_pop_table_column_aliases",
+   "line": 222,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/optimizer/qualify_columns.py",
+     "line": 222,
+     "old": "            table_alias.set(\"columns\", None)\n",
+     "new": "            table_alias.set(None, 'columns')\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-operator_swap-00",
+   "stratum": "executor/operator_swap",
+   "category": "operator_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.__init__",
+   "line": 21,
+   "node": "BoolOp",
+   "desc": "and/or swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 21,
+     "old": "        self.tables = tables or {}\n",
+     "new": "        self.tables = (tables and {})\n",
+     "desc": "and/or swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-operator_swap-01",
+   "stratum": "executor/operator_swap",
+   "category": "operator_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.set_operation",
+   "line": 528,
+   "node": "Compare",
+   "desc": "compare NotIn flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 528,
+     "old": "                if right_counts[row] and (not step.distinct or row not in seen):\n",
+     "new": "                if right_counts[row] and (not step.distinct or (row in seen)):\n",
+     "desc": "compare NotIn flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-operator_swap-02",
+   "stratum": "executor/operator_swap",
+   "category": "operator_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.aggregate",
+   "line": 485,
+   "node": "BoolOp",
+   "desc": "and/or swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 485,
+     "old": "        if step.projections or step.condition:\n",
+     "new": "        if (step.projections and step.condition):\n",
+     "desc": "and/or swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-operator_swap-03",
+   "stratum": "executor/operator_swap",
+   "category": "operator_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.scan",
+   "line": 234,
+   "node": "BoolOp",
+   "desc": "and/or swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 234,
+     "old": "        if source and isinstance(source, exp.Expr):\n",
+     "new": "        if (source or isinstance(source, exp.Expr)):\n",
+     "desc": "and/or swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-operator_swap-04",
+   "stratum": "executor/operator_swap",
+   "category": "operator_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor._compile_quantified",
+   "line": 154,
+   "node": "BoolOp",
+   "desc": "and/or swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 154,
+     "old": "            exp.Literal.string(op or comparison.key.upper()),\n",
+     "new": "            exp.Literal.string((op and comparison.key.upper())),\n",
+     "desc": "and/or swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-constant_change-00",
+   "stratum": "executor/constant_change",
+   "category": "constant_change",
+   "location": "executor",
+   "path": "sqlglot/executor/env.py",
+   "qualname": "substring",
+   "line": 136,
+   "node": "Constant",
+   "desc": "constant 0",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 136,
+     "old": "    elif start == 0:\n",
+     "new": "    elif start == 1:\n",
+     "desc": "constant 0"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-constant_change-01",
+   "stratum": "executor/constant_change",
+   "category": "constant_change",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor._compile_subquery",
+   "line": 142,
+   "node": "Constant",
+   "desc": "constant 'scope'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 142,
+     "old": "            \"SUBQUERY_SCALAR\", plan, exp.var(\"scope\"), *outer_columns, copy=False\n",
+     "new": "            \"SUBQUERY_SCALAR\", plan, exp.var('scope_x'), *outer_columns, copy=False\n",
+     "desc": "constant 'scope'"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-constant_change-02",
+   "stratum": "executor/constant_change",
+   "category": "constant_change",
+   "location": "executor",
+   "path": "sqlglot/executor/env.py",
+   "qualname": "_like",
+   "line": 195,
+   "node": "Constant",
+   "desc": "constant '.*'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 195,
+     "old": "        re.fullmatch(re.escape(e).replace(\"_\", \".\").replace(\"%\", \".*\"), this, re.DOTALL | flags)\n",
+     "new": "        re.fullmatch(re.escape(e).replace(\"_\", \".\").replace(\"%\", '.*_x'), this, re.DOTALL | flags)\n",
+     "desc": "constant '.*'"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-constant_change-03",
+   "stratum": "executor/constant_change",
+   "category": "constant_change",
+   "location": "executor",
+   "path": "sqlglot/executor/table.py",
+   "qualname": "RangeReader.__init__",
+   "line": 96,
+   "node": "Constant",
+   "desc": "constant 0",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/table.py",
+     "line": 96,
+     "old": "        self.range = range(0)\n",
+     "new": "        self.range = range(1)\n",
+     "desc": "constant 0"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-constant_change-04",
+   "stratum": "executor/constant_change",
+   "category": "constant_change",
+   "location": "executor",
+   "path": "sqlglot/executor/env.py",
+   "qualname": "_like",
+   "line": 193,
+   "node": "Constant",
+   "desc": "constant 0",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 193,
+     "old": "def _like(this, e, flags=0):\n",
+     "new": "def _like(this, e, flags=1):\n",
+     "desc": "constant 0"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-condition_negation-00",
+   "stratum": "executor/condition_negation",
+   "category": "condition_negation",
+   "location": "executor",
+   "path": "sqlglot/executor/env.py",
+   "qualname": "sql_or",
+   "line": 40,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 40,
+     "old": "    if right is True:\n",
+     "new": "    if not (right is True):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-condition_negation-01",
+   "stratum": "executor/condition_negation",
+   "category": "condition_negation",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.join",
+   "line": 317,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 317,
+     "old": "        if not step.condition and not step.projections:\n",
+     "new": "        if not (not step.condition and (not step.projections)):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-condition_negation-02",
+   "stratum": "executor/condition_negation",
+   "category": "condition_negation",
+   "location": "executor",
+   "path": "sqlglot/executor/env.py",
+   "qualname": "sql_in",
+   "line": 54,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 54,
+     "old": "        elif value == candidate:\n",
+     "new": "        elif not (value == candidate):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-condition_negation-03",
+   "stratum": "executor/condition_negation",
+   "category": "condition_negation",
+   "location": "executor",
+   "path": "sqlglot/executor/env.py",
+   "qualname": "cast",
+   "line": 173,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 173,
+     "old": "    if to in exp.DataType.TEXT_TYPES:\n",
+     "new": "    if not (to in exp.DataType.TEXT_TYPES):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-condition_negation-04",
+   "stratum": "executor/condition_negation",
+   "category": "condition_negation",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.nested_loop_join",
+   "line": 354,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 354,
+     "old": "                if self._join_matches(row, condition, condition_context):\n",
+     "new": "                if not (self._join_matches(row, condition, condition_context)):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-return_change-00",
+   "stratum": "executor/return_change",
+   "category": "return_change",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor._subquery_comparison",
+   "line": 212,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 212,
+     "old": "                return is_any\n",
+     "new": "                return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-return_change-01",
+   "stratum": "executor/return_change",
+   "category": "return_change",
+   "location": "executor",
+   "path": "sqlglot/executor/table.py",
+   "qualname": "RangeReader.__len__",
+   "line": 99,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/table.py",
+     "line": 99,
+     "old": "        return len(self.range)\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-return_change-02",
+   "stratum": "executor/return_change",
+   "category": "return_change",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor._subquery_exists",
+   "line": 191,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 191,
+     "old": "        return bool(self._subquery_table(plan_name, scope, args).rows)\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-return_change-03",
+   "stratum": "executor/return_change",
+   "category": "return_change",
+   "location": "executor",
+   "path": "sqlglot/executor/table.py",
+   "qualname": "TableIter.__next__",
+   "line": 89,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/table.py",
+     "line": 89,
+     "old": "            return self.table[self.index]\n",
+     "new": "            return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-return_change-04",
+   "stratum": "executor/return_change",
+   "category": "return_change",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor._replace_subqueries",
+   "line": 99,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 99,
+     "old": "            return expression\n",
+     "new": "            return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-statement_deletion-00",
+   "stratum": "executor/statement_deletion",
+   "category": "statement_deletion",
+   "location": "executor",
+   "path": "sqlglot/executor/table.py",
+   "qualname": "Table.append",
+   "line": 35,
+   "node": "Expr",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/table.py",
+     "line": 35,
+     "old": "        self.rows.append(row)\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-statement_deletion-01",
+   "stratum": "executor/statement_deletion",
+   "category": "statement_deletion",
+   "location": "executor",
+   "path": "sqlglot/executor/table.py",
+   "qualname": "Table.pop",
+   "line": 38,
+   "node": "Expr",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/table.py",
+     "line": 38,
+     "old": "        self.rows.pop()\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-statement_deletion-02",
+   "stratum": "executor/statement_deletion",
+   "category": "statement_deletion",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.aggregate",
+   "line": 458,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 458,
+     "old": "        table = self.table(list(step.group) + step.aggregations)\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-statement_deletion-03",
+   "stratum": "executor/statement_deletion",
+   "category": "statement_deletion",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.__init__",
+   "line": 25,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 25,
+     "old": "        self._outer_scope = None\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-statement_deletion-04",
+   "stratum": "executor/statement_deletion",
+   "category": "statement_deletion",
+   "location": "executor",
+   "path": "sqlglot/executor/__init__.py",
+   "qualname": "execute",
+   "line": 53,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/__init__.py",
+     "line": 53,
+     "old": "    tables_ = ensure_tables(tables, dialect=dialect)\n",
+     "new": "    pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-argument_swap-00",
+   "stratum": "executor/argument_swap",
+   "category": "argument_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/env.py",
+   "qualname": "cast",
+   "line": 151,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 151,
+     "old": "        if isinstance(this, datetime.datetime):\n",
+     "new": "        if isinstance(datetime.datetime, this):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-argument_swap-01",
+   "stratum": "executor/argument_swap",
+   "category": "argument_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor.set_operation",
+   "line": 533,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 533,
+     "old": "        elif issubclass(step.op, exp.Except):\n",
+     "new": "        elif issubclass(exp.Except, step.op):\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-argument_swap-02",
+   "stratum": "executor/argument_swap",
+   "category": "argument_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/__init__.py",
+   "qualname": "execute",
+   "line": 68,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/__init__.py",
+     "line": 68,
+     "old": "                nested_set(schema, [*keys, column], column_type)\n",
+     "new": "                nested_set([*keys, column], schema, column_type)\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-argument_swap-03",
+   "stratum": "executor/argument_swap",
+   "category": "argument_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/python.py",
+   "qualname": "PythonExecutor._execute",
+   "line": 65,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/python.py",
+     "line": 65,
+     "old": "                    contexts[node] = self.set_operation(node, context)\n",
+     "new": "                    contexts[node] = self.set_operation(context, node)\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-executor-argument_swap-04",
+   "stratum": "executor/argument_swap",
+   "category": "argument_swap",
+   "location": "executor",
+   "path": "sqlglot/executor/env.py",
+   "qualname": "str_position",
+   "line": 129,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/executor/env.py",
+     "line": 129,
+     "old": "    return this.find(substr, position) + 1\n",
+     "new": "    return this.find(position, substr) + 1\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-operator_swap-00",
+   "stratum": "utility/operator_swap",
+   "category": "operator_swap",
+   "location": "utility",
+   "path": "sqlglot/diff.py",
+   "qualname": "diff",
+   "line": 117,
+   "node": "Compare",
+   "desc": "compare NotEq flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/diff.py",
+     "line": 117,
+     "old": "        len(source_nodes) != len(source_ids)\n",
+     "new": "        (len(source_nodes) == len(source_ids))\n",
+     "desc": "compare NotEq flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-operator_swap-01",
+   "stratum": "utility/operator_swap",
+   "category": "operator_swap",
+   "location": "utility",
+   "path": "sqlglot/anonymize.py",
+   "qualname": "_number_alias",
+   "line": 223,
+   "node": "BinOp",
+   "desc": "binop Mult swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/anonymize.py",
+     "line": 223,
+     "old": "            exponent_value = 10 ** (exponent_length - 1) + (counter // (9 * 10 ** (digits - 1))) % (\n",
+     "new": "            exponent_value = 10 ** (exponent_length - 1) + (counter // ((9 // 10 ** (digits - 1)))) % (\n",
+     "desc": "binop Mult swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-operator_swap-02",
+   "stratum": "utility/operator_swap",
+   "category": "operator_swap",
+   "location": "utility",
+   "path": "sqlglot/helper.py",
+   "qualname": "is_iterable",
+   "line": 338,
+   "node": "BoolOp",
+   "desc": "and/or swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/helper.py",
+     "line": 338,
+     "old": "    return hasattr(value, \"__iter__\") and not isinstance(value, (str, bytes, Expr))\n",
+     "new": "    return (hasattr(value, '__iter__') or not isinstance(value, (str, bytes, Expr)))\n",
+     "desc": "and/or swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-operator_swap-03",
+   "stratum": "utility/operator_swap",
+   "category": "operator_swap",
+   "location": "utility",
+   "path": "sqlglot/schema.py",
+   "qualname": "flatten_schema",
+   "line": 761,
+   "node": "Compare",
+   "desc": "compare Eq flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/schema.py",
+     "line": 761,
+     "old": "        if depth == 1 or not isinstance(v, dict):\n",
+     "new": "        if (depth != 1) or not isinstance(v, dict):\n",
+     "desc": "compare Eq flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-operator_swap-04",
+   "stratum": "utility/operator_swap",
+   "category": "operator_swap",
+   "location": "utility",
+   "path": "sqlglot/planner.py",
+   "qualname": "Step.from_expression",
+   "line": 168,
+   "node": "Compare",
+   "desc": "compare IsNot flipped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/planner.py",
+     "line": 168,
+     "old": "        if where is not None:\n",
+     "new": "        if (where is None):\n",
+     "desc": "compare IsNot flipped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-constant_change-00",
+   "stratum": "utility/constant_change",
+   "category": "constant_change",
+   "location": "utility",
+   "path": "sqlglot/planner.py",
+   "qualname": "Join._to_s",
+   "line": 413,
+   "node": "Constant",
+   "desc": "constant 'condition'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/planner.py",
+     "line": 413,
+     "old": "            if join.get(\"condition\"):\n",
+     "new": "            if join.get('condition_x'):\n",
+     "desc": "constant 'condition'"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-constant_change-01",
+   "stratum": "utility/constant_change",
+   "category": "constant_change",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "eliminate_qualify",
+   "line": 270,
+   "node": "Constant",
+   "desc": "constant False",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 270,
+     "old": "        return outer_selects.from_(expression.subquery(alias=\"_t\", copy=False), copy=False).where(\n",
+     "new": "        return outer_selects.from_(expression.subquery(alias=\"_t\", copy=False), copy=True).where(\n",
+     "desc": "constant False"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-constant_change-02",
+   "stratum": "utility/constant_change",
+   "category": "constant_change",
+   "location": "utility",
+   "path": "sqlglot/anonymize.py",
+   "qualname": "_number_alias",
+   "line": 205,
+   "node": "Constant",
+   "desc": "constant 'E'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/anonymize.py",
+     "line": 205,
+     "old": "    sep = \"e\" if \"e\" in text else (\"E\" if \"E\" in text else \"\")\n",
+     "new": "    sep = \"e\" if \"e\" in text else (\"E\" if 'E_x' in text else \"\")\n",
+     "desc": "constant 'E'"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-constant_change-03",
+   "stratum": "utility/constant_change",
+   "category": "constant_change",
+   "location": "utility",
+   "path": "sqlglot/lineage.py",
+   "qualname": "GraphHTML.__init__",
+   "line": 660,
+   "node": "Constant",
+   "desc": "constant '500px'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/lineage.py",
+     "line": 660,
+     "old": "            \"height\": \"500px\",\n",
+     "new": "            \"height\": '500px_x',\n",
+     "desc": "constant '500px'"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-constant_change-04",
+   "stratum": "utility/constant_change",
+   "category": "constant_change",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "unnest_generate_date_array_using_recursive_cte",
+   "line": 104,
+   "node": "Constant",
+   "desc": "constant '_generated_dates'",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 104,
+     "old": "            cte_name = \"_generated_dates\" + (f\"_{count}\" if count else \"\")\n",
+     "new": "            cte_name = '_generated_dates_x' + (f\"_{count}\" if count else \"\")\n",
+     "desc": "constant '_generated_dates'"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-condition_negation-00",
+   "stratum": "utility/condition_negation",
+   "category": "condition_negation",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "eliminate_qualify",
+   "line": 248,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 248,
+     "old": "                if expression_by_alias:\n",
+     "new": "                if not (expression_by_alias):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-condition_negation-01",
+   "stratum": "utility/condition_negation",
+   "category": "condition_negation",
+   "location": "utility",
+   "path": "sqlglot/planner.py",
+   "qualname": "Step.from_expression",
+   "line": 240,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/planner.py",
+     "line": 240,
+     "old": "            if distinct is not None:\n",
+     "new": "            if not (distinct is not None):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-condition_negation-02",
+   "stratum": "utility/condition_negation",
+   "category": "condition_negation",
+   "location": "utility",
+   "path": "sqlglot/time.py",
+   "qualname": "format_time",
+   "line": 38,
+   "node": "While",
+   "desc": "while condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/time.py",
+     "line": 38,
+     "old": "    while end <= size:\n",
+     "new": "    while not (end <= size):\n",
+     "desc": "while condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-condition_negation-03",
+   "stratum": "utility/condition_negation",
+   "category": "condition_negation",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "unnest_to_explode._udtf_type",
+   "line": 329,
+   "node": "If",
+   "desc": "if condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 329,
+     "old": "        if u.args.get(\"offset\"):\n",
+     "new": "        if not (u.args.get('offset')):\n",
+     "desc": "if condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-condition_negation-04",
+   "stratum": "utility/condition_negation",
+   "category": "condition_negation",
+   "location": "utility",
+   "path": "sqlglot/serde.py",
+   "qualname": "dump",
+   "line": 31,
+   "node": "While",
+   "desc": "while condition negated",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/serde.py",
+     "line": 31,
+     "old": "    while stack:\n",
+     "new": "    while not (stack):\n",
+     "desc": "while condition negated"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-return_change-00",
+   "stratum": "utility/return_change",
+   "category": "return_change",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "eliminate_qualify._select_alias_or_name",
+   "line": 234,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 234,
+     "old": "                return exp.column(alias_or_name, quoted=identifier.args.get(\"quoted\"))\n",
+     "new": "                return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-return_change-01",
+   "stratum": "utility/return_change",
+   "category": "return_change",
+   "location": "utility",
+   "path": "sqlglot/errors.py",
+   "qualname": "concat_messages",
+   "line": 172,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/errors.py",
+     "line": 172,
+     "old": "    return \"\\n\\n\".join(msg)\n",
+     "new": "    return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-return_change-02",
+   "stratum": "utility/return_change",
+   "category": "return_change",
+   "location": "utility",
+   "path": "sqlglot/jsonpath.py",
+   "qualname": "parse._match",
+   "line": 80,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/jsonpath.py",
+     "line": 80,
+     "old": "            return _advance()\n",
+     "new": "            return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-return_change-03",
+   "stratum": "utility/return_change",
+   "category": "return_change",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "move_partitioned_by_to_schema_columns",
+   "line": 894,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 894,
+     "old": "    return expression\n",
+     "new": "    return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-return_change-04",
+   "stratum": "utility/return_change",
+   "category": "return_change",
+   "location": "utility",
+   "path": "sqlglot/schema.py",
+   "qualname": "AbstractMappingSchema._find",
+   "line": 255,
+   "node": "Return",
+   "desc": "return None",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/schema.py",
+     "line": 255,
+     "old": "        return self.nested_get(resolved_parts, raise_on_missing=raise_on_missing)\n",
+     "new": "        return None\n",
+     "desc": "return None"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-statement_deletion-00",
+   "stratum": "utility/statement_deletion",
+   "category": "statement_deletion",
+   "location": "utility",
+   "path": "sqlglot/anonymize.py",
+   "qualname": "anonymize",
+   "line": 62,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/anonymize.py",
+     "line": 62,
+     "old": "    hint_end = tokenizer_class._COMMENTS.get(hint_start)\n",
+     "new": "    pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-statement_deletion-01",
+   "stratum": "utility/statement_deletion",
+   "category": "statement_deletion",
+   "location": "utility",
+   "path": "sqlglot/planner.py",
+   "qualname": "Step.from_expression",
+   "line": 161,
+   "node": "Expr",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/planner.py",
+     "line": 161,
+     "old": "                projections.append(exp.column(e.alias_or_name, step.name, quoted=True))\n",
+     "new": "                pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-statement_deletion-02",
+   "stratum": "utility/statement_deletion",
+   "category": "statement_deletion",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "eliminate_join_marks",
+   "line": 1008,
+   "node": "Expr",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 1008,
+     "old": "                    parent.replace(parent.right if left is None else left)\n",
+     "new": "                    pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-statement_deletion-03",
+   "stratum": "utility/statement_deletion",
+   "category": "statement_deletion",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "explode_projection_to_unnest._explode_projection_to_unnest",
+   "line": 473,
+   "node": "Expr",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 473,
+     "old": "                        expression.set(\"expressions\", expressions)\n",
+     "new": "                        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-statement_deletion-04",
+   "stratum": "utility/statement_deletion",
+   "category": "statement_deletion",
+   "location": "utility",
+   "path": "sqlglot/jsonpath.py",
+   "qualname": "parse._parse_slice",
+   "line": 124,
+   "node": "Assign",
+   "desc": "statement replaced by pass",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/jsonpath.py",
+     "line": 124,
+     "old": "        start = _parse_literal()\n",
+     "new": "        pass\n",
+     "desc": "statement replaced by pass"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-argument_swap-00",
+   "stratum": "utility/argument_swap",
+   "category": "argument_swap",
+   "location": "utility",
+   "path": "sqlglot/planner.py",
+   "qualname": "Step.from_expression.extract_agg_operands",
+   "line": 142,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/planner.py",
+     "line": 142,
+     "old": "                        operand.expressions if isinstance(operand, exp.Distinct) else [operand]\n",
+     "new": "                        operand.expressions if isinstance(exp.Distinct, operand) else [operand]\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-argument_swap-01",
+   "stratum": "utility/argument_swap",
+   "category": "argument_swap",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "eliminate_window_clause",
+   "line": 1065,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 1065,
+     "old": "        expression.set(\"windows\", None)\n",
+     "new": "        expression.set(None, 'windows')\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-argument_swap-02",
+   "stratum": "utility/argument_swap",
+   "category": "argument_swap",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "move_ctes_to_top_level",
+   "line": 759,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 759,
+     "old": "                top_level_with.set(\"expressions\", top_level_with.expressions)\n",
+     "new": "                top_level_with.set(top_level_with.expressions, 'expressions')\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-argument_swap-03",
+   "stratum": "utility/argument_swap",
+   "category": "argument_swap",
+   "location": "utility",
+   "path": "sqlglot/transforms.py",
+   "qualname": "remove_unique_constraints",
+   "line": 820,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/transforms.py",
+     "line": 820,
+     "old": "        (parent if isinstance(parent, (exp.ColumnConstraint, exp.Constraint)) else constraint).pop()\n",
+     "new": "        (parent if isinstance((exp.ColumnConstraint, exp.Constraint), parent) else constraint).pop()\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  },
+  {
+   "id": "tm-utility-argument_swap-04",
+   "stratum": "utility/argument_swap",
+   "category": "argument_swap",
+   "location": "utility",
+   "path": "sqlglot/lineage.py",
+   "qualname": "to_node",
+   "line": 245,
+   "node": "Call",
+   "desc": "first two arguments swapped",
+   "ops": [
+    {
+     "kind": "edit",
+     "path": "sqlglot/lineage.py",
+     "line": 245,
+     "old": "                    select_by_name.setdefault(sel.alias_or_name, sel)\n",
+     "new": "                    select_by_name.setdefault(sel, sel.alias_or_name)\n",
+     "desc": "first two arguments swapped"
+    }
+   ]
+  }
+ ]
+}
