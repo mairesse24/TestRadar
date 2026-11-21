@@ -24,7 +24,7 @@ def main() -> None:
     print("|---|---|---|---:|" + "---|" * len(POLICIES))
     for row in result["scenarios"]:
         patch = row.get("file", "")
-        print(f"| {row['id']} | {row['stratum']} | {patch} | {len(row['failing'])} | "
+        print(f"| {row['id']} | {row['stratum']} | {patch} | {row["failing"] if isinstance(row["failing"], int) else len(row["failing"])} | "
               + " | ".join(cell(row, p) for p in POLICIES) + " |")
     print()
     print("| Policy | Simulated s (incl. 300 s per missed commit) | Missed commits |")
