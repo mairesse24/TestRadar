@@ -341,6 +341,264 @@ class OutputGuarantees(unittest.TestCase):
                 self.assertTrue(aggressive <= balanced)
 
 
+# A second synthetic suite for dependency / false-negative cases.
+SUITE2 = [
+    T(0, "tests/dialects/test_presto.py::TestPresto::test_presto"),
+    T(1, "tests/dialects/test_trino.py::TestTrino::test_trino"),
+    T(2, "tests/dialects/test_athena.py::TestAthena::test_athena"),
+    T(3, "tests/dialects/test_dune.py::TestDune::test_dune"),
+    T(4, "tests/dialects/test_teradata.py::TestTeradata::test_teradata"),
+    T(5, "tests/dialects/test_tsql.py::TestTSQL::test_tsql"),
+    T(6, "tests/dialects/test_fabric.py::TestFabric::test_fabric"),
+    T(7, "tests/test_optimizer.py::TestOptimizer::test_pushdown_predicates", 2.0),
+    T(8, "tests/test_executor.py::TestExecutor::test_execute_tpch", 5.0),
+    T(9, "tests/test_parser.py::TestParser::test_max_nodes", 30.0),
+    T(10, "tests/test_diff.py::TestDiff::test_simple"),
+    T(11, "tests/test_jsonpath.py::TestJsonpath::test_cts_file"),
+    T(12, "tests/test_transpile.py::TestTranspile::test_identity"),
+    T(13, "tests/dialects/test_spark.py::TestSpark::test_spark"),
+    T(14, "tests/dialects/test_databricks.py::TestDatabricks::test_databricks"),
+    T(15, "tests/dialects/test_hive.py::TestHive::test_hive"),
+    T(16, "tests/test_lineage.py::TestLineage::test_lineage"),
+]
+ALL2 = {t["number"] for t in SUITE2}
+
+
+def sel2(changes, covered=(), impacted=(), mode="safe", **kw):
+    return ts.explain_selection(changes, SUITE2, set(impacted), set(covered), mode=mode, **kw)
+
+
+class DerivedDependencyMaps(unittest.TestCase):
+    """The static maps must capture imports that a naive scan misses."""
+
+    def test_function_level_import_is_recorded(self):
+        self.assertIn("sqlglot/generator.py", ts.LAZY_SOURCE_IMPORTERS["sqlglot/dialects/tsql.py"])
+        self.assertIn("sqlglot/expressions/core.py", ts.LAZY_SOURCE_IMPORTERS["sqlglot/serde.py"])
+
+    def test_derived_core_includes_lazily_used_modules(self):
+        for path in ("sqlglot/serde.py", "sqlglot/transforms.py", "sqlglot/dialects/tsql.py",
+                     "sqlglot/optimizer/simplify.py", "sqlglot/optimizer/scope.py"):
+            with self.subTest(path=path):
+                self.assertIn(path, ts.DERIVED_CORE_MODULES)
+        for path in ("sqlglot/diff.py", "sqlglot/dialects/postgres.py", "sqlglot/optimizer/eliminate_joins.py"):
+            with self.subTest(path=path):
+                self.assertNotIn(path, ts.DERIVED_CORE_MODULES)
+
+    def test_lazy_reexport_is_resolved(self):
+        # executor imports ``optimize`` through optimizer/__init__'s __getattr__ table
+        self.assertIn("sqlglot/executor/__init__.py", ts.SOURCE_IMPORTERS["sqlglot/optimizer/optimizer.py"])
+
+    def test_by_name_dialect_use_is_a_dependency(self):
+        # parsers/presto.py formats time with the "teradata" dialect by name
+        self.assertIn("teradata", ts.DIALECT_BASES["presto"])
+        self.assertIn("sqlglot/parsers/presto.py", ts.SOURCE_IMPORTERS["sqlglot/dialects/teradata.py"])
+
+    def test_registry_modules_are_not_importers(self):
+        for importers in ts.SOURCE_IMPORTERS.values():
+            self.assertFalse(set(importers) & ts.REGISTRY_MODULES)
+
+    def test_shared_test_modules_are_derived(self):
+        self.assertIn("tests/dialects/test_dialect.py", ts.SHARED_TEST_IMPORTERS)
+        self.assertGreater(len(ts.SHARED_TEST_IMPORTERS["tests/dialects/test_dialect.py"]), 20)
+
+
+class SharedAndDynamic(unittest.TestCase):
+    def test_lazily_shared_dialect_is_all_even_with_coverage(self):
+        for path in ("sqlglot/dialects/tsql.py", "sqlglot/generators/tsql.py"):
+            for mode in ("safe", "balanced"):
+                with self.subTest(path=path, mode=mode):
+                    r = sel2([change(path)], covered={SUITE2[5]["id"]}, mode=mode)
+                    self.assertTrue(r.fell_back)
+                    self.assertEqual(r.numbers, ALL2)
+        r = sel2([change("sqlglot/dialects/tsql.py")])
+        self.assertIn("sqlglot/generator.py", r.reasons[0])
+
+    def test_by_name_dialect_dependency_reaches_dependents(self):
+        r = sel2([change("sqlglot/dialects/teradata.py")], mode="balanced")
+        self.assertFalse(r.fell_back)
+        # presto uses teradata by name; trino/athena/dune build on presto
+        self.assertTrue({0, 1, 2, 3, 4} <= r.numbers, r.numbers)
+
+    def test_dialect_used_inside_optimizer_selects_optimizer_tests(self):
+        # optimizer/pushdown_predicates.py imports dialects.presto inside a function
+        r = sel2([change("sqlglot/dialects/presto.py")], mode="balanced")
+        self.assertTrue({0, 1, 2, 3, 7, 8} <= r.numbers, r.numbers)
+        self.assertNotIn(9, r.numbers)
+        self.assertTrue(any("pushdown_predicates" in x for x in r.reasons))
+
+    def test_cyclic_dialect_dependencies_terminate(self):
+        r = sel2([change("sqlglot/parsers/spark2.py")], mode="balanced")
+        self.assertTrue({13, 14} <= r.numbers)  # spark2 <-> spark reference each other
+
+    def test_shared_test_helper_balanced_selects_importers(self):
+        r = sel2([change("tests/helpers.py")], mode="balanced")
+        self.assertEqual(r.numbers, ALL2)  # helpers.py is test infrastructure
+        r = sel2([change("tests/helpers.py")])
+        self.assertTrue(r.fell_back)
+
+
+class IncompleteAnalysisNeverSkips(unittest.TestCase):
+    """Any sign of incomplete analysis must yield every test, in every mode."""
+
+    INCOMPLETE = [
+        ("analysis_uncertain", [change("sqlglot/diff.py")], {"analysis_uncertain": True}),
+        ("docs + analysis_uncertain", [change("README.md")], {"analysis_uncertain": True}),
+        ("uncertain change", [change("sqlglot/diff.py", uncertain=True)], {}),
+        ("uncertain fixture", [change("tests/fixtures/identity.sql", uncertain=True)], {}),
+        ("binary", [change("sqlglot/diff.py", status="binary")], {}),
+        ("unknown status", [change("sqlglot/diff.py", status="unknown")], {}),
+        ("missing status", [{"path": "sqlglot/diff.py"}], {}),
+        ("no path at all", [{"status": "modified"}], {}),
+        ("None paths", [{"path": None, "old_path": None, "new_path": None, "status": "modified"}], {}),
+        ("empty change list", [], {}),
+        ("None change list", None, {}),
+        ("unknown top-level path", [change("vendor/lib.py")], {}),
+        ("unknown fixture", [change("tests/fixtures/new_dir/x.sql")], {}),
+        ("test infrastructure", [change("tests/conftest.py")], {}),
+        ("config", [change("pyproject.toml")], {}),
+    ]
+
+    def test_every_mode_returns_everything(self):
+        for label, changes, kw in self.INCOMPLETE:
+            for mode in ts.MODES:
+                with self.subTest(case=label, mode=mode):
+                    r = ts.explain_selection(changes, SUITE2, set(), set(), mode=mode, **kw)
+                    self.assertTrue(r.fell_back)
+                    self.assertEqual(r.numbers, ALL2)
+
+    def test_safe_and_balanced_cases(self):
+        cases = [
+            ("unknown source module", [change("sqlglot/optimizer/not_in_map.py")]),
+            ("deleted source", [change("sqlglot/diff.py", status="deleted", new_path=None)]),
+            ("renamed source", [change("sqlglot/diff2.py", status="renamed", old_path="sqlglot/diff.py")]),
+            ("copied source", [change("sqlglot/diff2.py", status="copied", old_path="sqlglot/diff.py")]),
+            ("core + narrow", [change("sqlglot/diff.py"), change("sqlglot/parser.py")]),
+        ]
+        for label, changes in cases:
+            for mode in ("safe", "balanced"):
+                with self.subTest(case=label, mode=mode):
+                    r = sel2(changes, mode=mode)
+                    self.assertTrue(r.fell_back)
+                    self.assertEqual(r.numbers, ALL2)
+
+    def test_safe_needs_coverage_for_source(self):
+        r = sel2([change("sqlglot/diff.py")])
+        self.assertEqual(r.numbers, ALL2)
+        r = sel2([change("sqlglot/diff.py")], covered={"tests/unknown.py::X::y", "  "})
+        self.assertEqual(r.numbers, ALL2)
+        self.assertIn("covered test ids", r.reasons[0])
+
+    def test_coverage_never_removes_static_candidates(self):
+        base = sel2([change("sqlglot/dialects/presto.py")], mode="balanced").numbers
+        with_cov = sel2([change("sqlglot/dialects/presto.py")], covered={SUITE2[10]["id"]}, mode="balanced").numbers
+        self.assertTrue(base <= with_cov)
+        self.assertIn(10, with_cov)
+
+
+class StructuralAndNewModules(unittest.TestCase):
+    def test_module_level_import_edit_is_all(self):
+        c = change("sqlglot/diff.py")
+        c["added_text"] = ["from sqlglot.helper import nothing_here"]
+        for mode in ("safe", "balanced"):
+            with self.subTest(mode=mode):
+                self.assertEqual(sel2([c], covered={SUITE2[10]["id"]}, mode=mode).numbers, ALL2)
+
+    def test_function_level_import_edit_is_not_structural(self):
+        c = change("sqlglot/diff.py")
+        c["added_text"] = ["    from sqlglot.optimizer import simplify"]
+        self.assertFalse(sel2([c], mode="balanced").fell_back)
+
+    def test_removed_or_renamed_definition_is_all(self):
+        c = change("sqlglot/diff.py")
+        c["removed_text"] = ["def diff(source, target):"]
+        c["added_text"] = ["def diff2(source, target):"]
+        self.assertEqual(sel2([c], mode="balanced").numbers, ALL2)
+        c["added_text"] = ["def diff(source, target, extra=None):"]
+        self.assertFalse(sel2([c], mode="balanced").fell_back)
+
+    def test_new_unreferenced_module(self):
+        c = change("sqlglot/optimizer/extra_rules.py", status="added", old_path=None)
+        c["removed_text"] = []
+        self.assertEqual(sel2([c]).numbers, ALL2)
+        r = sel2([c], mode="balanced")
+        self.assertFalse(r.fell_back)
+        self.assertEqual(r.numbers, set())
+        self.assertIn("not referenced", r.reasons[0])
+
+    def test_new_module_used_by_changed_module(self):
+        new = change("sqlglot/optimizer/extra_rules.py", status="added", old_path=None)
+        user = change("sqlglot/diff.py")
+        user["added_text"] = ["    from sqlglot.optimizer.extra_rules import drop_all"]
+        r = sel2([new, user], mode="balanced")
+        self.assertIn(10, r.numbers)
+        self.assertTrue(any("used by other changed modules" in x for x in r.reasons))
+        # the same wiring at module level is structural
+        user["added_text"] = ["from sqlglot.optimizer.extra_rules import drop_all"]
+        self.assertEqual(sel2([new, user], mode="balanced").numbers, ALL2)
+
+    def test_aggressive_treats_rename_as_modification(self):
+        c = change("sqlglot/diff2.py", status="renamed", old_path="sqlglot/diff.py")
+        r = sel2([c], mode="aggressive")
+        self.assertIn(10, r.numbers)
+
+
+class MultiModuleAndRobustness(unittest.TestCase):
+    def test_multi_module_union(self):
+        r = sel2([change("sqlglot/diff.py"), change("sqlglot/parsers/teradata.py")], mode="balanced")
+        self.assertTrue({10, 0, 4} <= r.numbers)
+        r2 = sel2([change("sqlglot/parsers/teradata.py"), change("sqlglot/diff.py")], mode="balanced")
+        self.assertEqual(r.numbers, r2.numbers)
+
+    def test_impacted_paths_are_normalised(self):
+        r = sel2([change("sqlglot/diff.py")], impacted={"./tests\\test_jsonpath.py", "b/tests/test_lineage.py"},
+                 mode="balanced")
+        self.assertTrue({10, 11, 16} <= r.numbers)
+
+    def test_impacted_source_modules_add_their_tests(self):
+        r = sel2([change("sqlglot/diff.py")], impacted={"sqlglot/jsonpath.py", "sqlglot/lineage.py"},
+                 mode="balanced")
+        self.assertIn(16, r.numbers)  # lineage (non-core) -> tests/test_lineage.py
+        self.assertNotEqual(r.numbers, ALL2)  # jsonpath is core: not used to expand
+
+    def test_covered_ids_are_normalised(self):
+        cov = {" tests\\test_jsonpath.py::TestJsonpath::test_cts_file ", "./tests/test_lineage.py::TestLineage::test_lineage[1]"}
+        r = sel2([change("sqlglot/diff.py")], covered=cov)
+        self.assertFalse(r.fell_back)
+        self.assertTrue({10, 11, 16} <= r.numbers)
+
+    def test_path_variants(self):
+        variants = [
+            {"path": "sqlglot/diff.py", "status": "modified"},
+            {"old_path": "sqlglot/diff.py", "new_path": "sqlglot/diff.py", "status": "modified"},
+            {"path": "./sqlglot\\diff.py", "status": "modified", "added_text": None, "removed_text": None},
+            {"path": "b/sqlglot/diff.py", "old_path": "a/sqlglot/diff.py", "status": "modified"},
+        ]
+        for c in variants:
+            with self.subTest(change=c):
+                self.assertEqual(sel2([c], mode="balanced").numbers, {10})
+
+    def test_index_cache_is_safe(self):
+        suite = [dict(t) for t in SUITE2]
+        first = ts.select_tests([change("sqlglot/diff.py")], suite, set(), set(), mode="balanced")
+        suite.append(T(17, "tests/test_diff.py::TestDiff::test_more"))
+        second = ts.select_tests([change("sqlglot/diff.py")], suite, set(), set(), mode="balanced")
+        self.assertEqual(first, {10})
+        self.assertEqual(second, {10, 17})
+        other = [dict(t) for t in SUITE2]
+        self.assertEqual(ts.select_tests([change("sqlglot/diff.py")], other, set(), set(), mode="balanced"), {10})
+
+    def test_deterministic_across_input_order(self):
+        changes = [change("sqlglot/dialects/presto.py"), change("tests/fixtures/identity.sql"), change("sqlglot/diff.py")]
+        cov = [SUITE2[16]["id"], SUITE2[11]["id"]]
+        outs = set()
+        for i in range(6):
+            order = changes[i % 3:] + changes[: i % 3]
+            r = ts.explain_selection(order, SUITE2, set(reversed(cov)) if i % 2 else set(cov), set(cov),
+                                     mode="balanced")
+            outs.add(frozenset(r.numbers))
+        self.assertEqual(len(outs), 1)
+
+
 class RealSampleTests(unittest.TestCase):
     """Uses the real sample/tests.json (never answers.json)."""
 
