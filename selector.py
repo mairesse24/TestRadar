@@ -24,7 +24,7 @@ from pathlib import Path
 import re
 import sys
 
-from analyzer import edit_scope
+from analyzer import eager_initialization, edit_scope
 from analyzer.coverage_map import CoverageMap
 from analyzer.dependency_graph import DependencyGraph
 from analyzer.patch_parser import parse_patch
@@ -41,7 +41,7 @@ POLICY_ENV = "TESTRADAR_POLICY"
 #   equivalent   - formatting/comment-only edits (identical syntax tree) run nothing
 #   construction - function-body-only dialect edits skip construction-only tests
 EXPERIMENTS_ENV = "TESTRADAR_EXPERIMENTS"
-KNOWN_EXPERIMENTS = ("equivalent", "construction")
+KNOWN_EXPERIMENTS = ("equivalent", "construction", "initialization")
 
 
 def enabled_experiments() -> frozenset[str]:
@@ -197,6 +197,8 @@ def analyze_selective(
     if changes and not signal_changes:
         return Selection(set(), False, [f"{c['path']}: syntax tree unchanged" for c in changes]), []
     reasons = hard_signals(signal_changes, graph, coverage)
+    if not reasons and "initialization" in experiments:
+        reasons = eager_initialization.reasons(edit_scope.pinned_root(), signal_changes)
     paths = _paths(changes)
     impacted = graph.impacted_files(paths, stop_at=REGISTRY_MODULES) if graph is not None else set()
     covered: set[str] = set()
