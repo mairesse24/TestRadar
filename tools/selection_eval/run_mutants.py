@@ -28,6 +28,9 @@ def run_suite(tree: str, python: str, workers: str, out: str) -> dict:
     env = dict(os.environ)
     env.update({
         "SKIP_INTEGRATION": "0",
+        # Never reuse or write bytecode: a cached .pyc from a mutated file whose
+        # restored copy has the same size and mtime second would be loaded stale.
+        "PYTHONDONTWRITEBYTECODE": "1",
         "SELECTION_EVAL_OUTCOMES": out,
         "PYTHONPATH": f"{tree}{os.pathsep}{HERE}",
         "PATH": os.path.dirname(python) + os.pathsep + env.get("PATH", ""),
