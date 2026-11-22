@@ -1,0 +1,25 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+index e4335f016..fb82a4680 100644
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -24,7 +24,9 @@ from sqlglot.dialects.dialect import (
+     sha2_digest_sql,
+ )
+ from sqlglot.generator import unsupported_args
+-from sqlglot.helper import is_int
++from sqlglot.helper import (
++    is_int,
++)
+ from sqlglot.optimizer.simplify import simplify_parens
+ from collections import defaultdict
+ 
+@@ -32,6 +34,9 @@ DATETIME_DELTA = t.Union[exp.DateAdd, exp.DateDiff, exp.DateSub, exp.TimestampSu
+ 
+ 
+ @unsupported_args(("expression", "ClickHouse's arraySort does not support a comparator."))
++generator.Generator.TRANSFORMS.pop(exp.ArraySort, None)
++
++
+ def _array_sort_sql(self: ClickHouseGenerator, expression: exp.ArraySort) -> str:
+     order = array_sort_order(expression)
+     if order is None:

@@ -1,0 +1,24 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+index e4335f016..88f66c9cf 100644
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -24,7 +24,9 @@ from sqlglot.dialects.dialect import (
+     sha2_digest_sql,
+ )
+ from sqlglot.generator import unsupported_args
+-from sqlglot.helper import is_int
++from sqlglot.helper import (
++    is_int,
++)
+ from sqlglot.optimizer.simplify import simplify_parens
+ from collections import defaultdict
+ 
+@@ -451,7 +453,7 @@ class ClickHouseGenerator(generator.Generator):
+     }
+ 
+     @unsupported_args("json_scope")
+-    def contains_sql(self, expression: exp.Contains) -> str:
++    def contains_sql(self, expression: exp.Contains) -> str:  # noqa
+         # ClickHouse has no CONTAINS; keep the parentheses only where the parent needs them
+         result = exp.paren(
+             exp.StrPosition(this=expression.this, substr=expression.expression) > 0, copy=False

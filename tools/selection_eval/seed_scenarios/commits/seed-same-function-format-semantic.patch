@@ -1,0 +1,21 @@
+diff --git a/sqlglot/executor/context.py b/sqlglot/executor/context.py
+index 98c9aa150..4abc15b5f 100644
+--- a/sqlglot/executor/context.py
++++ b/sqlglot/executor/context.py
+@@ -67,7 +67,9 @@ class Context:
+ 
+     @property
+     def columns(self) -> tuple:
+-        return self.table.columns if self.tables else ()
++        return (
++            self.table.columns if self.tables else ()
++        )
+ 
+     def __iter__(self):
+         self.env["scope"] = self.row_readers
+@@ -109,4 +111,4 @@ class Context:
+         self.env["scope"] = self.range_readers
+ 
+     def __contains__(self, table: str) -> bool:
+-        return table in self.tables
++        return table not in self.tables

@@ -1,0 +1,21 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+index 5bdce0a97..43c757d2b 100644
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -10,6 +10,7 @@ if t.TYPE_CHECKING:
+     from sqlglot._typing import E
+ 
+ 
++# import importlib  (historic note)
+ def eliminate_joins(expression: E) -> E:
+     """
+     Remove unused joins from an expression.
+@@ -92,7 +93,7 @@ def _join_is_used(scope: Scope, join: exp.Join, alias: str) -> bool:
+ 
+ def _is_joined_on_all_unique_outputs(scope: Scope, join: exp.Join) -> bool:
+     unique_outputs = _unique_outputs(scope)
+-    if not unique_outputs:
++    if unique_outputs:
+         return False
+ 
+     _, join_keys, _ = join_condition(join)

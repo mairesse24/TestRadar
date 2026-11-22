@@ -1,0 +1,15 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+index 5bdce0a97..e210c1bc3 100644
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -91,8 +91,9 @@ def _join_is_used(scope: Scope, join: exp.Join, alias: str) -> bool:
+ 
+ 
+ def _is_joined_on_all_unique_outputs(scope: Scope, join: exp.Join) -> bool:
++    # outputs that make the join unique
+     unique_outputs = _unique_outputs(scope)
+-    if not unique_outputs:
++    if unique_outputs:
+         return False
+ 
+     _, join_keys, _ = join_condition(join)

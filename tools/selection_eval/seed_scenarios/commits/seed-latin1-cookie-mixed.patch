@@ -1,0 +1,30 @@
+diff --git a/sqlglot/optimizer/eliminate_joins.py b/sqlglot/optimizer/eliminate_joins.py
+index 5bdce0a97..b00eba7bf 100644
+--- a/sqlglot/optimizer/eliminate_joins.py
++++ b/sqlglot/optimizer/eliminate_joins.py
+@@ -1,10 +1,15 @@
++# -*- coding: latin-1 -*-
+ from __future__ import annotations
+ 
+ import typing as t
+ 
+ from sqlglot import expressions as exp
+ from sqlglot.optimizer.normalize import normalized
+-from sqlglot.optimizer.scope import Scope, find_in_scope, traverse_scope
++from sqlglot.optimizer.scope import (
++    Scope,
++    find_in_scope,
++    traverse_scope,
++)
+ 
+ if t.TYPE_CHECKING:
+     from sqlglot._typing import E
+@@ -92,7 +97,7 @@ def _join_is_used(scope: Scope, join: exp.Join, alias: str) -> bool:
+ 
+ def _is_joined_on_all_unique_outputs(scope: Scope, join: exp.Join) -> bool:
+     unique_outputs = _unique_outputs(scope)
+-    if not unique_outputs:
++    if unique_outputs:
+         return False
+ 
+     _, join_keys, _ = join_condition(join)
