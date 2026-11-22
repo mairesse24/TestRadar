@@ -40,8 +40,11 @@ POLICY_ENV = "TESTRADAR_POLICY"
 # Optional, separately validated narrowing rules (comma separated):
 #   equivalent   - formatting/comment-only edits (identical syntax tree) run nothing
 #   construction - function-body-only dialect edits skip construction-only tests
+#   seeds        - formatting-only regions of a semantically edited file do not
+#                  seed the text-level rules (import/dynamic signals, the
+#                  structural rule, the broad-change size)
 EXPERIMENTS_ENV = "TESTRADAR_EXPERIMENTS"
-KNOWN_EXPERIMENTS = ("equivalent", "construction")
+KNOWN_EXPERIMENTS = ("equivalent", "construction", "seeds")
 
 
 def enabled_experiments() -> frozenset[str]:
@@ -188,6 +191,24 @@ def analyze_selective(
                 scopes[change["path"]] = scope
             elif scope.kind == "bodies" and "construction" in experiments:
                 scopes[change["path"]] = scope
+    seed_notes: list[str] = []
+    if "seeds" in experiments and changes:
+        counts = {}
+        for change in changes:
+            if isinstance(change, dict):
+                counts[change.get("path")] = counts.get(change.get("path"), 0) + 1
+        filtered = []
+        for change in changes:
+            sub = None
+            if (isinstance(change, dict) and counts.get(change.get("path")) == 1
+                    and change.get("path") not in scopes):
+                sub = edit_scope.semantic_change(change)
+            if sub is None:
+                filtered.append(change)
+            else:
+                filtered.append(sub[0])
+                seed_notes.append(f"{change['path']}: {sub[1]} formatting-only region(s) not used as seeds")
+        changes = filtered
     # A file whose syntax tree is unchanged carries no behaviour, so its
     # text cannot raise a hard signal either.
     signal_changes = [
@@ -208,6 +229,8 @@ def analyze_selective(
         changes, tests, impacted, covered, analysis_uncertain=bool(reasons), mode=mode,
         edit_scopes=scopes,
     )
+    if seed_notes and not selection.fell_back:
+        selection.reasons[:0] = seed_notes
     return selection, reasons
 
 

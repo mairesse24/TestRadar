@@ -271,3 +271,142 @@ def classify(change: dict, root: Path | None = None, *, analyze_bodies: bool = T
                 + (f"; construction/import reachable: {', '.join(sorted(risky))}" if risky else "")),
     )
 
+
+
+# ---- region-level seed filtering ------------------------------------------
+# A modified file whose syntax tree changed may still contain regions that are
+# formatting only (comments, blank lines, line breaks). Those regions carry no
+# behaviour, so they should not seed the text-level rules (import and dynamic
+# loading signals, the structural rule, the broad-change size) that are meant
+# to judge the semantic edit. A region is dropped only when the file rebuilt
+# without all dropped regions has exactly the same syntax tree as the real new
+# file; any doubt keeps the original change unchanged.
+MAX_SEED_REGIONS = 40
+
+
+def _regions(old_count: int, change: dict) -> list[tuple[list, list]] | None:
+    """Split one change into contiguous edit regions.
+
+    Each region is (removed old line numbers, added new line numbers)."""
+    gone = set(change.get("old_lines") or ())
+    new_at = set(change.get("new_lines") or ())
+    total_new = old_count - len(gone) + len(new_at)
+    regions: list[tuple[list, list]] = []
+    i = j = 1
+    current: tuple[list, list] | None = None
+    while i <= old_count or j <= total_new:
+        if i in gone or j in new_at:
+            if current is None:
+                current = ([], [])
+                regions.append(current)
+            while i in gone:
+                current[0].append(i)
+                i += 1
+            while j in new_at:
+                current[1].append(j)
+                j += 1
+            continue
+        current = None
+        if i > old_count or j > total_new:
+            return None  # the two sides do not line up
+        i += 1
+        j += 1
+    return regions
+
+
+def _apply(old_lines: list[str], change: dict, regions: list[tuple[list, list]], keep: list[int]):
+    """Rebuild the file applying only the regions in ``keep``; return the text
+    and the sub-change that describes exactly that edit."""
+    removed_text = dict(zip(change["old_lines"], change["removed_text"]))
+    added_text = dict(zip(change["new_lines"], change["added_text"]))
+    sub = {**change, "old_lines": [], "new_lines": [], "removed_text": [], "added_text": []}
+    out: list[str] = []
+    kept = set(keep)
+    i = 1  # next old line
+    for index, (old_nums, new_nums) in enumerate(regions):
+        # anchor: the old line where the region starts
+        if old_nums:
+            anchor = old_nums[0]
+        else:
+            # pure insertion: located by its first new line and the offset so far
+            anchor = None
+        if anchor is not None:
+            while i < anchor:
+                out.append(old_lines[i - 1]); i += 1
+        else:
+            target = new_nums[0]
+            # equal lines before the insertion in the *full* new file
+            offset = sum(len(r[1]) - len(r[0]) for r in regions[:index])
+            old_before = target - 1 - offset
+            while i <= old_before:
+                out.append(old_lines[i - 1]); i += 1
+        if index in kept:
+            for n in old_nums:
+                sub["old_lines"].append(n); sub["removed_text"].append(removed_text[n])
+            for n in new_nums:
+                out.append(added_text[n])
+                sub["new_lines"].append(len(out)); sub["added_text"].append(added_text[n])
+            i += len(old_nums)
+        else:
+            for n in old_nums:
+                out.append(old_lines[n - 1])
+            i += len(old_nums)
+    while i <= len(old_lines):
+        out.append(old_lines[i - 1]); i += 1
+    return "\n".join(out), sub
+
+
+def semantic_change(change: dict, root: Path | None = None) -> tuple[dict, int] | None:
+    """The change restricted to its semantically relevant regions.
+
+    Returns (sub-change, number of formatting-only regions dropped), or None
+    when nothing can be dropped or anything is in doubt."""
+    root = root or pinned_root()
+    path = change.get("path") if isinstance(change, dict) else None
+    if root is None or not path or not path.startswith("sqlglot/") or not path.endswith(".py"):
+        return None
+    if change.get("old_path", path) != path or change.get("status") != "modified" or change.get("uncertain"):
+        return None
+    try:
+        old_text = (root / path).read_text(encoding="utf-8")
+        new_text = reconstruct(old_text, change)
+        if new_text is None:
+            return None
+        if _source_encoding(old_text) != "utf-8" or _source_encoding(new_text) != "utf-8":
+            return None
+        if "\ufeff" in old_text or "\ufeff" in new_text:
+            return None
+        old_lines = old_text.split("\n")
+        regions = _regions(len(old_lines), change)
+        if not regions or len(regions) < 2 or len(regions) > MAX_SEED_REGIONS:
+            return None
+        everything = list(range(len(regions)))
+        full_text, _ = _apply(old_lines, change, regions, everything)
+        if full_text != new_text:
+            return None  # the region split does not rebuild the real file
+        target = _dump(ast.parse(new_text))
+        if _dump(ast.parse(old_text)) == target:
+            return None  # whole-file equivalence is the existing rule's job
+        dropped = []
+        for index in everything:
+            text, _ = _apply(old_lines, change, regions, [k for k in everything if k != index])
+            try:
+                if _dump(ast.parse(text)) == target:
+                    dropped.append(index)
+            except SyntaxError:
+                continue
+        if not dropped:
+            return None
+        keep = [k for k in everything if k not in dropped]
+        if not keep:
+            return None
+        text, sub = _apply(old_lines, change, regions, keep)
+        # Jointly: the file rebuilt from the kept regions alone must compile to
+        # the same tree as the real new file.
+        if _dump(ast.parse(text)) != target or reconstruct(old_text, sub) != text:
+            return None
+        if _source_encoding(text) != "utf-8" or "\ufeff" in text:
+            return None
+        return sub, len(dropped)
+    except (OSError, SyntaxError, ValueError, UnicodeError, RecursionError, KeyError, IndexError):
+        return None

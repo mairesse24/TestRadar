@@ -40,7 +40,7 @@ ARG TESTRADAR_POLICY=balanced
 # implemented but not enabled for release. Build with
 # --build-arg TESTRADAR_EXPERIMENTS= to restore the previous release selection.
 # See docs/RELEASE_FORMATTING_EQUIVALENCE.md.
-ARG TESTRADAR_EXPERIMENTS=equivalent
+ARG TESTRADAR_EXPERIMENTS=equivalent,seeds
 ENV PYTHONDONTWRITEBYTECODE=1 TESTRADAR_POLICY=${TESTRADAR_POLICY} \
     TESTRADAR_EXPERIMENTS=${TESTRADAR_EXPERIMENTS}
 ENTRYPOINT ["python", "/app/selector.py"]

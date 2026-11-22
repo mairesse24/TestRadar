@@ -160,3 +160,79 @@ class ExperimentsFlagTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SeedFilterTest(unittest.TestCase):
+    """Region-level filtering of formatting-only regions (``seeds``)."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        (self.root / "sqlglot" / "generators").mkdir(parents=True)
+        (self.root / "sqlglot" / "__init__.py").write_text("", encoding="utf-8")
+        self.path = "sqlglot/generators/foo.py"
+        (self.root / self.path).write_text(DIALECT, encoding="utf-8")
+
+    def semantic(self, new):
+        changes = parse_patch(_diff(self.path, DIALECT, new))
+        self.assertEqual(len(changes), 1)
+        return changes[0], edit_scope.semantic_change(changes[0], self.root)
+
+    REFLOW = DIALECT.replace("from sqlglot import generator", "from sqlglot import (\n    generator,\n)")
+    SEMANTIC = ('return "COUNT"', 'return "C"')
+
+    def test_import_reflow_is_dropped_semantic_kept(self):
+        change, result = self.semantic(self.REFLOW.replace(*self.SEMANTIC))
+        self.assertIsNotNone(result)
+        sub, dropped = result
+        self.assertEqual(dropped, 1)
+        self.assertEqual(sub["added_text"], ['        return "C"'])
+        self.assertEqual(sub["removed_text"], ['        return "COUNT"'])
+        graph = mock.Mock(knows=lambda path: True)
+        self.assertEqual(selector.hard_signals([sub], graph, object()), [])
+        self.assertTrue(any("import" in r for r in selector.hard_signals([change], graph, object())))
+
+    def test_real_import_is_kept(self):
+        new = self.REFLOW.replace(*self.SEMANTIC).replace("from sqlglot import (", "import os\nfrom sqlglot import (")
+        _, result = self.semantic(new)
+        if result is not None:
+            self.assertIn("import os", result[0]["added_text"])
+
+    def test_adjacent_comment_stays_with_semantic_edit(self):
+        _, result = self.semantic(DIALECT.replace('        return "COUNT"', '        # changed\n        return "C"'))
+        self.assertIsNone(result)
+
+    def test_single_region_and_equivalent_files_are_untouched(self):
+        self.assertIsNone(self.semantic(DIALECT.replace(*self.SEMANTIC))[1])
+        self.assertIsNone(self.semantic(self.REFLOW)[1])
+
+    def test_encoding_cookie_or_bom_refuses(self):
+        for prefix in ("# -*- coding: latin-1 -*-\n", "\ufeff"):
+            self.assertIsNone(self.semantic(prefix + self.REFLOW.replace(*self.SEMANTIC))[1], prefix)
+
+    def test_utf8_cookie_region_is_formatting(self):
+        _, result = self.semantic("# -*- coding: utf-8 -*-\n" + self.REFLOW.replace(*self.SEMANTIC))
+        self.assertIsNotNone(result)
+        self.assertEqual(result[0]["added_text"], ['        return "C"'])
+
+    def test_split_parenthesis_regions_are_not_dropped_alone(self):
+        # Two regions that are only equivalent together: each alone breaks
+        # the syntax, so neither is dropped.
+        new = DIALECT.replace('    TRANSFORMS = {"a": _helper, "b": _factory("b")}',
+                              '    TRANSFORMS = {"a": _helper,\n\n\n\n\n "b": _factory("b")}')
+        new = new.replace(*self.SEMANTIC)
+        _, result = self.semantic(new)
+        if result is not None:
+            rebuilt = edit_scope.reconstruct(DIALECT, result[0])
+            self.assertIsNotNone(rebuilt)
+
+    def test_selector_uses_semantic_regions_only(self):
+        tests_json = [{"number": 0, "id": "tests/test_a.py::T::test_a", "file": "tests/test_a.py", "seconds": 1.0}]
+        patch = self.root / "c.patch"
+        patch.write_text(_diff(self.path, DIALECT, self.REFLOW.replace(*self.SEMANTIC)), encoding="utf-8")
+        for experiments, expect_import in (("equivalent", True), ("equivalent,seeds", False)):
+            env = {selector.EXPERIMENTS_ENV: experiments, "TESTRADAR_PINNED": str(self.root)}
+            with mock.patch.dict(os.environ, env):
+                _, reasons = selector.analyze_selective(patch, tests_json, None, None, "balanced")
+                self.assertEqual(any("import statement" in r for r in reasons), expect_import, experiments)
