@@ -1,0 +1,13 @@
+generated=155 labelled=131 survived(0 failing)=18 (14%) broad(>=50% suite, import-level)=1 narrow-killed=112
+label wall seconds per mutation: median=52.6 mean=67.9
+category {'argument_swap': '20/21 killed, 0 broad', 'condition_negation': '20/20 killed, 0 broad', 'constant_change': '17/23 killed, 0 broad', 'dialect_table': '3/4 killed, 0 broad', 'operator_swap': '15/21 killed, 0 broad', 'return_change': '19/21 killed, 1 broad', 'statement_deletion': '19/21 killed, 0 broad'}
+location {'core': '28/30 killed, 1 broad', 'dialect': '30/33 killed, 0 broad', 'executor': '17/23 killed, 0 broad', 'optimizer': '23/25 killed, 0 broad', 'utility': '15/20 killed, 0 broad'}
+failing-tests per killed mutation: min/median/max 1 3 1123
+tests detecting >=1 mutation: 1315 of 1620; detecting >=1 narrow mutation: 832
+per-mutation cost over killed mutations: oracle-tests=784.3s files=1623.0s full=4160.3s (full per commit 36.817s)
+PREVIEW greedy detect-any portfolio: 84 tests, RWX cost 6.327s vs full 36.817s; in-sample commits missed under official all-failing rule: 69/113
+union of all failing tests (needed for zero in-sample misses): 1315 tests, cost 27.454s
+union over narrow-killed only: 832 tests, cost 27.454s
+leave-one-category-out (7 groups, 113 held-out killed): union-portfolio RWX misses 25 (22%), mean portfolio cost 27.5s; greedy detect-any portfolio: detect-any misses 44 (39%), RWX misses 98 (87%)
+leave-one-path-out (49 groups, 113 held-out killed): union-portfolio RWX misses 29 (26%), mean portfolio cost 27.5s; greedy detect-any portfolio: detect-any misses 56 (50%), RWX misses 105 (93%)
+leave-one-location-out (5 groups, 113 held-out killed): union-portfolio RWX misses 39 (35%), mean portfolio cost 27.5s; greedy detect-any portfolio: detect-any misses 69 (61%), RWX misses 109 (96%)
