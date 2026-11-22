@@ -41,7 +41,7 @@ POLICY_ENV = "TESTRADAR_POLICY"
 #   equivalent   - formatting/comment-only edits (identical syntax tree) run nothing
 #   construction - function-body-only dialect edits skip construction-only tests
 EXPERIMENTS_ENV = "TESTRADAR_EXPERIMENTS"
-KNOWN_EXPERIMENTS = ("equivalent", "construction")
+KNOWN_EXPERIMENTS = ("equivalent", "construction", "initialization")
 
 
 def enabled_experiments() -> frozenset[str]:
@@ -170,6 +170,7 @@ def analyze_selective(
     changes = _read_changes(patch)
     experiments = enabled_experiments()
     scopes: dict = {}
+    initialization_reasons: list[str] = []
     if experiments and changes:
         counts: dict = {}
         for change in changes:
@@ -178,14 +179,18 @@ def analyze_selective(
         for change in changes:
             if not isinstance(change, dict) or counts.get(change.get("path")) != 1:
                 continue  # a path listed twice cannot be rebuilt from one change
-            scope = (
-                edit_scope.classify(change, analyze_bodies="construction" in experiments)
-                if isinstance(change, dict) else None
+            scope = edit_scope.classify(
+                change,
+                analyze_bodies="construction" in experiments,
+                analyze_initialization="initialization" in experiments,
             )
             if scope is None:
                 continue
             if scope.kind == "equivalent" and "equivalent" in experiments:
                 scopes[change["path"]] = scope
+            elif scope.kind == "initialization":
+                functions = ", ".join(sorted(scope.initialization_functions))
+                initialization_reasons.append(f"{change['path']}: initialization-reachable edits in {functions}")
             elif scope.kind == "bodies" and "construction" in experiments:
                 scopes[change["path"]] = scope
     # A file whose syntax tree is unchanged carries no behaviour, so its
@@ -196,7 +201,7 @@ def analyze_selective(
     ]
     if changes and not signal_changes:
         return Selection(set(), False, [f"{c['path']}: syntax tree unchanged" for c in changes]), []
-    reasons = hard_signals(signal_changes, graph, coverage)
+    reasons = hard_signals(signal_changes, graph, coverage) + initialization_reasons
     paths = _paths(changes)
     impacted = graph.impacted_files(paths, stop_at=REGISTRY_MODULES) if graph is not None else set()
     covered: set[str] = set()

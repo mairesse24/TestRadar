@@ -46,10 +46,11 @@ _CONSTRUCTION_MODULES = (
 
 @dataclass
 class EditScope:
-    kind: str  # "equivalent" or "bodies"
+    kind: str  # "equivalent", "bodies", or "initialization"
     functions: set[str] = field(default_factory=set)
     construction_safe: bool = False
     detail: str = ""
+    initialization_functions: set[str] = field(default_factory=set)
 
 
 def pinned_root() -> Path | None:
@@ -94,7 +95,7 @@ def _dump(node: ast.AST) -> str:
 
 def _units(text: str) -> tuple[str, dict]:
     """Parse ``text`` and return (skeleton dump without function bodies,
-    {(qualified name, ordinal): (body, decorated, first line, last line)})."""
+    {(qualified name, ordinal): (body, decorated, first line, last line, header)})."""
     bodies: dict = {}
 
     class Strip(ast.NodeTransformer):
@@ -114,7 +115,7 @@ def _units(text: str) -> tuple[str, dict]:
             # apart by their order; the skeleton comparison pins that order.
             bodies[(name, ordinal)] = (
                 ast.Module(body=node.body, type_ignores=[]), bool(node.decorator_list),
-                node.lineno, node.end_lineno or node.lineno,
+                node.lineno, node.end_lineno or node.lineno, node,
             )
             node.body = [ast.Pass()]
             return node  # nested defs stay inside the stripped body
@@ -157,6 +158,58 @@ def _import_time_names(tree: ast.Module) -> set[str]:
 
     visit(tree.body)
     return names
+
+
+def _initialization_names(tree: ast.Module) -> set[str]:
+    """Overapproximate local names reachable from module and class evaluation."""
+    roots: set[str] = set()
+    edges: dict[str, set[str]] = {}
+
+    def names(node: ast.AST) -> set[str]:
+        return {
+            item.id if isinstance(item, ast.Name) else item.attr
+            for item in ast.walk(node)
+            if isinstance(item, (ast.Name, ast.Attribute))
+        }
+
+    class Initialization(ast.NodeVisitor):
+        def visit_Call(self, node: ast.Call) -> None:
+            roots.update(names(node))
+
+        def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+            for decorator in node.decorator_list:
+                roots.update(names(decorator))
+            self.visit(node.args)
+            if node.returns is not None:
+                self.visit(node.returns)
+            references = edges.setdefault(node.name, set())
+            for statement in node.body:
+                references.update(names(statement))
+
+        visit_AsyncFunctionDef = visit_FunctionDef
+
+        def visit_ClassDef(self, node: ast.ClassDef) -> None:
+            for decorator in node.decorator_list:
+                roots.update(names(decorator))
+            self.generic_visit(node)
+
+        def visit_Lambda(self, node: ast.Lambda) -> None:
+            self.visit(node.args)
+
+        def visit_Assign(self, node: ast.Assign) -> None:
+            self.visit(node.value)
+            if isinstance(node.value, (ast.Name, ast.Attribute)):
+                for target in node.targets:
+                    if isinstance(target, ast.Name):
+                        edges.setdefault(target.id, set()).update(names(node.value))
+
+    Initialization().visit(tree)
+    pending = list(roots)
+    while pending:
+        for name in edges.get(pending.pop(), set()) - roots:
+            roots.add(name)
+            pending.append(name)
+    return roots
 
 
 _CONSTRUCTION_CACHE: dict[str, frozenset[str]] = {}
@@ -210,9 +263,16 @@ def _source_encoding(text: str) -> str | None:
     return encoding
 
 
-def classify(change: dict, root: Path | None = None, *, analyze_bodies: bool = True) -> EditScope | None:
+def classify(
+    change: dict,
+    root: Path | None = None,
+    *,
+    analyze_bodies: bool = True,
+    analyze_initialization: bool = False,
+) -> EditScope | None:
     """Classify one change; ``analyze_bodies=False`` skips the construction
-    analysis (callers that only use ``equivalent`` results)."""
+    analysis. Initialization analysis is separately opt-in and can report
+    eager body edits even in a patch containing structural changes."""
     root = root or pinned_root()
     path = change.get("path") if isinstance(change, dict) else None
     if root is None or not path or not path.startswith("sqlglot/") or not path.endswith(".py"):
@@ -233,8 +293,7 @@ def classify(change: dict, root: Path | None = None, *, analyze_bodies: bool = T
         new_skeleton, new_bodies = _units(new_text)
     except (OSError, SyntaxError, ValueError, UnicodeError, RecursionError):
         return None
-    if old_skeleton != new_skeleton or old_bodies.keys() != new_bodies.keys():
-        return None
+    same_structure = old_skeleton == new_skeleton and old_bodies.keys() == new_bodies.keys()
     # A function none of whose lines were removed (old file) or added (new
     # file) has identical text on both sides; only touched bodies are
     # compared. The syntax tree is unchanged exactly when the skeletons and
@@ -242,8 +301,9 @@ def classify(change: dict, root: Path | None = None, *, analyze_bodies: bool = T
     removed, added = set(change.get("old_lines") or ()), set(change.get("new_lines") or ())
     changed: set[str] = set()
     decorated: set[str] = set()
-    for key, (body, has_decorators, first, last) in old_bodies.items():
-        other, other_decorators, new_first, new_last = new_bodies[key]
+    for key in old_bodies.keys() & new_bodies.keys():
+        body, has_decorators, first, last, header = old_bodies[key]
+        other, other_decorators, new_first, new_last, new_header = new_bodies[key]
         touched = (
             any(first <= n <= last for n in removed)
             or any(new_first <= n <= new_last for n in added)
@@ -253,6 +313,20 @@ def classify(change: dict, root: Path | None = None, *, analyze_bodies: bool = T
             changed.add(key[0])
             if has_decorators or other_decorators:
                 decorated.add(key[0])
+        if analyze_initialization and not same_structure and _dump(header) != _dump(new_header):
+            changed.add(key[0])
+    if analyze_initialization:
+        changed.update(key[0] for key in old_bodies.keys() ^ new_bodies.keys())
+        if changed:
+            try:
+                reachable = _initialization_names(ast.parse(old_text)) | _initialization_names(ast.parse(new_text))
+            except RecursionError:
+                return None
+            eager = {name for name in changed if name.rsplit(".", 1)[-1] in reachable}
+            if eager:
+                return EditScope("initialization", changed, initialization_functions=eager)
+    if not same_structure:
+        return None
     if not changed:
         return EditScope("equivalent", detail="syntax tree unchanged")
     if not analyze_bodies:

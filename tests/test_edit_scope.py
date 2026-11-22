@@ -78,6 +78,44 @@ class EditScopeTest(unittest.TestCase):
     def test_class_level_change_is_unclassified(self):
         self.assertIsNone(self.classify(DIALECT.replace('"a": _helper', '"a": _factory("a")')))
 
+    def test_initialization_reaches_transitive_aliased_factory_inside_class(self):
+        source = DIALECT.replace(
+            'class FooGenerator',
+            '_alias = _factory\n\ndef _wrapper():\n    return _alias("b")\n\nclass FooGenerator',
+        ).replace('_factory("b")}', '_wrapper()}')
+        self.root.joinpath(self.path).write_text(source, encoding="utf-8")
+        new = source.replace("lambda self, e: name", "lambda self, e: name.upper()")
+        change, = parse_patch(_diff(self.path, source, new))
+        scope = edit_scope.classify(change, self.root, analyze_initialization=True)
+        self.assertEqual(scope.initialization_functions, {"_factory"})
+
+    def test_initialization_evidence_forces_full_suite(self):
+        source = DIALECT.replace('return lambda self, e: name', 'raise RuntimeError(name)')
+        patch = self.root / "change.patch"
+        patch.write_text(_diff(self.path, DIALECT, source), encoding="utf-8")
+        tests = [{"number": 0, "id": "tests/test_example.py::test_other", "file": "tests/test_example.py"}]
+        graph = selector.DependencyGraph({self.path: set()})
+        coverage = selector.CoverageMap({}, set())
+        env = {"TESTRADAR_PINNED": str(self.root), selector.EXPERIMENTS_ENV: "equivalent,initialization"}
+        with mock.patch.dict(os.environ, env):
+            selection, reasons = selector.analyze_selective(patch, tests, graph, coverage, "balanced")
+        self.assertTrue(selection.fell_back)
+        self.assertEqual(selection.numbers, {0})
+        self.assertEqual(reasons, [f"{self.path}: initialization-reachable edits in _factory"])
+
+    def test_stored_callback_body_is_not_eager_without_a_call(self):
+        new = DIALECT.replace('return "x"', 'return "y"')
+        change, = parse_patch(_diff(self.path, DIALECT, new))
+        scope = edit_scope.classify(change, self.root, analyze_initialization=True)
+        self.assertEqual(scope.kind, "bodies")
+        self.assertFalse(scope.initialization_functions)
+
+    def test_initialization_factory_signature_change_is_detected(self):
+        new = DIALECT.replace("def _factory(name):", "def _factory(name, required):")
+        change, = parse_patch(_diff(self.path, DIALECT, new))
+        scope = edit_scope.classify(change, self.root, analyze_initialization=True)
+        self.assertEqual(scope.initialization_functions, {"_factory"})
+
     def test_import_time_and_constructor_bodies_are_not_construction_safe(self):
         for old, new in (
             ("return lambda self, e: name", "return lambda self, e: name.upper()"),
